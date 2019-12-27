@@ -31,14 +31,14 @@
 
     <!-- Favicon -->
     <link rel="icon" href={% static  "images/favicon.png" %}>
-    <link rel="apple-touch-icon" href={% static  "images/apple-touch-icon.png" %}>
+    <link rel="apple-touch-icon" href={% static "images/apple-touch-icon.png" %}>
     <link rel="apple-touch-icon" sizes="72x72" href={% static  "images/icon-72x72.png" %}>
     <link rel="apple-touch-icon" sizes="114x114" href={% static  "images/icon-114x114.png" %}>
 
 
     <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.min.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src={% static "assets/js/html5shiv.min.js"  %}></script>
+    <script src={% static "assets/js/respond.min.js"  %}></script>
     <![endif]-->
 
   </head>
@@ -455,7 +455,7 @@
         </div>
         <div class="row">
           <div class="col">
-            {% get_joblist %}
+            {% get_joblist origin="main_page"%}
             <div class="apply-popup">
               <div class="modal fade" id="apply-popup-id" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog" role="document">

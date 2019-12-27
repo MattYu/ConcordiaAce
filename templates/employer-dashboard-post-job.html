@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -8,37 +9,37 @@
     <title>Oficiona</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href={% static "assets/css/bootstrap.min.css" %}>
 
     <!-- External Css -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="assets/css/themify-icons.css" />
-    <link rel="stylesheet" href="assets/css/et-line.css" />
-    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css" />
-    <link rel="stylesheet" href="assets/css/plyr.css" />
-    <link rel="stylesheet" href="assets/css/flag.css" />
-    <link rel="stylesheet" href="assets/css/slick.css" />
-    <link rel="stylesheet" href="assets/css/owl.carousel.min.css" />
-    <link rel="stylesheet" href="assets/css/jquery.nstSlider.min.css" />
-    <link rel="stylesheet" href="assets/css/html5-simple-date-input-polyfill.css" />
+    <link rel="stylesheet" href={% static "assets/css/fontawesome-all.min.css" %}>
+    <link rel="stylesheet" href={% static "assets/css/themify-icons.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/et-line.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/bootstrap-select.min.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/plyr.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/flag.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/slick.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/owl.carousel.min.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/jquery.nstSlider.min.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/html5-simple-date-input-polyfill.css" %}/>
 
     <!-- Custom Css -->
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="dashboard/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href={% static "css/main.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "dashboard/css/dashboard.css" %}>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="icon" href="images/favicon.png">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/icon-114x114.png">
+    <link rel="icon" href={% static "images/favicon.png" %}>
+    <link rel="apple-touch-icon" href={% static "images/apple-touch-icon.png" %}>
+    <link rel="apple-touch-icon" sizes="72x72" href={% static "images/icon-72x72.png" %}>
+    <link rel="apple-touch-icon" sizes="114x114" href={% static "images/icon-114x114.png" %}>
 
 
     <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.min.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src={% static "assets/js/html5shiv.min.js" %}></script>
+    <script src={% static "assets/js/respond.min.js" %}></script>
     <![endif]-->
 
   </head>
@@ -50,7 +51,7 @@
           <div class="col">
             <div class="header-top">
               <div class="logo-area">
-                <a href="index.html"><img src="images/logo-2.png" alt=""></a>
+                <a href="index.html"><img src={% static "images/logo-2.png" %}alt=""></a>
               </div>
               <div class="header-top-toggler">
                 <div class="header-top-toggler-button"></div>
@@ -252,17 +253,25 @@
           <div class="col">
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper">
-                <form action="#" class="dashboard-form job-post-form">
+                <form method="post" action="#" class="dashboard-form job-post-form">
+                  {% csrf_token %}
                   <div class="dashboard-section basic-info-input">
                     <h4><i data-feather="user-check"></i>Post A Job</h4>
                     <div class="form-group row">
                       <label class="col-md-3 col-form-label">Job Title</label>
                       <div class="col-md-9">
-                        <input type="text" class="form-control" placeholder="Your job title here">
+                        {% if form.title.errors %}
+                          <ol>
+                          {% for error in form.title.errors %}
+                              <li><strong>{{ error|escape }}</strong></li>
+                          {% endfor %}
+                          </ol>
+                        {% endif %}
+                        {{form.title}}
                       </div>
                     </div>
                     <div class="row">
-                      <label class="col-md-3 col-form-label">Job Summery</label>
+                      <label class="col-md-3 col-form-label">Job Summary</label>
                       <div class="col-md-9">
                         <div class="row">
                           <div class="col-md-6">
@@ -288,7 +297,7 @@
                                 <option>Job Type</option>
                                 <option>Part Time</option>
                                 <option>Full Time</option>
-                                <option>Temperory</option>
+                                <option>Temporary</option>
                                 <option>Permanent</option>
                                 <option>Freelance</option>
                               </select>
@@ -326,16 +335,6 @@
                           </div>
                           <div class="col-md-6">
                             <div class="form-group">
-                              <select class="form-control">
-                                <option>Gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                              </select>
-                              <i class="fa fa-caret-down"></i>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="form-group">
                               <input type="text" class="form-control" placeholder="Vacancy">
                             </div>
                           </div>
@@ -350,7 +349,7 @@
                     <div class="row">
                       <label class="col-md-3 col-form-label">Job Description</label>
                       <div class="col-md-9">
-                        <textarea id="mytextarea" class="tinymce-editor tinymce-editor-1" placeholder="Description text here"></textarea>
+                        {{form.description}}
                       </div>
                     </div>
                     <div class="row">
@@ -696,29 +695,29 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/feather.min.js"></script>
-    <script src="assets/js/bootstrap-select.min.js"></script>
-    <script src="assets/js/jquery.nstSlider.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/visible.js"></script>
-    <script src="assets/js/jquery.countTo.js"></script>
-    <script src="assets/js/chart.js"></script>
-    <script src="assets/js/plyr.js"></script>
-    <script src="assets/js/tinymce.min.js"></script>
-    <script src="assets/js/slick.min.js"></script>
-    <script src="assets/js/jquery.ajaxchimp.min.js"></script>
-    <script src="assets/js/html5-simple-date-input-polyfill.min.js"></script>
+    <script src={% static "assets/js/jquery.min.js" %}></script>
+    <script src={% static "assets/js/popper.min.js"%}></script>
+    <script src={% static "assets/js/bootstrap.min.js"%}></script>
+    <script src={% static "assets/js/feather.min.js"%}></script>
+    <script src={% static "assets/js/bootstrap-select.min.js"%}></script>
+    <script src={% static "assets/js/jquery.nstSlider.min.js"%}></script>
+    <script src={% static "assets/js/owl.carousel.min.js"%}></script>
+    <script src={% static "assets/js/visible.js"%}></script>
+    <script src={% static "assets/js/jquery.countTo.js"%}></script>
+    <script src={% static "assets/js/chart.js"%}></script>
+    <script src={% static "assets/js/plyr.js"%}></script>
+    <script src={% static "assets/js/tinymce.min.js"%}></script>
+    <script src={% static "assets/js/slick.min.js"%}></script>
+    <script src={% static "assets/js/jquery.ajaxchimp.min.js"%}></script>
+    <script src={% static "assets/js/html5-simple-date-input-polyfill.min.js"%}></script>
 
-    <script src="js/custom.js"></script>
-    <script src="dashboard/js/dashboard.js"></script>
-    <script src="dashboard/js/datePicker.js"></script>
-    <script src="dashboard/js/upload-input.js"></script>
+    <script src={% static "js/custom.js"%}></script>
+    <script src={% static "dashboard/js/dashboard.js"%}></script>
+    <script src={% static "dashboard/js/datePicker.js"%}></script>
+    <script src={% static "dashboard/js/upload-input.js"%}></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
-    <script src="js/map.js"></script>
+    <script src={% static "js/map.js"%}></script>
 
   </body>
 </html>
