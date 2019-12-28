@@ -20,12 +20,14 @@ from django.conf.urls.static import static
 
 from view import home_page
 from joblistings.views import job_details, post_job
+from django.urls import include
 
 urlpatterns = [
     path('', home_page),
     path('admin/', admin.site.urls),
     path('job-details/<int:pk>/', job_details),
-    path('employer-dashboard-post-job/', post_job)
+    path('employer-dashboard-post-job/', post_job),
+    path('tinymce', include('tinymce.urls'))
 ]
 
 if settings.DEBUG:
