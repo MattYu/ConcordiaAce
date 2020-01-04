@@ -1,0 +1,61 @@
+from django.db import models
+from ace.constants import CATEGORY_CHOICES, MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_STANDARDTEXTAREA, MAX_LENGTH_LONGSTANDARDFIELDS
+from joblistings.models import Job
+from tinymce import models as tinymce_models
+
+# Create your models here.
+
+class JobApplication(models.Model):
+
+    firstName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+    lastName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+    preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+    category = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "Any", choices= CATEGORY_CHOICES)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
+    skillList = models.CharField(max_length = MAX_LENGTH_LONGSTANDARDFIELDS,  default= "")
+    aboutYou = tinymce_models.HTMLField(max_length = MAX_LENGTH_STANDARDTEXTAREA, default= "")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Education(models.Model):
+    institute = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    period = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    description = tinymce_models.HTMLField(max_length = MAX_LENGTH_STANDARDTEXTAREA, default= "")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    JobApplication = models.ManyToManyField(JobApplication)
+
+class Experience(models.Model):
+    companyName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    period = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    description = tinymce_models.HTMLField(max_length = MAX_LENGTH_STANDARDTEXTAREA, default= "")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    JobApplication = models.ManyToManyField(JobApplication)
+
+class Resume(models.Model):
+    fileName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    resume = models.FileField(upload_to='user/resume/', default= "")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    JobApplication = models.ManyToManyField(JobApplication)
+
+class SupportingDocument(models.Model):
+    fileName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    document = models.FileField(upload_to='user/document/', default= "")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    JobApplication = models.ManyToManyField(JobApplication)
+
+class coverLetter(models.Model):
+    fileName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    coverLetter = models.FileField(upload_to='user/coverletter/', default= "")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    JobApplication = models.ManyToManyField(JobApplication)

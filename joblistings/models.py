@@ -1,71 +1,8 @@
 from django.db import models
 from companies.models import Company
+from tinymce import models as tinymce_models
+from ace.constants import MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, CATEGORY_CHOICES, LOCATION_CHOICES
 
-MAX_LENGTH_TITLE = 60
-MAX_LENGTH_DESCRIPTION = 2000
-MAX_LENGTH_RESPONSABILITIES = 2000
-MAX_LENGTH_REQUIREMENTS = 2000
-MAX_LENGTH_STANDARDFIELDS= 30
-# Category Constants
-ANY = "ANY"
-ENGINEER_AERO_MECH = "E_Aero_Mech"
-ENGINEER_ELEC = "E_Elec"
-ENGINEER_IND = "E_Ind"
-ENGINEER_QUA = "E_QS"
-ENGINEER_COEN_COMP_SOFT = "E_Soft"
-ENGINEER_OTHER = "E_Other"
-
-F_A_DES = "F_A_Design"
-
-JMSB_Acc_Fin = "J_Acc_Fin"
-JMSB_HR_MAR = "J_HR_Mar"
-JMSB_BUS = "J_Bus"
-JMSB_SUP = "J_Man"
-JMSB_OTHER = "J_Other"
-
-A_S_ACT = "A_Acc"
-A_S_ECON = "A_Econ"
-A_S_MATH_PHY = "A_Math_Phy"
-A_S_POL = "A_Pol"
-A_S_CHEM_BIO = "A_BIO_CHEM"
-A_S_JOU = "A_Jou"
-A_S_TRAN = "A_Tr"
-A_S_OTHER = "A_Other"
-
-CATEGORY_CHOICES = [
-    (ANY, "Any Category"),
-    (ENGINEER_AERO_MECH, "GCS Engineering - Aerospace & Mechanical"),
-    (ENGINEER_ELEC, "GCS Engineering - Electrical"),
-    (ENGINEER_IND, "GCS Engineering - Industrial"),
-    (ENGINEER_QUA, "GCS Engineering - Quality System"),
-    (ENGINEER_COEN_COMP_SOFT, "GCS Engineering and Computer Science - Computer, Information Security & Software"),
-    (ENGINEER_OTHER, "GCS Engineering - Other"),
-    (F_A_DES, "Fine Arts - Computational Arts & Design"),
-    (JMSB_Acc_Fin, "JMSB - Accounting & Finance"),
-    (JMSB_HR_MAR, "JMSB - HR & Marketing"),
-    (JMSB_BUS, "JMSB - Business Administration"),
-    (JMSB_SUP, "JMSB - Management & Supply Chain Operation Management"),
-    (JMSB_OTHER, "JMSB - Other"),
-    (A_S_ACT, "Arts and Science - Actuarial Mathematics & Finance"),
-    (A_S_ECON, "Arts and Science - Economics"),
-    (A_S_MATH_PHY, "Arts and Science - Mathematics & Physics"),
-    (A_S_POL, "Arts and Science - Political Science"),
-    (A_S_CHEM_BIO, "Arts and Science - Biology & Chemistry"),
-    (A_S_JOU, "Arts and Science - Journalism"),
-    (A_S_TRAN, "Arts and Science - Translation"),
-    (A_S_OTHER, "Arts and Science - Other"),
-]
-
-#Locations
-
-LOCATION_CHOICES = [
-    ("None", "Country"),
-    ("CA", "Canada"),
-    ("US", "USA"),
-    ("Other-Europe", "Other- Europe"),
-    ("Other-Asia", "Other- Asia"),
-    ("Other", "Other"),
-]
 
 # Create your models here.
 class Job(models.Model):
@@ -81,9 +18,9 @@ class Job(models.Model):
     duration = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
 
 
-    description = models.TextField(max_length = MAX_LENGTH_DESCRIPTION, default= "")
-    responsabilities = models.TextField(max_length = MAX_LENGTH_RESPONSABILITIES, default= "")
-    requirements = models.TextField(max_length = MAX_LENGTH_REQUIREMENTS, default= "")
+    description = tinymce_models.HTMLField(max_length = MAX_LENGTH_DESCRIPTION, default= "")
+    responsabilities = tinymce_models.HTMLField(max_length = MAX_LENGTH_RESPONSABILITIES, default= "")
+    requirements = tinymce_models.HTMLField(max_length = MAX_LENGTH_REQUIREMENTS, default= "")
 
     # Job Location
     country = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "Canada", choices= LOCATION_CHOICES)
@@ -92,6 +29,9 @@ class Job(models.Model):
     yourLocation = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE, default= "")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

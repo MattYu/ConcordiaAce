@@ -1,5 +1,6 @@
 from django import forms
-from joblistings.models import Job, CATEGORY_CHOICES, MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, LOCATION_CHOICES
+from joblistings.models import Job
+from ace.constants import CATEGORY_CHOICES, MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, LOCATION_CHOICES
 from tinymce.widgets import TinyMCE
 from companies.models import Company
 from joblistings.models import Job
@@ -88,7 +89,6 @@ class JobForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-
         title = cleaned_data.get('title')
         category = cleaned_data.get('category')
         salaryRange = cleaned_data.get('salaryRange')
@@ -116,6 +116,7 @@ class JobForm(forms.Form):
         if not name and not email and not message:
             raise forms.ValidationError('You have to write something!')
         '''
+
     def save(self):
         job = Job()
         cleaned_data = self.cleaned_data
@@ -138,3 +139,4 @@ class JobForm(forms.Form):
 
 
         return job
+    

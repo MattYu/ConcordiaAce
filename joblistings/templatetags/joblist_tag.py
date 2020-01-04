@@ -10,7 +10,7 @@ def get_joblist(*args, **kwargs):
     queryset = None
     origin = kwargs["origin"]
     if (origin == "main_page"):
-        queryset = Job.objects.all()[:10]
+        queryset = Job.objects.order_by('-created_at')[:10]
 
     return {
         'joblist': queryset

@@ -24,6 +24,7 @@
 
     <!-- Custom Css -->
     <link rel="stylesheet" type="text/css" href={% static "css/main.css" %}>
+    {{ object.media }}
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
@@ -247,18 +248,18 @@
                   <div class="col-xl-7 col-lg-8">
                     <div class="description details-section">
                       <h4><i data-feather="align-left"></i>Job Description</h4>
-                      {{object.description|linebreaks}}
+                      {{object.description|safe}}
                     </div>
                     <div class="responsibilities details-section">
                       <h4><i data-feather="zap"></i>Responsibilities</h4>
                       <ul>
-                        {{object.responsabilities|linebreaks}}
+                        {{object.responsabilities|safe}}
                       </ul>
                     </div>
                     <div class="edication-and-experience details-section">
                       <h4><i data-feather="book"></i>Education + Experience</h4>
                       <ul>
-                        {{object.requirements|linebreaks}}
+                        {{object.requirements|safe}}
                       </ul>
                     </div>
                     <div class="other-benifit details-section">
