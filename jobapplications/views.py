@@ -8,13 +8,12 @@ def add_resume(request, *args, **kwargs):
     #instance = get_object_or_404(Job, pk=pk)
     global count 
     if (request.method == 'POST'):
+        print(request.POST)
         if(request.POST.get('addEdu')):
-            count +=1
-            form = ApplicationForm(request.POST, extra_edu_count=count)
+            form = ApplicationForm(request.POST, extra_edu_count=request.POST.get('extra_edu_count'))
 
         if form.is_valid():
             pass
     else:
-        count = 1
-        form = ApplicationForm(extra_edu_count=count)
+        form = ApplicationForm(extra_edu_count=1)
     return render(request, "add-resume.html", {'form': form})

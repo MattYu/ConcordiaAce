@@ -8,7 +8,7 @@ class ApplicationForm(forms.Form):
     numberOfCVForm = 1
     numberOfCoverLetterForm = 1
 
-    extra_edu_count = forms.CharField(widget=forms.HiddenInput())
+    extra_edu_count = forms.IntegerField(widget=forms.HiddenInput())
 
 
     firstName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
@@ -33,12 +33,13 @@ class ApplicationForm(forms.Form):
         model = JobApplication
 
     def __init__(self, *args, **kwargs):
-        extra_edu_fields = kwargs.pop('extra_edu_count', 0)
+        extra_edu_fields = kwargs.pop('extra_edu_count', 1)
         super().__init__(*args, **kwargs)
 
-        self.fields['extra_edu_count'].initial = extra_edu_fields
-        count = 0
-        for i in range(int(extra_edu_fields)):
+        print(extra_edu_fields)
+        self.fields['extra_edu_count'].initial = int(extra_edu_fields)
+        
+        for i in range(int(self.fields['extra_edu_count'].initial)):
             field_name = 'educations_%s' % (i,)
             self.fields[field_name] = forms.CharField(required=False)
             self.initial[field_name] = ""

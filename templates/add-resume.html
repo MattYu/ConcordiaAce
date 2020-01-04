@@ -364,7 +364,9 @@
                     </div>
                     
                     <div class="row">
+                      
                       {% for education_field in form.get_education_fields %}
+                      {{form.extra_edu_count}}
                       <label class="col-md-3 col-form-label">EDUCATION 01</label>
                       <div class="col-md-9">
                         <div class="form-group">
@@ -768,8 +770,14 @@
     </script>
 
     <script>
+
+      let form_count = Number($("[name=extra_edu_count]").val());
+  
       $("#addEdu").click(function() {
+          form_count ++;
           localStorage.setItem('my-scroll-pos', $(window).scrollTop());
+
+          $("[name=extra_edu_count]").val(form_count);
       })
     </script>
 
