@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 
 from view import home_page
 from joblistings.views import job_details, post_job
-from jobapplications.views import add_resume
+from jobapplications.views import add_resume, download_test
 from django.urls import include
 
 urlpatterns = [
@@ -30,6 +30,7 @@ urlpatterns = [
     path('employer-dashboard-post-job/', post_job),
     path('add-resume/<int:pk>/', add_resume),
     path('tinymce', include('tinymce.urls')),
+    path('test/<int:pk>/', download_test)
 ]
 
 if settings.DEBUG:
