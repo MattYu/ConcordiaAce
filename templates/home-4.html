@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Oficiona</title>
+    <title>Concordia ACE</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href={% static "assets/css/bootstrap.min.css" %}>
@@ -208,7 +208,8 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form action="#">
+                <form method="POST">
+                {% csrf_token %}
                   <div class="form-group">
                     <input type="email" placeholder="Email Address" class="form-control">
                   </div>
@@ -250,15 +251,16 @@
               <div class="modal-body">
                 <div class="account-type">
                   <label for="idRegisterCan">
-                    <input id="idRegisterCan" type="radio" name="register">
+                    <input id="idRegisterCan" type="radio" name="register" value="candidate">
                     <span>Candidate</span>
                   </label>
                   <label for="idRegisterEmp">
-                    <input id="idRegisterEmp" type="radio" name="register">
+                    <input id="idRegisterEmp" type="radio" name="register" value="employer">
                     <span>Employer</span>
                   </label>
                 </div>
-                <form action="#">
+                <form method="POST">
+                {% csrf_token %}
                   <div class="form-group">
                     <input type="text" placeholder="Username" class="form-control">
                   </div>
@@ -502,6 +504,35 @@
       </div>
     </div>
     <!-- Jobs End -->
+
+    <!-- Registration Box -->
+    <div class="section-padding">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="call-to-action-box candidate-box">
+              <div class="icon">
+                <img src={% static "images/register-box/1.png" %} alt="">
+              </div>
+              <span>Are You</span>
+              <h3>Candidate?</h3>
+              <a href="#" data-toggle="modal" data-target="#exampleModalLong2">Register Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="call-to-action-box employer-register">
+              <div class="icon">
+                <img src={% static "images/register-box/2.png" %} alt="">
+              </div>
+              <span>Are You</span>
+              <h3>Employer?</h3>
+              <a href="#" data-toggle="modal" data-target="#exampleModalLong3">Register Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Registration Box End -->
 
     <!-- Fun Facts -->
     <div class="padding-top-90 padding-bottom-60 fact-bg">
@@ -817,24 +848,24 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/feather.min.js"></script>
-    <script src="assets/js/bootstrap-select.min.js"></script>
-    <script src="assets/js/jquery.nstSlider.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/visible.js"></script>
-    <script src="assets/js/jquery.countTo.js"></script>
-    <script src="assets/js/chart.js"></script>
-    <script src="assets/js/plyr.js"></script>
-    <script src="assets/js/tinymce.min.js"></script>
-    <script src="assets/js/slick.min.js"></script>
-    <script src="assets/js/jquery.ajaxchimp.min.js"></script>
+    <script src={% static "assets/js/jquery.min.js" %}></script>
+    <script src={% static "assets/js/popper.min.js" %}></script>
+    <script src={% static "assets/js/bootstrap.min.js" %}></script>
+    <script src={% static "assets/js/feather.min.js" %}></script>
+    <script src={% static "assets/js/bootstrap-select.min.js" %}></script>
+    <script src={% static "assets/js/jquery.nstSlider.min.js" %}></script>
+    <script src={% static "assets/js/owl.carousel.min.js" %}></script>
+    <script src={% static "assets/js/visible.js" %}></script>
+    <script src={% static "assets/js/jquery.countTo.js" %}></script>
+    <script src={% static "assets/js/chart.js" %}></script>
+    <script src={% static "assets/js/plyr.js" %}></script>
+    <script src={% static "assets/js/tinymce.min.js" %}></script>
+    <script src={% static "assets/js/slick.min.js" %}></script>
+    <script src={% static "assets/js/jquery.ajaxchimp.min.js" %}></script>
 
-    <script src="js/custom.js"></script>
+    <script src={% static "js/custom.js" %}></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
-    <script src="js/map.js"></script>
+    <script src={% static "js/map.js" %}></script>
   </body>
 </html>

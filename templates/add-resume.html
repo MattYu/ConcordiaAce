@@ -262,6 +262,13 @@
                   {% csrf_token %}
                   <div class="basic-info-input">
                     <h4><i data-feather="plus-circle"></i>Add Resume</h4>
+                    {% if form.non_field_errors %}
+                      <div class="non-field-errors">
+                        {% for err in form.non_field_errors %}
+                          <p class="text-danger">{{ err }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
                     <div id="full-name" class="form-group row">
                       <label class="col-md-3 col-form-label">Full Name</label>
                       <div class="col-md-9">
@@ -282,11 +289,11 @@
                       <label class="col-md-3 col-form-label" style="padding-bottom: 40px">Education</label>
                     </div>
                     
-                    <div class="row">
+                    <div class="row" id = "EducationFields">
                       {{form.extra_edu_count}}
                       {% for education in form.get_education_fields %}
                       <label class="col-md-3 col-form-label" name="edu_{{ forloop.counter }}">EDUCATION {{ forloop.counter }}</label>
-                      <div class="col-md-9">
+                      <div class="col-md-9" id>
                         <div class="form-group">
                           {{education.institute}}
                         </div>
@@ -408,6 +415,13 @@
                     <div class="form-group row">
                       <label class="col-md-3 col-form-label"></label>
                       <div class="col-md-9">
+                        {% if form.non_field_errors %}
+                          <div class="non-field-errors">
+                            {% for err in form.non_field_errors %}
+                              <p class="text-danger">{{ err }}</p>
+                            {% endfor %}
+                          </div>
+                        {% endif %}
                         <button class="button">Publish Resume</button>
                       </div>
                     </div>

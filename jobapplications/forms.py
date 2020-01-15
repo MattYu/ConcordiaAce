@@ -65,74 +65,13 @@ class ApplicationForm(forms.Form):
         self.educationFields = []
         self.educationFieldsNames = []
         for i in range(int(self.fields['extra_edu_count'].initial)):
-            field_name = '_educations_%s' % (i,)
-            educationDict = {}
-            eduNameDict = {}
-            self.fields['institute' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_STANDARDFIELDS,
-                                                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Institute'})
-                                                                    )
-            educationDict['institute'] = self['institute' + field_name]
-            eduNameDict['institute'] = 'institute' + field_name
-            self.fields['title' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_STANDARDFIELDS,
-                                                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Degree'})
-                                                                )
-            educationDict['title'] = self['title' + field_name]
-            eduNameDict['title'] = 'title' + field_name
-            self.fields['period' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_STANDARDFIELDS,
-                                                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Period'})
-                                                                )
-            educationDict['period'] = self['period' + field_name]
-            eduNameDict['period'] = 'period' + field_name
-            self.fields['description' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_LONGSTANDARDFIELDS,
-                                                                        required= False,
-                                                                        widget=TinyMCE(attrs={'class': 'form-control', 'placeholder': 'Description (Optional)'})
-                                                                    )
-            educationDict['description'] = self['description' + field_name]
-            eduNameDict['description'] = 'description' + field_name
-            
-            self.educationFields.append(educationDict)
-            self.educationFieldsNames.append(eduNameDict)
-
+            self.add_education(i)
 
         self.fields['extra_exp_count'].initial = max(min(int(extra_exp_fields), 10),1)
         self.experienceFields = [] 
         self.experienceFieldsNames = []
         for i in range(int(self.fields['extra_exp_count'].initial)):
-            field_name = '_experience_%s' % (i,)
-            experienceDict = {}
-            expNameDict = {}
-            self.fields['companyName' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_STANDARDFIELDS,
-                                                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company'})
-                                                                    )
-            experienceDict['companyName'] = self['companyName' + field_name]
-            expNameDict['companyName'] = 'companyName' + field_name
-            self.fields['title' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_STANDARDFIELDS,
-                                                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Job title'})
-                                                                )
-            experienceDict['title'] = self['title' + field_name]
-            expNameDict['title'] = 'title' + field_name
-            self.fields['period' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_STANDARDFIELDS,
-                                                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Period'})
-                                                                )
-            experienceDict['period'] = self['period' + field_name]
-            expNameDict['period'] = 'period' + field_name
-            self.fields['description' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_LONGSTANDARDFIELDS,
-                                                                        required= False,
-                                                                        widget=TinyMCE(attrs={'class': 'form-control', 'placeholder': 'Description (Optional)'})
-                                                                    )
-            experienceDict['description'] = self['description' + field_name]
-            expNameDict['description'] = 'description' + field_name
-
-            self.experienceFields.append(experienceDict)
-            self.experienceFieldsNames.append(expNameDict)
+            self.add_experience(i)
 
 
         resume = forms.FileField()
@@ -142,21 +81,7 @@ class ApplicationForm(forms.Form):
         self.documentsFields = []
         self.documentsFieldsNames = []
         for i in range(int(self.fields['extra_doc_count'].initial)):
-            field_name = '_doc_%s' % (i,)
-            docDict = {}
-            docName = {}
-            self.fields['name' + field_name] = forms.CharField(
-                                                                        max_length=MAX_LENGTH_STANDARDFIELDS,
-                                                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Supporting document name / type'})
-                                                                    )
-            docDict['name'] = self['name' + field_name]
-            docName['name'] = 'name' + field_name
-            self.fields['file' + field_name] = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'add-new-field'}))
-            docDict['file'] = self['file' + field_name]
-            docName['file'] = 'file' + field_name
-           
-            self.documentsFields.append(docDict)
-            self.documentsFieldsNames.append(docName)
+            self.add_document(i)
 
     def get_education_fields(self):
         return self.educationFields
@@ -167,8 +92,104 @@ class ApplicationForm(forms.Form):
     def get_document_fields(self):
         return self.documentsFields
 
+    def add_education(self, i:int = None):
+        if i == None:
+            i = len(self.educationFields)
+        print(i)
+        field_name = '_educations_%s' % (i,)
+        educationDict = {}
+        eduNameDict = {}
+        self.fields['institute' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Institute'})
+                                                                )
+        educationDict['institute'] = self['institute' + field_name]
+        eduNameDict['institute'] = 'institute' + field_name
+        self.fields['title' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Degree'})
+                                                            )
+        educationDict['title'] = self['title' + field_name]
+        eduNameDict['title'] = 'title' + field_name
+        self.fields['period' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Period'})
+                                                            )
+        educationDict['period'] = self['period' + field_name]
+        eduNameDict['period'] = 'period' + field_name
+        self.fields['description' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_LONGSTANDARDFIELDS,
+                                                                    required= False,
+                                                                    widget=TinyMCE(attrs={'class': 'form-control', 'placeholder': 'Description (Optional)'})
+                                                                )
+        educationDict['description'] = self['description' + field_name]
+        eduNameDict['description'] = 'description' + field_name
+        
+        self.educationFields.append(educationDict)
+        self.educationFieldsNames.append(eduNameDict)
+
+        return educationDict
+
+    def add_experience(self, i:int):
+        field_name = '_experience_%s' % (i,)
+        experienceDict = {}
+        expNameDict = {}
+        self.fields['companyName' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company'})
+                                                                )
+        experienceDict['companyName'] = self['companyName' + field_name]
+        expNameDict['companyName'] = 'companyName' + field_name
+        self.fields['title' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Job title'})
+                                                            )
+        experienceDict['title'] = self['title' + field_name]
+        expNameDict['title'] = 'title' + field_name
+        self.fields['period' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Period'})
+                                                            )
+        experienceDict['period'] = self['period' + field_name]
+        expNameDict['period'] = 'period' + field_name
+        self.fields['description' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_LONGSTANDARDFIELDS,
+                                                                    required= False,
+                                                                    widget=TinyMCE(attrs={'class': 'form-control', 'placeholder': 'Description (Optional)'})
+                                                                )
+        experienceDict['description'] = self['description' + field_name]
+        expNameDict['description'] = 'description' + field_name
+
+        self.experienceFields.append(experienceDict)
+        self.experienceFieldsNames.append(expNameDict)
+
+        return experienceDict
+
+
+    def add_document(self, i:int):
+        field_name = '_doc_%s' % (i,)
+        docDict = {}
+        docName = {}
+        self.fields['name' + field_name] = forms.CharField(
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Supporting document name / type'})
+                                                                )
+        docDict['name'] = self['name' + field_name]
+        docName['name'] = 'name' + field_name
+        self.fields['file' + field_name] = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'add-new-field'}))
+        docDict['file'] = self['file' + field_name]
+        docName['file'] = 'file' + field_name
+        
+        self.documentsFields.append(docDict)
+        self.documentsFieldsNames.append(docName)
+
+        return docDict
+
     def clean(self):
         cleaned_data = super().clean()
+
+        if not cleaned_data.get('resume'):
+            raise forms.ValidationError('You have to upload a resume')
 
         self.cleaned_data = cleaned_data
 

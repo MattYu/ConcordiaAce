@@ -15,8 +15,6 @@ def add_resume(request, pk= None, *args, **kwargs):
     context = {'job': instance}
     
     if (request.method == 'POST'):
-        print(request.POST)
-        print(request.FILES)
         form = ApplicationForm(
             request.POST, 
             request.FILES,

@@ -10,7 +10,7 @@ class JobApplication(models.Model):
     firstName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
     lastName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
     preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
-    studentID = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+    #studentID = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
     #category = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "Any", choices= CATEGORY_CHOICES)
     #location = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
