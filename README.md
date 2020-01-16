@@ -24,6 +24,8 @@ Dependencies
 
 Commands
 
+- > pip install virtualenv
+
 -pip install django-widget-tweaks
 
 -python -m pip install Pillow
@@ -33,3 +35,6 @@ Commands
 -pip install django-sendfile2
 
 -pip install django-file-resubmit
+
+
+Note that files upload will be service by Apache and x-file in production, on top of Django
