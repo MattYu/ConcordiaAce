@@ -1,7 +1,7 @@
 # ConcordiaAce
 
 
-Dependencies
+# Dependencies
 
 -Python 3.7
 
@@ -22,7 +22,46 @@ Dependencies
 -sqlparse==0.3.0
 
 
-Commands
+# Dev installation
+1) Install git
+2) Create a local directory, run:
+   - Make a folder for the project
+   - git init
+   - git remote add upstream  https://github.com/MattYu/ConcordiaAce/.git
+   - git fetch upstream
+   - Create your own work branch: git checkout -b <name of your workbranch>
+3) Install Python 3.7
+   - When installing, on Windows, make sure to tick/select "pip", "install for all users" and "Add Python to environment variables"
+   - Check that python has been successfully installed by running "python -v" in a console
+   - Check that pip has been successfully installed by running "pip freeze" in a console
+4) Strongly recommended: Install virtualenv
+   - Run a powershell with admin privilege
+   - Execute "Set-ExecutionPolicy Unrestricted"
+   - Execute "pip install virtualenv"
+5) Strongly recommended: Create a virtualenv for the project before installing dependancies 
+   - go to project's folder
+   - create a folder call cfehome
+   - cd cfehome
+   - create virtual env virtualenv .
+   - run virtualenv ".\cfehome\Script\activate"
+6) Install all dependencies, use same version as dependency section of readme
+   - pip install django==3
+   - pip install django-widget-tweaks
+   - python -m pip install Pillow
+   - pip install django-tinymce
+   - pip install django-sendfile
+   - pip install django-sendfile2
+   - pip install django-file-resubmit
+  
+7) Run server. Go to Ace folder.
+  - python manage.py makemigrations
+  - python manage.py migrate
+  - python manage.py createsuperuser
+  - python manage.py runserver
+
+  
+
+# Commands
 
 - > pip install virtualenv
 
