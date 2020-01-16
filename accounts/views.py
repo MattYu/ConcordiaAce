@@ -7,16 +7,18 @@ def register_user(request):
     
     if (request.method == 'POST'):
         print(request.POST)
-        print(request.POST.get('registrationType'))
+        print("^^^^^^^^^^^^")
+        print(request.POST.get('employerCompany'))
         form = RegistrationForm(
             request.POST, 
             request.FILES,
             registrationType=request.POST.get('registrationType'),
+            employerCompany=request.POST.get('employerCompany')
             )
         #request.session['form'] = form.as_p()
  
     else:
-        form = RegistrationForm(registrationType=None, companyType=None)
+        form = RegistrationForm(registrationType=None, employerCompany=None)
     context['form'] = form
 
     return render(request, "register.html", context)
