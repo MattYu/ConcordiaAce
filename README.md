@@ -1,5 +1,8 @@
 # ConcordiaAce
 
+# Licensing
+- All python/django code are created by us and available under MIT licence
+- html template license was purchased for single app use for Concordia ACE website on http://preview.themeforest.net/item/oficiona-job-board-html-template/full_screen_preview/23042674 License must be re-purchased for other project. Permission to reuse template not under MIT license. 
 
 # Dependencies
 
