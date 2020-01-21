@@ -3,8 +3,6 @@ from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponseRedirect
 
-
-
 from joblistings.models import Job
 from joblistings.forms import JobForm
 from companies.models import Company

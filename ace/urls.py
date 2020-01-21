@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from view import home_page
 from joblistings.views import job_details, post_job
 from jobapplications.views import add_resume, download_test
-from accounts.views import register_user
+from accounts.views import register_user, logout_user
 from django.urls import include
 
 urlpatterns = [
@@ -32,7 +32,8 @@ urlpatterns = [
     path('add-resume/<int:pk>/', add_resume),
     path('tinymce', include('tinymce.urls')),
     path('test/<int:pk>/', download_test),
-    path('register/', register_user)
+    path('register/', register_user),
+    path('logout/', logout_user),
 ]
 
 if settings.DEBUG:

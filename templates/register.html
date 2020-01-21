@@ -50,7 +50,7 @@
           <div class="col">
             <div class="header-top">
               <div class="logo-area">
-                <a href="index.html"><img src="images/logo-2.png" alt=""></a>
+                <a href="/"><img src={% static "images/concordia-logo.png" %} alt=""></a>
               </div>
               <div class="top-nav">
                 <a href="login.html" class="account-page-link">Login</a>
@@ -60,7 +60,7 @@
         </div>
       </div>
     </header>
-    <div class="padding-top-90 padding-bottom-90 access-page-bg">
+    <div class="padding-top-90 padding-bottom-90 access-page-bg" >
       <div class="container">
         <div class="row">
           <div class="col-xl-4 col-md-6">
@@ -68,10 +68,18 @@
               <div class="form-header">
                 <h5><i data-feather="edit"></i>Register Account</h5>
               </div>
+              {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                  {% for err in form.non_field_errors %}
+                    <p class="text-danger">{{ err }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
               <form method="POST" enctype="multipart/form-data">
               {% csrf_token %}       
                 {{form.registrationType}}
-                  {% if not form.is_type_selected %}
+                {{form.employerCompany}}
+                {% if not form.is_type_selected %}
                 <div class="row"> 
                   <div class="col-md-6">
                     <input type="submit" class="button primary-bg btn-block" formnovalidate value="Candidate" name="selectCandidate" id="selectCandidate">
@@ -80,8 +88,7 @@
                     <input type="submit" class="button primary-bg btn-block" formnovalidate value="Employer" name="selectEmployer" id="selectEmployer">
                   </div>
                 </div>
-                {% endif %}
-                {% if form.is_candidate_selected %}
+                {% elif form.is_candidate_selected %}
                 <div class="row"> 
                   <div class="col-md-6">
                     <input type="submit" class="button primary-bg btn-block" formnovalidate value="Candidate" name="selectCandidate" id="selectCandidate">
@@ -90,8 +97,8 @@
                     <input type="submit" class="button secondary-bg btn-block" formnovalidate value="Employer" name="selectEmployer" id="selectEmployer">
                   </div>
                 </div>
-                {% endif %}
-                {% if form.is_employer_selected %}
+                
+                {% else  %}
                 <div class="row"> 
                   <div class="col-md-6">
                     <input type="submit" class="button secondary-bg btn-block" formnovalidate value="Candidate" name="selectCandidate" id="selectCandidate">
@@ -101,7 +108,76 @@
                   </div>
                 </div>
                 {% endif %}
+
                 {% if form.is_type_selected %}
+                <br>
+                <br>
+                  {% if form.is_employer_selected %}
+                    <div class="basic-info-input">
+                      <h4><i data-feather="plus-circle"></i>About your company</h4>
+                    </div>
+                    {% if not form.isAllFieldSelected %}
+                      <div class="row"> 
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
+                        </div>
+                      </div>
+                    {% elif form.is_createCompany_selected %}
+                      <div class="row"> 
+                        <div class="col-md-6">
+                          <input type="submit" class="button secondary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
+                        </div>
+                      </div>
+                      <br>
+                      <div class="form-header">
+                        <h5><i data-feather="edit"></i>Please tell us more about your company</h5>
+                      </div>
+                      <div class="form-group">
+                        {{form.companyName}}
+                      </div>
+                      <div class="form-group">
+                        {{form.address}}
+                      </div>
+                      <div class="form-group">
+                        {{form.website}}
+                      </div>
+                      <div class="form-group">
+                        {{form.profile}}
+                      </div>
+                      <div class="form-group">
+                        {{form.image}}
+                      </div>
+                    {% else %}
+                      <div class="row"> 
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="button secondary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
+                        </div>
+                      </div>
+                      <br>
+                      <div class="form-header">
+                        <h5><i data-feather="edit"></i>Select your company from the list</h5>
+                      </div>
+                      <div class="form-group">
+                        {{form.company}}
+                      </div>                           
+                    {% endif %}
+                  <br>
+                  <br>
+                  {% endif %}      
+
+                <br>
+                <div class="basic-info-input">
+                  <h4><i data-feather="plus-circle"></i>About you</h4>
+                </div>
                 <div class="form-group" id="test">
                   {{form.email}}
                 </div>
@@ -120,6 +196,13 @@
                 <div class="form-group">
                   {{form.passwordConfirm}}
                 </div>
+                {% endif %}
+                {% if form.non_field_errors %}
+                  <div class="non-field-errors">
+                    {% for err in form.non_field_errors %}
+                      <p class="text-danger">{{ err }}</p>
+                    {% endfor %}
+                  </div>
                 {% endif %}
                 {% if form.isAllFieldSelected %}
                 <div class="more-option terms">
@@ -218,14 +301,13 @@
     };
 
     </script>
-    <!-- Add or remove education fields on button click-->
+    <!-- Select between candidate or employer button control-->
     <script>
   
       $("#selectCandidate").click(function() {
           localStorage.setItem('my-scroll-pos', $(window).scrollTop());
 
           $("[name=registrationType]").val("candidate");
-
           $("#selectCandidate").animateHighlight("##6495ED", 1000)
       })
 
@@ -234,6 +316,24 @@
 
           $("[name=registrationType]").val("employer");
           $("#selectCandidate").animateHighlight("##6495ED", 1000)
+      })
+    </script>
+
+    <!-- Select between new company or existing company button control-->
+    <script>
+
+      $("#existingpartner").click(function() {
+          localStorage.setItem('my-scroll-pos', $(window).scrollTop());
+
+          $("[name=employerCompany]").val("selectFromExisting");
+          $("#existingpartner").animateHighlight("##6495ED", 1000)
+      })
+
+      $("#newpartner").click(function() {
+          localStorage.setItem('my-scroll-pos', $(window).scrollTop());
+
+          $("[name=employerCompany]").val("createNew");
+          $("#newpartner").animateHighlight("##6495ED", 1000)
       })
     </script>
   </body>
