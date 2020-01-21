@@ -23,6 +23,7 @@
 -pytz==2019.3
 
 -sqlparse==0.3.0
+- six
 
 
 # Dev installation
@@ -55,6 +56,7 @@
    - pip install django-sendfile
    - pip install django-sendfile2
    - pip install django-file-resubmit
+   - pip install six
   
 7) Run server. Go to Ace folder.
   - python manage.py makemigrations
@@ -77,6 +79,7 @@
 -pip install django-sendfile2
 
 -pip install django-file-resubmit
+
 
 
 Note that files upload will be service by Apache and x-file in production, on top of Django
