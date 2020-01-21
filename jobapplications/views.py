@@ -26,7 +26,7 @@ def add_resume(request, pk= None, *args, **kwargs):
         if form.is_valid():
             form.clean()
             form.save(instance)
-            return HttpResponseRedirect('')
+            return HttpResponseRedirect('/')
     else:
         form = ApplicationForm(extra_edu_count=1, extra_exp_count=1, extra_doc_count=0)
     context['form'] = form

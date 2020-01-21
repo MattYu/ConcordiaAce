@@ -1,12 +1,12 @@
 from django import forms
 from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS
-from accounts.models import User 
+from accounts.models import User, Candidate, Employer, PreferredName
 from companies.models import Company
 from tinymce.widgets import TinyMCE
 
 class RegistrationForm(forms.Form):
-    registrationType = forms.IntegerField(widget=forms.HiddenInput())
-    employerCompany = forms.IntegerField(widget=forms.HiddenInput())
+    registrationType = forms.CharField(widget=forms.HiddenInput())
+    employerCompany = forms.CharField(widget=forms.HiddenInput())
 
     email = forms.EmailField(max_length=MAX_LENGTH_STANDARDFIELDS,
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
@@ -43,6 +43,7 @@ class RegistrationForm(forms.Form):
 
         if (registrationType == "employer"):
             if (companyType == 'createNew'):
+                self.fields['companyName'] = forms.CharField(max_length = 100,  widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company name'}))
                 self.fields['address'] = forms.CharField(max_length = 100,  widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company address'}))
                 self.fields['website'] = forms.CharField(max_length = 100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company website'}))
                 self.fields['profile'] = forms.CharField(
@@ -87,3 +88,75 @@ class RegistrationForm(forms.Form):
             if self.fields['employerCompany'].initial != 'selectFromExisting' and self.fields['employerCompany'].initial != 'createNew':
                 return False
         return True
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if self.is_createCompany_selected() and self.is_createCompany_selected():
+            if not cleaned_data.get('image'):
+                raise forms.ValidationError('You have to upload a logo for your company')
+
+        if cleaned_data.get('password') != cleaned_data.get('passwordConfirm'):
+            raise forms.ValidationError('Passwords do not match')
+        #if User.objects.filter(email=cleaned_data.get('email')).count() != 0:
+            #raise forms.ValidationError('Email already in use')
+
+
+        self.cleaned_data = cleaned_data
+
+    def save(self, pk):
+
+        user = user()
+        cleaned_data = self.cleaned_data
+        user.email = cleaned_data.get('email')
+        user.firstName = cleaned_data.get('firstName')
+        user.lastName = cleaned_data.get('lastName')
+
+        
+        jobApplication.preferredName = cleaned_data.get('preferredName')
+        jobApplication.job = get_object_or_404(Job, pk=pk.pk)
+        jobApplication.save()
+
+        resume = Resume()
+        resume.fileName = cleaned_data.get('resume').name
+        resume.resume.upload_to = 'protected/application/' + pk.title + '/resume/' + uuid.uuid4().hex  + '/'
+        resume.resume = cleaned_data.get('resume')
+        resume.save()
+        resume.JobApplication.add(jobApplication)
+        resume.save()
+
+        coverLetter = CoverLetter()
+        coverLetter.fileName = cleaned_data.get('coverLetter').name
+        coverLetter.coverLetter.upload_to = 'protected/application/' + pk.title + '/coverletter/' + uuid.uuid4().hex + '/'
+        coverLetter.coverLetter = cleaned_data.get('coverLetter')
+        coverLetter.save()
+        coverLetter.JobApplication.add(jobApplication)
+        coverLetter.save()
+
+
+        for edu in self.educationFieldsNames:
+            education = Education()
+            education.institute = cleaned_data.get(edu['institute'])
+            education.title = cleaned_data.get(edu['title'])
+            education.period = cleaned_data.get(edu['period'])
+            education.description = cleaned_data.get(edu['description'])
+            education.save()
+            education.JobApplication.add(jobApplication)
+            education.save()
+
+        for exp in self.experienceFieldsNames:
+            experience = Experience()
+            experience.companyName = cleaned_data.get(exp['companyName'])
+            experience.title = cleaned_data.get(exp['title'])
+            experience.period = cleaned_data.get(exp['period'])
+            experience.description = cleaned_data.get(exp['description'])
+            experience.save()
+            experience.JobApplication.add(jobApplication)
+            experience.save()
+
+        for doc in self.documentsFieldsNames:
+            document = SupportingDocument()
+            document.fileName = cleaned_data.get(doc['name'])
+            document.document.upload_to  = 'protected/application/' + pk.title + '/supportingDocument/' + uuid.uuid4().hex  + '/'
+            document.document = cleaned_data.get(doc['file'])
+            document.save()

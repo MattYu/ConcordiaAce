@@ -68,6 +68,13 @@
               <div class="form-header">
                 <h5><i data-feather="edit"></i>Register Account</h5>
               </div>
+              {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                  {% for err in form.non_field_errors %}
+                    <p class="text-danger">{{ err }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
               <form method="POST" enctype="multipart/form-data">
               {% csrf_token %}       
                 {{form.registrationType}}
@@ -104,6 +111,70 @@
 
                 {% if form.is_type_selected %}
                 <br>
+                <br>
+                  {% if form.is_employer_selected %}
+                    <div class="basic-info-input">
+                      <h4><i data-feather="plus-circle"></i>About your company</h4>
+                    </div>
+                    {% if not form.isAllFieldSelected %}
+                      <div class="row"> 
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
+                        </div>
+                      </div>
+                    {% elif form.is_createCompany_selected %}
+                      <div class="row"> 
+                        <div class="col-md-6">
+                          <input type="submit" class="button secondary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
+                        </div>
+                      </div>
+                      <br>
+                      <div class="form-header">
+                        <h5><i data-feather="edit"></i>Please tell us more about your company</h5>
+                      </div>
+                      <div class="form-group">
+                        {{form.companyName}}
+                      </div>
+                      <div class="form-group">
+                        {{form.address}}
+                      </div>
+                      <div class="form-group">
+                        {{form.website}}
+                      </div>
+                      <div class="form-group">
+                        {{form.profile}}
+                      </div>
+                      <div class="form-group">
+                        {{form.image}}
+                      </div>
+                    {% else %}
+                      <div class="row"> 
+                        <div class="col-md-6">
+                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="button secondary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
+                        </div>
+                      </div>
+                      <br>
+                      <div class="form-header">
+                        <h5><i data-feather="edit"></i>Select your company from the list</h5>
+                      </div>
+                      <div class="form-group">
+                        {{form.company}}
+                      </div>                           
+                    {% endif %}
+                  <br>
+                  <br>
+                  {% endif %}      
+
+                <br>
                 <div class="basic-info-input">
                   <h4><i data-feather="plus-circle"></i>About you</h4>
                 </div>
@@ -125,67 +196,14 @@
                 <div class="form-group">
                   {{form.passwordConfirm}}
                 </div>
-                  {% if form.is_employer_selected %}
-
-                    <div class="basic-info-input">
-                      <h4><i data-feather="plus-circle"></i>About your company</h4>
-                    </div>
-                    {% if not form.isAllFieldSelected %}
-                    <div class="row"> 
-                      <div class="col-md-6">
-                        <input type="submit" class="button primary-bg btn-block" formnovalidate value="Existing Partner" name="existingpartner" id="existingpartner">
-                      </div>
-                      <div class="col-md-6">
-                        <input type="submit" class="button primary-bg btn-block" formnovalidate value="New Partner" name="newpartner" id="newpartner">
-                      </div>
-                    </div>
-                    {% elif form.is_createCompany_selected %}
-                    <div class="row"> 
-                      <div class="col-md-6">
-                        <input type="submit" class="button secondary-bg btn-block" formnovalidate value="Existing Partner" name="existingpartner" id="existingpartner">
-                      </div>
-                      <div class="col-md-6">
-                        <input type="submit" class="button primary-bg btn-block" formnovalidate value="New Partner" name="newpartner" id="newpartner">
-                      </div>
-                    </div>
-                    <br>
-                    <div class="form-header">
-                      <h5><i data-feather="edit"></i>Please tell us more about company</h5>
-                    </div>
-
-                    <div class="form-group">
-                      {{form.address}}
-                    </div>
-                    <div class="form-group">
-                      {{form.website}}
-                    </div>
-                    <div class="form-group">
-                      {{form.profile}}
-                    </div>
-                    <div class="form-group">
-                      {{form.image}}
-                    </div>
-                    {% else %}
-                    <div class="row"> 
-                      <div class="col-md-6">
-                        <input type="submit" class="button primary-bg btn-block" formnovalidate value="Existing Partner" name="existingpartner" id="existingpartner">
-                      </div>
-                      <div class="col-md-6">
-                        <input type="submit" class="button secondary-bg btn-block" formnovalidate value="New Partner" name="newpartner" id="newpartner">
-                      </div>
-                    </div>
-                    <br>
-                    <div class="form-header">
-                      <h5><i data-feather="edit"></i>Select your company</h5>
-                    </div>
-                    <div class="form-group">
-                      {{form.company}}
-                    </div>                           
-                    {% endif %}
-
-                  {% endif %}
                 {% endif %}
-
+                {% if form.non_field_errors %}
+                  <div class="non-field-errors">
+                    {% for err in form.non_field_errors %}
+                      <p class="text-danger">{{ err }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
                 {% if form.isAllFieldSelected %}
                 <div class="more-option terms">
                   <div class="mt-0 terms">

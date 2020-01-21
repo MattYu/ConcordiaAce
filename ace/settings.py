@@ -148,3 +148,11 @@ SENDFILE_BACKEND = 'sendfile.backends.development'
 SENDFILE_ROOT = os.path.join(BASE_DIR, 'protected')
 SENDFILE_URL = '/protected'
 
+# Email notification settings
+# SECURITY WARNING: Not prod ready. Do not used in prod
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'concordia.ace.coop@gmail.com'
+EMAIL_HOST_PASSWORD = 'aceconcordiadev'
+EMAIL_PORT = 587
+
