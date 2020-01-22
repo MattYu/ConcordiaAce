@@ -23,7 +23,7 @@
     <link rel="stylesheet" href={% static "assets/css/jquery.nstSlider.min.css" %} />
 
     <!-- Custom Css -->
-    <link rel="stylesheet" type={% static "text/css" %} href={% static "css/main.css" %}>
+    <link rel="stylesheet" type="text/css"  href={% static "css/main.css" %}>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
@@ -68,12 +68,13 @@
               <div class="form-header">
                 <h5><i data-feather="user"></i>Login</h5>
               </div>
-              <form action="#">
+              <form method="POST">
+              {% csrf_token %}
                 <div class="form-group">
-                  <input type="email" placeholder="Email Address" class="form-control">
+                  {{form.email}}
                 </div>
                 <div class="form-group">
-                  <input type="password" placeholder="Password" class="form-control">
+                  {{form.password}}
                 </div>
                 <div class="more-option">
                   <div class="mt-0 terms">

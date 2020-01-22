@@ -253,7 +253,7 @@
           <div class="col">
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper">
-                <form method="POST" class="dashboard-form job-post-form">
+                <form method="POST" enctype="multipart/form-data" class="dashboard-form job-post-form">
                   {% csrf_token %}
                   <div class="dashboard-section basic-info-input">
                     <h4><i data-feather="user-check"></i>Post A Job</h4>
@@ -501,6 +501,16 @@
                             <div class="form-group">
                               <textarea class="form-control" placeholder="Company Profile"></textarea>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <label class="col-md-3 col-form-label">PDF Job Description (optional)</label>
+                      <div class="col-md-9">
+                        <div class="row">
+                          <div class="col-md-6">
+                            {{form.descriptionFile}}
                           </div>
                         </div>
                       </div>

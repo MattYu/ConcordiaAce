@@ -3,7 +3,7 @@ from joblistings.models import Job
 from ace.constants import CATEGORY_CHOICES, MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, LOCATION_CHOICES
 from tinymce.widgets import TinyMCE
 from companies.models import Company
-from joblistings.models import Job
+from joblistings.models import Job, JobPDFDescription
 from django.shortcuts import get_object_or_404
 
 
@@ -75,6 +75,8 @@ class JobForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select Category'})
     )
 
+    descriptionFile = forms.FileField(required=False)
+
     class Meta:
         model = Job
         exclude = ('company',)
@@ -136,6 +138,12 @@ class JobForm(forms.Form):
         job.yourLocation = cleaned_data.get('yourLocation')
         job.company = get_object_or_404(Company, pk=cleaned_data.get('company'))
         job.save()
+
+        if cleaned_data.get('descriptionFile'):
+            jobPDFDescription = JobPDFDescription()
+            jobPDFDescription.job = job
+            jobPDFDescription.descriptionFile = cleaned_data.get('descriptionFile')
+            jobPDFDescription.save()
 
 
         return job

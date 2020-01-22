@@ -66,3 +66,17 @@ LOCATION_CHOICES = [
     ("Other-Asia", "Other- Asia"),
     ("Other", "Other"),
 ]
+
+UPLOADTO = '/prote'
+
+
+# Login/Registration
+USER_TYPE_CHOICES = (
+    (1, 'candidate'),
+    (2, 'employer'),
+    (3, 'admin'),
+    (4, 'super'),
+)
+
+USER_TYPE_EMPLOYER = 2
+USER_TYPE_CANDIDATE = 1

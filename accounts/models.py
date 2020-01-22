@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser , BaseUserManager, PermissionsMixin
 from ace.constants import MAX_LENGTH_STANDARDFIELDS
 from companies.models import Company
+from django.contrib.auth.models import UserManager
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six as six
@@ -16,19 +17,19 @@ class TokenGenerator(PasswordResetTokenGenerator):
 account_activation_token = TokenGenerator()
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, firstName, lastName, user_type, password=None):
+    def create_user(self, email, firstName, lastName, user_t, password=None):
         if not email:
             raise ValueError("User must have an email address")
         if not firstName or not lastName:
             raise ValueError("User must have a first and last name")
-        if not user_type:
+        if not user_t:
             raise ValueError("User must have an user type")
-
+        print(user_t)
         user = self.model(
-                email = email,
-                firstName = firstName,
-                lastName = lastName,
-                user_type = user_type,
+                email=email,
+                firstName=firstName,
+                lastName=lastName,
+                user_type=user_t,
         )
 
         user.set_password(password)
@@ -74,6 +75,8 @@ class User(AbstractBaseUser , PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['firstName', 'lastName', 'user_type']
+
+    objects = UserManager()
 
     object = MyUserManager()
 

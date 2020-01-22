@@ -1,8 +1,10 @@
 from django import forms
-from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS
-from accounts.models import User, Candidate, Employer, PreferredName
+from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
+from accounts.models import Candidate, Employer, PreferredName, MyUserManager
+from accounts.models import User
 from companies.models import Company
 from tinymce.widgets import TinyMCE
+from django.shortcuts import get_object_or_404
 
 class RegistrationForm(forms.Form):
     registrationType = forms.CharField(widget=forms.HiddenInput())
@@ -36,7 +38,7 @@ class RegistrationForm(forms.Form):
         companyType = kwargs.pop('employerCompany', None)
         super().__init__(*args, **kwargs)
 
-
+        print(User.objects.all())
         self.fields['registrationType'].initial =registrationType
         self.fields['employerCompany'].initial =companyType
         print(companyType)
@@ -91,72 +93,77 @@ class RegistrationForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-
+        User.objects.all()
         if self.is_createCompany_selected() and self.is_createCompany_selected():
             if not cleaned_data.get('image'):
                 raise forms.ValidationError('You have to upload a logo for your company')
 
         if cleaned_data.get('password') != cleaned_data.get('passwordConfirm'):
             raise forms.ValidationError('Passwords do not match')
-        #if User.objects.filter(email=cleaned_data.get('email')).count() != 0:
-            #raise forms.ValidationError('Email already in use')
+        if User.objects.filter(email=cleaned_data.get('email')).count() != 0:
+            raise forms.ValidationError('Email is already in use')
 
 
         self.cleaned_data = cleaned_data
 
-    def save(self, pk):
-
-        user = user()
+    def save(self):
+        self.clean()
         cleaned_data = self.cleaned_data
-        user.email = cleaned_data.get('email')
-        user.firstName = cleaned_data.get('firstName')
-        user.lastName = cleaned_data.get('lastName')
+        userManager = MyUserManager()
+        email = cleaned_data.get('email')
+        firstName = cleaned_data.get('firstName')
+        lastName = cleaned_data.get('lastName')
+        user_type = None
+        if self.is_employer_selected():
+            user_type = USER_TYPE_EMPLOYER
+        else:
+            user_type = USER_TYPE_CANDIDATE
+        password = cleaned_data.get('password')
+        print(user_type)
 
         
-        jobApplication.preferredName = cleaned_data.get('preferredName')
-        jobApplication.job = get_object_or_404(Job, pk=pk.pk)
-        jobApplication.save()
-
-        resume = Resume()
-        resume.fileName = cleaned_data.get('resume').name
-        resume.resume.upload_to = 'protected/application/' + pk.title + '/resume/' + uuid.uuid4().hex  + '/'
-        resume.resume = cleaned_data.get('resume')
-        resume.save()
-        resume.JobApplication.add(jobApplication)
-        resume.save()
-
-        coverLetter = CoverLetter()
-        coverLetter.fileName = cleaned_data.get('coverLetter').name
-        coverLetter.coverLetter.upload_to = 'protected/application/' + pk.title + '/coverletter/' + uuid.uuid4().hex + '/'
-        coverLetter.coverLetter = cleaned_data.get('coverLetter')
-        coverLetter.save()
-        coverLetter.JobApplication.add(jobApplication)
-        coverLetter.save()
+        user = User()
+        user.email = email
+        user.firstName = firstName
+        user.lastName = lastName
+        user.user_type = user_type
 
 
-        for edu in self.educationFieldsNames:
-            education = Education()
-            education.institute = cleaned_data.get(edu['institute'])
-            education.title = cleaned_data.get(edu['title'])
-            education.period = cleaned_data.get(edu['period'])
-            education.description = cleaned_data.get(edu['description'])
-            education.save()
-            education.JobApplication.add(jobApplication)
-            education.save()
+        user.set_password(password)
+        user.save()
+        
+        if cleaned_data.get('preferredName') != '' and cleaned_data.get('preferredName') !=None:
+            preferredName = PreferredName()
+            preferredName.user = user
+            preferredName.preferredName = cleaned_data.get('preferredName')
+            preferredName.save()
 
-        for exp in self.experienceFieldsNames:
-            experience = Experience()
-            experience.companyName = cleaned_data.get(exp['companyName'])
-            experience.title = cleaned_data.get(exp['title'])
-            experience.period = cleaned_data.get(exp['period'])
-            experience.description = cleaned_data.get(exp['description'])
-            experience.save()
-            experience.JobApplication.add(jobApplication)
-            experience.save()
+        if self.is_employer_selected:
+            employer = Employer()
+            employer.user = user
 
-        for doc in self.documentsFieldsNames:
-            document = SupportingDocument()
-            document.fileName = cleaned_data.get(doc['name'])
-            document.document.upload_to  = 'protected/application/' + pk.title + '/supportingDocument/' + uuid.uuid4().hex  + '/'
-            document.document = cleaned_data.get(doc['file'])
-            document.save()
+            if self.is_createCompany_selected:
+                company = Company()
+                company.name = cleaned_data.get('companyName')
+                company.address = cleaned_data.get('address')
+                company.website = cleaned_data.get('website')
+                company.profile = cleaned_data.get('profile')
+                company.image = cleaned_data.get('image')
+                company.save()
+                employer.company = company
+
+            else:
+                employer.company = get_object_or_404(Company, pk=cleaned_data.get('company'))
+        else:
+            candidate = Candidate()
+            candidate.user =user
+
+        return user
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
+                            )
+
+    password = forms.CharField(max_length=32, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))

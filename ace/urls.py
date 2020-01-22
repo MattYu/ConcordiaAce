@@ -19,9 +19,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from view import home_page
-from joblistings.views import job_details, post_job
+from joblistings.views import job_details, post_job, download_jobPDF
 from jobapplications.views import add_resume, download_test
-from accounts.views import register_user, logout_user
+from accounts.views import register_user, logout_user, login_user
 from django.urls import include
 
 urlpatterns = [
@@ -32,8 +32,10 @@ urlpatterns = [
     path('add-resume/<int:pk>/', add_resume),
     path('tinymce', include('tinymce.urls')),
     path('test/<int:pk>/', download_test),
+    path('jobDescription/<int:pk>/', download_jobPDF),
     path('register/', register_user),
     path('logout/', logout_user),
+    path('login/', login_user),
 ]
 
 if settings.DEBUG:
