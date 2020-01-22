@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from accounts.forms import RegistrationForm
+from accounts.forms import RegistrationForm, LoginForm
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 
@@ -31,13 +31,18 @@ def register_user(request):
         if form.is_valid():
             print("IT WORKS!!!!!!!!!!!!!!")
             
-            user = form.save()
+            form.save()
+            email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password')
+            user = authenticate(email=email, password=raw_password)
+            login(request, user)
+
             current_site = get_current_site(request)
             mail_subject = 'Activate your Concordia ACE account.'
             message = render_to_string('acc_active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk).decode()),
+                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
                 'token':account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
@@ -46,7 +51,8 @@ def register_user(request):
             )
             email.send()
             
- 
+            return HttpResponseRedirect('/')
+
     else:
         form = RegistrationForm(registrationType=None, employerCompany=None)
     context['form'] = form
@@ -55,7 +61,22 @@ def register_user(request):
 
 
 def login_user(request):
-    return render(request, "login.html")
+    if (request.method == 'POST'):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+
+            email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password')
+            user = authenticate(email=email, password=raw_password)
+            login(request, user)
+            return HttpResponseRedirect('/')
+
+    if request.user.is_authenticated:
+        return render(request, "404.html")
+
+    form = LoginForm()
+    context = {'form': form}
+    return render(request, "login.html", context)
 
 
 def logout_user(request):

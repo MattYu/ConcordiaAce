@@ -41,5 +41,9 @@ class Job(models.Model):
 
 #class Company(models.Model):
 
+class JobPDFDescription(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
+    descriptionFile = models.FileField(upload_to='company/jobDescription.', default="")
+
 
 
