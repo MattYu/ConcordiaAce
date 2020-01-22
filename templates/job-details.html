@@ -240,7 +240,7 @@
                 </div>
                 <div class="buttons">
                   <a class="save" href="#"><i data-feather="heart"></i>Save Job</a>
-                  <a class="apply" href="#" data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
+                  <a class="apply" href="/add-resume/{{pk}}" data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
                   {% if download %}
                     <a class="apply" href="/jobDescription/{{download}}" data-toggle="modal" data-target="#apply-popup-id">Download PDF Description</a>
                   {% endif %}
@@ -275,7 +275,7 @@
                       </ul>
                     </div>
                     <div class="job-apply-buttons">
-                      <a href="#" class="apply"  data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
+                      <a href="/add-resume/{{pk}}" class="apply"  data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
                       <a href="#" class="email"><i data-feather="mail"></i>Email Job</a>
                     </div>
                   </div>
@@ -410,7 +410,7 @@
                 </div>
                 <div class="more">
                   <div class="buttons">
-                    <a href="#" class="button">Apply Now</a>
+                    <a href="/add-resume/{{pk}}" class="button">Apply Now</a>
                     <a href="#" class="favourite"><i data-feather="heart"></i></a>
                   </div>
                   <p class="deadline">Deadline: Oct 31,  2019</p>
