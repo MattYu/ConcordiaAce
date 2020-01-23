@@ -17,19 +17,18 @@ class TokenGenerator(PasswordResetTokenGenerator):
 account_activation_token = TokenGenerator()
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, firstName, lastName, user_t, password=None):
+    def create_user(self, email, firstName, lastName, user_type, password=None):
         if not email:
             raise ValueError("User must have an email address")
         if not firstName or not lastName:
             raise ValueError("User must have a first and last name")
-        if not user_t:
+        if not user_type:
             raise ValueError("User must have an user type")
-        print(user_t)
         user = self.model(
                 email=email,
                 firstName=firstName,
                 lastName=lastName,
-                user_type=user_t,
+                user_type=user_type,
         )
 
         user.set_password(password)
@@ -76,7 +75,7 @@ class User(AbstractBaseUser , PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['firstName', 'lastName', 'user_type']
 
-    objects = UserManager()
+    objects = MyUserManager()
 
     object = MyUserManager()
 

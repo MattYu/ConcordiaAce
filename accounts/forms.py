@@ -142,8 +142,9 @@ class RegistrationForm(forms.Form):
             employer = Employer()
             employer.user = user
 
-            if self.is_createCompany_selected:
+            if self.is_createCompany_selected():
                 company = Company()
+                print('!!!!!!!!!!!!!!!!!!!test!!!!!!!!!!!!!!!')
                 company.name = cleaned_data.get('companyName')
                 company.address = cleaned_data.get('address')
                 company.website = cleaned_data.get('website')
@@ -153,7 +154,9 @@ class RegistrationForm(forms.Form):
                 employer.company = company
 
             else:
+                print('!!!!!!!!!!!!!!!!!!!here!!!!!!!!!!!!!!!')
                 employer.company = get_object_or_404(Company, pk=cleaned_data.get('company'))
+                print(employer.company)
         else:
             candidate = Candidate()
             candidate.user =user
