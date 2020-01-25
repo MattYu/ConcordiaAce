@@ -221,10 +221,12 @@
                             <input type="submit" class="add-new-field" formnovalidate value="+ Add Language" name="addLanguage" id="addLanguage">
                           </div>
                           {% endif %}
-                          {% if not forloop.first %} 
+                          {% if not forloop.first %}
+                          {% if not form.check_max_language_count%} 
                           <div class="col-md-3">
                             <input type="submit" class="add-new-field" formnovalidate value="+ Add" name="addLanguage" id="addLanguage">
                           </div>
+                          {% endif %}
                           <div class="col-md-9">
                             <input type="submit" class="add-new-field" formnovalidate value="- Remove language" name="removeLanguage" id="removeLanguage">
                           </div>

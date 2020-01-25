@@ -140,6 +140,10 @@ class RegistrationForm(forms.Form):
     def get_language_fields(self):
         return self.languageFields
 
+    def check_max_language_count(self):
+        return len(self.languageFields) >= 10
+
+
     def is_type_selected(self)-> bool:
         if self.fields['registrationType'].initial == 'employer' or self.fields['registrationType'].initial == 'candidate':
             return True
