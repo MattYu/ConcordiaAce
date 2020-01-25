@@ -25,7 +25,6 @@ def register_user(request):
             extra_language_count=request.POST.get('extra_language_count'),
             )
 
-        print(form.errors)
         if form.is_valid():
             
             form.save()

@@ -1,5 +1,5 @@
 from django import forms
-from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES
+from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO
 from accounts.models import Candidate, Employer, PreferredName, MyUserManager
 from accounts.models import User
 from companies.models import Company
@@ -86,6 +86,24 @@ class RegistrationForm(forms.Form):
                 for i in range(int(self.fields['extra_language_count'].initial)):
                     self.add_language(i)
 
+                self.fields['internationalStudent'] = forms.ChoiceField(
+                                                                    choices=YES_NO,
+                                                                    widget=forms.Select(attrs={'class': 'form-control'})
+                                                                )
+                
+                self.fields['travel'] = forms.ChoiceField(
+                                                                    choices=YES_NO,
+                                                                    widget=forms.Select(attrs={'class': 'form-control'})
+                                                                )
+
+                self.fields['timeCommitment'] = forms.ChoiceField(
+                                                                    choices=YES_NO,
+                                                                    widget=forms.Select(attrs={'class': 'form-control'})
+                                                                )
+
+                self.fields['transcript'] =   forms.FileField(required=False)
+
+
     def add_language(self, i:int = None):
         if i == None:
             i = len(self.languageFields)
@@ -153,14 +171,15 @@ class RegistrationForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         User.objects.all()
-        if self.is_createCompany_selected() and self.is_createCompany_selected():
-            if not cleaned_data.get('image'):
-                raise forms.ValidationError('You have to upload a logo for your company')
 
         if cleaned_data.get('password') != cleaned_data.get('passwordConfirm'):
             raise forms.ValidationError('Passwords do not match')
         if User.objects.filter(email=cleaned_data.get('email')).count() != 0:
             raise forms.ValidationError('Email is already in use')
+
+        if self.is_createCompany_selected() and self.is_createCompany_selected() and self.is_valid():
+            if not cleaned_data.get('image'):
+                raise forms.ValidationError('You have to upload a logo for your company')
 
 
         self.cleaned_data = cleaned_data

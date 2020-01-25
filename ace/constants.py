@@ -94,3 +94,8 @@ LANGUAGE_FLUENCY_CHOICES = (
     (80, "Full Working Proficiency"),
     (100, "Native or Bilingual Proficiency"),
 )
+
+YES_NO = (
+    ("No", "No"),
+    ("Yes", "Yes"),
+)
