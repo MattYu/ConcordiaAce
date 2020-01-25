@@ -79,6 +79,7 @@
               {% csrf_token %}       
                 {{form.registrationType}}
                 {{form.employerCompany}}
+                {{form.extra_language_count}}
                 {% if not form.is_type_selected %}
                 <div class="row"> 
                   <div class="col-md-6">
@@ -191,6 +192,76 @@
                   {{form.preferredName}}
                 </div>
                 <div class="form-group">
+                  {{form.phoneNumber}}
+                </div>
+                  {% if form.is_candidate_selected %}
+                    <div class="form-group">
+                      {{form.studentID}}
+                    </div>
+                    <div class="form-group">
+                      {{form.gpa}}
+                    </div>
+                    <div class="row" id = "LanguageFields">
+                    {% for language in form.get_language_fields %}
+                      <label class="col-md-3 col-form-label" name="edu_{{ forloop.counter }}">Language {{ forloop.counter }}</label>
+                      <div class="col-md-9" id>
+                        <div class="form-group">
+                          {{language.language}}
+                        </div>
+                        <div class="form-group">
+                          {{language.proficiency}}
+                        </div>
+                        <div class="form-group">
+                          {{language.details}}
+                        </div>
+                        {% if forloop.last %}
+                        <div class="row">
+                          {% if forloop.first %} 
+                          <div class="col-md-3">
+                            <input type="submit" class="add-new-field" formnovalidate value="+ Add Language" name="addLanguage" id="addLanguage">
+                          </div>
+                          {% endif %}
+                          {% if not forloop.first %}
+                          {% if not form.check_max_language_count%} 
+                          <div class="col-md-3">
+                            <input type="submit" class="add-new-field" formnovalidate value="+ Add" name="addLanguage" id="addLanguage">
+                          </div>
+                          {% endif %}
+                          <div class="col-md-9">
+                            <input type="submit" class="add-new-field" formnovalidate value="- Remove language" name="removeLanguage" id="removeLanguage">
+                          </div>
+                          {% endif %}
+                        </div>
+                        {% endif %}         
+                      </div>
+                    {% endfor %}
+                    </div>
+                    <div class="row" id = "LanguageFields">
+                      <br>
+                      <label>Are you an international student? (if so, you will be required to have a working VISA before the start of the internship, and for the total length of the internship)
+</label>
+                      {{form.internationalStudent}}
+                      <br>
+                      <br>
+                      <label>Are you willing to do an internship outside of the greater Montreal area (ex.  Mirabel, Quebec city, Ottawa or out of province)?</label>
+                      {{form.travel}}
+                      <br> 
+                      <br>
+                      <label>Are you willing to commit to a 12 or 16 month internship that will extend your graduation date by up to 1 year?</label>
+                      {{form.timeCommitment}}
+                      <br> 
+                      <br>
+                      <label>Please upload PDF of your unofficial transcript</label>
+                      {{form.transcript}}
+                      <br>
+                      <br>
+                      <br>                        
+                    </div>
+
+                  {% endif %}
+
+
+                <div class="form-group">
                   {{form.password}}
                 </div>
                 <div class="form-group">
@@ -277,6 +348,8 @@
     <script src={% static "js/map.js" %}></script>
     <script>
 
+      let form_language_count = Number($("[name=extra_language_count]").val());
+
       $(function() {
           var pos = localStorage.getItem('my-scroll-pos', 0);
           if (pos)
@@ -300,6 +373,26 @@
         }
     };
 
+    </script>
+
+    <script>
+  
+      $("#addLanguage").click(function() {
+          form_language_count ++;
+          localStorage.setItem('my-scroll-pos', $(window).scrollTop());
+
+          $("[name=extra_language_count]").val(form_language_count);
+
+          $("#addLanguage").animateHighlight("##6495ED", 1000)
+      })
+
+      $("#removeLanguage").click(function() {
+          form_language_count --;
+          localStorage.setItem('my-scroll-pos', $(window).scrollTop());
+
+          $("[name=extra_language_count]").val(form_language_count);
+          $("#removeLanguage").animateHighlight("##6495ED", 1000)
+      })
     </script>
     <!-- Select between candidate or employer button control-->
     <script>

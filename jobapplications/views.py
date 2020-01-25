@@ -5,12 +5,23 @@ from django_sendfile import sendfile
 import uuid
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
-
+from ace.constants import USER_TYPE_EMPLOYER
 #u = uuid.uuid4()
 #u.hex
 
 # Create your views here.
 def add_resume(request, pk= None, *args, **kwargs):
+    
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please login before applying to a job"
+        return HttpResponseRedirect('/login')
+    else:
+        if request.user.user_type == USER_TYPE_EMPLOYER:
+            request.session['info'] = "You are logged in as an employer. Only candidates can access this page"
+            return  HttpResponseRedirect('/')
+    
     instance = get_object_or_404(Job, pk=pk)
     context = {'job': instance}
     

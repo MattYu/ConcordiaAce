@@ -41,7 +41,7 @@ class ApplicationForm(forms.Form):
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'})
                                 )
     
-    preferredName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+    preferredName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS, required=False,
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Preferred First Name (optional)'})
                                 )
 

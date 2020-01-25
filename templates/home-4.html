@@ -26,6 +26,7 @@
 
     <!-- Custom Css -->
     <link rel="stylesheet" type="text/css" href={% static "css/main.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "dashboard/css/dashboard.css" %}>
 
     <!-- Fonts -->
     <link href= "https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
@@ -50,7 +51,6 @@
       {% get_navbar origin="main_page"%}
     </header>
     <!-- Header End -->
-    
     <!-- Banner -->
     <div class="banner banner-4 banner-4-bg">
       <div class="container">
@@ -92,7 +92,69 @@
       </div>
     </div>
     <!-- Banner End -->
+      <div class="container">
 
+        {% if success %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert success-alert">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{success}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if info %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert info-aler">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{info}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if warning %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert warning-alert">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{warning}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if danger %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert danger-alert">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{danger}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
     <!-- Explore Job -->
     <div class="section-padding-top padding-bottom-90">
       <div class="container">

@@ -16,7 +16,8 @@ def job_details(request, pk=None, *args, **kwargs):
     instance = get_object_or_404(Job, pk=pk)
 
     context = {
-        'object': instance
+        'object': instance,
+        'pk': pk
     }
 
     jobPDF = JobPDFDescription.objects.filter(job=pk)

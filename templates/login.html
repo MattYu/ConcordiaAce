@@ -24,6 +24,7 @@
 
     <!-- Custom Css -->
     <link rel="stylesheet" type="text/css"  href={% static "css/main.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "dashboard/css/dashboard.css" %}>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
@@ -62,6 +63,68 @@
 
     <div class="padding-top-90 padding-bottom-90 access-page-bg">
       <div class="container">
+
+        {% if success %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert success-alert">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{success}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if info %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert info-aler">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{info}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if warning %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert warning-alert">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{warning}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if danger %}
+        <div class="dashboard-content-wrapper">
+          <div class="alert-wrap">
+            <div class="jy-alert danger-alert">
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <p>{{danger}}</p>
+              <div class="close_">
+                <a href=""><i class="fas fa-times"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
         <div class="row">
           <div class="col-xl-4 col-md-6">
             <div class="access-form">
@@ -93,7 +156,7 @@
                   <a href="#" class="facebook"><i class="fab fa-facebook-f"></i>Facebook</a>
                   <a href="#" class="google"><i class="fab fa-google"></i>Google</a>
                 </div>
-                <p>Don't have an account? <a href="register.html">Register</a></p>
+                <p>Don't have an account? <a href="/register">Register</a></p>
               </div>
             </div>
           </div>

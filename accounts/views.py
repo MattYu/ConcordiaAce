@@ -17,19 +17,15 @@ def register_user(request):
     context = {}
     
     if (request.method == 'POST'):
-        print(request.POST)
-        print("^^^^^^^^^^^^")
-        print(request.POST.get('employerCompany'))
         form = RegistrationForm(
             request.POST, 
             request.FILES,
             registrationType=request.POST.get('registrationType'),
-            employerCompany=request.POST.get('employerCompany')
+            employerCompany=request.POST.get('employerCompany'),
+            extra_language_count=request.POST.get('extra_language_count'),
             )
 
-        print(form.errors)
         if form.is_valid():
-            print("IT WORKS!!!!!!!!!!!!!!")
             
             form.save()
             email = form.cleaned_data.get('email')
@@ -54,7 +50,10 @@ def register_user(request):
             return HttpResponseRedirect('/')
 
     else:
-        form = RegistrationForm(registrationType=None, employerCompany=None)
+        form = RegistrationForm(registrationType=None, employerCompany=None, extra_language_count=1)
+
+    if request.user.is_authenticated:
+        return render(request, "404.html")
     context['form'] = form
 
     return render(request, "register.html", context)
@@ -69,16 +68,52 @@ def login_user(request):
             raw_password = form.cleaned_data.get('password')
             user = authenticate(email=email, password=raw_password)
             login(request, user)
+
+            if 'redirect' in request.session:
+                redirect = request.session['redirect']
+                del request.session['redirect']
+                return HttpResponseRedirect(redirect)
+
             return HttpResponseRedirect('/')
 
     if request.user.is_authenticated:
         return render(request, "404.html")
 
+
     form = LoginForm()
     context = {'form': form}
+
+    if 'warning' in request.session:
+        context['warning'] = request.session['warning']
+        del request.session['warning']
+    if 'success' in request.session:
+        context['success'] = request.session['success']
+        del request.session['success']
+    if 'info' in request.session:
+        context['info'] = request.session['info']
+        del request.session['info']
+    if 'danger' in request.session:
+        context['danger'] = request.session['danger']
+        del request.session['danger']
+
     return render(request, "login.html", context)
 
 
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_email_confirmed = True
+        user.save()
+        login(request, user)
+        # return redirect('home')
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')

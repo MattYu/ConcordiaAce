@@ -80,3 +80,22 @@ USER_TYPE_CHOICES = (
 
 USER_TYPE_EMPLOYER = 2
 USER_TYPE_CANDIDATE = 1
+
+LANGUAGE_CHOICES = (
+    ("English", "English"),
+    ("French", "French"),
+    ("Other", "Other (Please specify below)"),
+)
+
+LANGUAGE_FLUENCY_CHOICES = (
+    (0, "Elementary Proficiency"),
+    (35, "Limited Working Proficiency"),
+    (60, "Professional Working Proficiency"),
+    (80, "Full Working Proficiency"),
+    (100, "Native or Bilingual Proficiency"),
+)
+
+YES_NO = (
+    ("No", "No"),
+    ("Yes", "Yes"),
+)

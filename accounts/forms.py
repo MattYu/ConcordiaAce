@@ -1,5 +1,5 @@
 from django import forms
-from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
+from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO
 from accounts.models import Candidate, Employer, PreferredName, MyUserManager
 from accounts.models import User
 from companies.models import Company
@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 class RegistrationForm(forms.Form):
     registrationType = forms.CharField(widget=forms.HiddenInput())
     employerCompany = forms.CharField(widget=forms.HiddenInput())
+    extra_language_count = forms.IntegerField(widget=forms.HiddenInput())
 
     email = forms.EmailField(max_length=MAX_LENGTH_STANDARDFIELDS,
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
@@ -30,18 +31,23 @@ class RegistrationForm(forms.Form):
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Preferred First Name (optional)'})
                                 )
 
+    phoneNumber = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone number'})
+                            )
+
     class Meta:
         model = User
 
     def __init__(self, *args, **kwargs):
         registrationType = kwargs.pop('registrationType', None)
         companyType = kwargs.pop('employerCompany', None)
+        extra_language_fields = kwargs.pop('extra_language_count', 1)
         super().__init__(*args, **kwargs)
-
-        print(User.objects.all())
+        self.fields['extra_language_count'].initial = max(min(int(extra_language_fields), 10),1)
         self.fields['registrationType'].initial =registrationType
         self.fields['employerCompany'].initial =companyType
-        print(companyType)
+        self.languageFields = []
+        self.languageFieldsNames = []
 
         if (registrationType == "employer"):
             if (companyType == 'createNew'):
@@ -62,6 +68,81 @@ class RegistrationForm(forms.Form):
                 for obj in company:
                     company_choices.append((obj.pk, obj))
                 self.fields['company'].choices = company_choices
+
+        if (registrationType == "candidate"):
+                self.fields['studentID'] = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Student ID'})
+                                        )
+                self.fields['creditCompleted'] = forms.IntegerField(
+                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Credits Completed'})
+                                        )
+                self.fields['creditLeft'] = forms.IntegerField(
+                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Credits left'})
+                                        )
+                
+                self.fields['gpa'] = forms.FloatField(
+                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Cumulative GPA'})
+                                        )
+                for i in range(int(self.fields['extra_language_count'].initial)):
+                    self.add_language(i)
+
+                self.fields['internationalStudent'] = forms.ChoiceField(
+                                                                    choices=YES_NO,
+                                                                    widget=forms.Select(attrs={'class': 'form-control'})
+                                                                )
+                
+                self.fields['travel'] = forms.ChoiceField(
+                                                                    choices=YES_NO,
+                                                                    widget=forms.Select(attrs={'class': 'form-control'})
+                                                                )
+
+                self.fields['timeCommitment'] = forms.ChoiceField(
+                                                                    choices=YES_NO,
+                                                                    widget=forms.Select(attrs={'class': 'form-control'})
+                                                                )
+
+                self.fields['transcript'] =   forms.FileField(required=False)
+
+
+    def add_language(self, i:int = None):
+        if i == None:
+            i = len(self.languageFields)
+        print(i)
+        field_name = '_language_%s' % (i,)
+        languageDict = {}
+        lanNameDict = {}
+
+        self.fields['language' + field_name] = forms.ChoiceField(
+                                                                    choices=LANGUAGE_CHOICES,
+                                                                    widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Language'})
+                                                                )
+        languageDict['language'] = self['language' + field_name]
+        lanNameDict['language'] = 'language' + field_name
+        self.fields['proficiency' + field_name] = forms.ChoiceField(
+                                                                    choices=LANGUAGE_FLUENCY_CHOICES,
+                                                                    widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Proficiency'})
+                                                                )
+        languageDict['proficiency'] = self['proficiency' + field_name]
+        lanNameDict['proficiency'] = 'proficiency' + field_name
+        self.fields['details' + field_name] = forms.CharField(      
+                                                                    required= False,
+                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Details (optional)'})
+                                                            )
+        languageDict['details'] = self['details' + field_name]
+        lanNameDict['details'] = 'details' + field_name
+        
+        self.languageFields.append(languageDict)
+        self.languageFieldsNames.append(lanNameDict)
+
+        return languageDict
+                
+    def get_language_fields(self):
+        return self.languageFields
+
+    def check_max_language_count(self):
+        return len(self.languageFields) >= 10
+
 
     def is_type_selected(self)-> bool:
         if self.fields['registrationType'].initial == 'employer' or self.fields['registrationType'].initial == 'candidate':
@@ -94,14 +175,15 @@ class RegistrationForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         User.objects.all()
-        if self.is_createCompany_selected() and self.is_createCompany_selected():
-            if not cleaned_data.get('image'):
-                raise forms.ValidationError('You have to upload a logo for your company')
 
         if cleaned_data.get('password') != cleaned_data.get('passwordConfirm'):
             raise forms.ValidationError('Passwords do not match')
         if User.objects.filter(email=cleaned_data.get('email')).count() != 0:
             raise forms.ValidationError('Email is already in use')
+
+        if self.is_createCompany_selected() and self.is_createCompany_selected() and self.is_valid():
+            if not cleaned_data.get('image'):
+                raise forms.ValidationError('You have to upload a logo for your company')
 
 
         self.cleaned_data = cleaned_data
@@ -138,11 +220,11 @@ class RegistrationForm(forms.Form):
             preferredName.preferredName = cleaned_data.get('preferredName')
             preferredName.save()
 
-        if self.is_employer_selected:
+        if self.is_employer_selected():
             employer = Employer()
             employer.user = user
 
-            if self.is_createCompany_selected:
+            if self.is_createCompany_selected():
                 company = Company()
                 company.name = cleaned_data.get('companyName')
                 company.address = cleaned_data.get('address')
