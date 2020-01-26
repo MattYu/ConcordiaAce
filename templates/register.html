@@ -120,10 +120,10 @@
                     {% if not form.isAllFieldSelected %}
                       <div class="row"> 
                         <div class="col-md-6">
-                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
+                          <input type="submit" class="button secondary-bg btn-block" formnovalidate value="Existing ACE Partner" name="existingpartner" id="existingpartner">
                         </div>
                         <div class="col-md-6">
-                          <input type="submit" class="button primary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
+                          <input type="submit" class="button secondary-bg btn-block" formnovalidate value="New to ACE" name="newpartner" id="newpartner">
                         </div>
                       </div>
                     {% elif form.is_createCompany_selected %}
@@ -152,6 +152,8 @@
                         {{form.profile}}
                       </div>
                       <div class="form-group">
+                        <br>
+                        <label>Please upload your company logo</label>
                         {{form.image}}
                       </div>
                     {% else %}
@@ -200,6 +202,12 @@
                     </div>
                     <div class="form-group">
                       {{form.gpa}}
+                    </div>
+                    <div class="form-group">
+                      {{form.creditCompleted}}
+                    </div>
+                    <div class="form-group">
+                      {{form.creditLeft}}
                     </div>
                     <div class="row" id = "LanguageFields">
                     {% for language in form.get_language_fields %}

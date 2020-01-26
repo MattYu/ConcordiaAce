@@ -5,7 +5,7 @@ from django_sendfile import sendfile
 import uuid
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
-from ace.constants import USER_TYPE_EMPLOYER
+from ace.constants import USER_TYPE_EMPLOYER, USER_TYPE_CANDIDATE
 #u = uuid.uuid4()
 #u.hex
 
@@ -36,7 +36,8 @@ def add_resume(request, pk= None, *args, **kwargs):
         #request.session['form'] = form.as_p()
         if form.is_valid():
             form.clean()
-            form.save(instance)
+            jobApplication = form.save(instance, request.user)
+
             return HttpResponseRedirect('/')
     else:
         form = ApplicationForm(extra_edu_count=1, extra_exp_count=1, extra_doc_count=0)
