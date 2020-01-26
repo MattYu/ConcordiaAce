@@ -1,15 +1,15 @@
 from django import forms
 from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO
 from accounts.models import Candidate, Employer, PreferredName, MyUserManager
-from accounts.models import User
+from accounts.models import User, Language
 from companies.models import Company
 from tinymce.widgets import TinyMCE
 from django.shortcuts import get_object_or_404
 
 class RegistrationForm(forms.Form):
-    registrationType = forms.CharField(widget=forms.HiddenInput())
-    employerCompany = forms.CharField(widget=forms.HiddenInput())
-    extra_language_count = forms.IntegerField(widget=forms.HiddenInput())
+    registrationType = forms.CharField(widget=forms.HiddenInput(), required=False)
+    employerCompany = forms.CharField(widget=forms.HiddenInput(), required=False)
+    extra_language_count = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     email = forms.EmailField(max_length=MAX_LENGTH_STANDARDFIELDS,
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
@@ -73,10 +73,10 @@ class RegistrationForm(forms.Form):
                 self.fields['studentID'] = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
                                         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Student ID'})
                                         )
-                self.fields['creditCompleted'] = forms.IntegerField(
+                self.fields['creditCompleted'] = forms.FloatField(
                                         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Credits Completed'})
                                         )
-                self.fields['creditLeft'] = forms.IntegerField(
+                self.fields['creditLeft'] = forms.FloatField(
                                         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Credits left'})
                                         )
                 
@@ -126,7 +126,7 @@ class RegistrationForm(forms.Form):
         lanNameDict['proficiency'] = 'proficiency' + field_name
         self.fields['details' + field_name] = forms.CharField(      
                                                                     required= False,
-                                                                    max_length=MAX_LENGTH_STANDARDFIELDS,
+                                                                    max_length=25,
                                                                     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Details (optional)'})
                                                             )
         languageDict['details'] = self['details' + field_name]
@@ -185,6 +185,9 @@ class RegistrationForm(forms.Form):
             if not cleaned_data.get('image'):
                 raise forms.ValidationError('You have to upload a logo for your company')
 
+        if self.is_candidate_selected() and self.is_valid():
+            if not cleaned_data.get('transcript'):
+                raise forms.ValidationError('You have to upload a transcript')
 
         self.cleaned_data = cleaned_data
 
@@ -236,9 +239,28 @@ class RegistrationForm(forms.Form):
 
             else:
                 employer.company = get_object_or_404(Company, pk=cleaned_data.get('company'))
+
+            employer.save()
         else:
             candidate = Candidate()
             candidate.user =user
+            candidate.studentID = cleaned_data.get('studentID')
+            candidate.creditCompleted = cleaned_data.get('creditCompleted')
+            candidate.creditLeft = cleaned_data.get('creditLeft')
+            candidate.gpa = cleaned_data.get('gpa')
+            candidate.internationalStudent = cleaned_data.get('internationalStudent')
+            candidate.travel = cleaned_data.get('travel')
+            candidate.timeCommitment = cleaned_data.get('timeCommitment')
+            candidate.transcript = cleaned_data.get('transcript')
+            candidate.save()
+
+            for lan in self.languageFieldsNames:
+                language = Language()
+                language.language = cleaned_data.get(lan['language'])
+                language.fluency = cleaned_data.get(lan['proficiency'])
+                language.details = cleaned_data.get(lan['details'])
+                language.user = user
+                language.save()
 
         return user
 

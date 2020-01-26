@@ -2,7 +2,7 @@ from django.db import models
 from companies.models import Company
 from tinymce import models as tinymce_models
 from ace.constants import MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, CATEGORY_CHOICES, LOCATION_CHOICES
-
+from accounts.models import Employer
 
 # Create your models here.
 class Job(models.Model):
@@ -44,6 +44,17 @@ class Job(models.Model):
 class JobPDFDescription(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
     descriptionFile = models.FileField(upload_to='company/jobDescription.', default="")
+
+    def __str__(self):
+        return self.job.title
+
+class JobAccessPermission(models.Model):
+    employer = models.ManyToManyField(Employer)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
+
+    def __str__(self):
+        return self.job.title
+    
 
 
 

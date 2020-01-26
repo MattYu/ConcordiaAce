@@ -4,10 +4,11 @@ from django import forms
 from django.http import HttpResponseRedirect
 
 
-
-from joblistings.models import Job, JobPDFDescription
+from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
+from joblistings.models import Job, JobPDFDescription, JobAccessPermission
 from joblistings.forms import JobForm
 from companies.models import Company
+from accounts.models import Employer
 from django_sendfile import sendfile
 
 # Create your views here.
@@ -28,11 +29,31 @@ def job_details(request, pk=None, *args, **kwargs):
     return render(request, "job-details.html", context)
 
 def post_job(request,  *args, **kwargs):
+
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please register with ACE first"
+        return HttpResponseRedirect('/login')
+    else:
+        if request.user.user_type == USER_TYPE_CANDIDATE:
+            request.session['info'] = "You are logged in as a candidate. Only employers can access this page"
+            return  HttpResponseRedirect('/')
+
     if (request.method == "POST"):
         form = JobForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             form.clean()
             job = form.save()
+
+            if request.user.user_type == USER_TYPE_EMPLOYER:
+                jobAccessPermission = JobAccessPermission()
+                jobAccessPermission.job = job
+                jobAccessPermission.save()
+                print(request.user)
+                print(request.user.pk)
+                jobAccessPermission.employer.add(Employer.objects.get(user=request.user))
+                
 
             job_pk = job.pk
             

@@ -193,7 +193,7 @@ class ApplicationForm(forms.Form):
 
         self.cleaned_data = cleaned_data
 
-    def save(self, pk):
+    def save(self, pk, user):
 
         jobApplication = JobApplication()
         cleaned_data = self.cleaned_data
@@ -201,6 +201,7 @@ class ApplicationForm(forms.Form):
         jobApplication.lastName = cleaned_data.get('lastName')
         jobApplication.preferredName = cleaned_data.get('preferredName')
         jobApplication.job = get_object_or_404(Job, pk=pk.pk)
+        jobApplication.candidate = user
         jobApplication.save()
 
         resume = Resume()
@@ -248,7 +249,7 @@ class ApplicationForm(forms.Form):
             document.save()
 
 
-
+        return jobApplication
         '''
         firstName
         lastName

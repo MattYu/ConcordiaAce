@@ -1,6 +1,7 @@
 from django.db import models
 from ace.constants import CATEGORY_CHOICES, MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_STANDARDTEXTAREA, MAX_LENGTH_LONGSTANDARDFIELDS
 from joblistings.models import Job
+from accounts.models import Candidate, User
 from tinymce import models as tinymce_models
 
 # Create your models here.
@@ -16,9 +17,13 @@ class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
     #skillList = models.CharField(max_length = MAX_LENGTH_LONGSTANDARDFIELDS,  default= "")
     #aboutYou = tinymce_models.HTMLField(max_length = MAX_LENGTH_STANDARDTEXTAREA, default= "")
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.job.title + ' - ' + self.candidate.email
 
 class Education(models.Model):
     institute = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")

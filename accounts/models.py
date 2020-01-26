@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser , BaseUserManager, PermissionsMixin
-from ace.constants import MAX_LENGTH_STANDARDFIELDS
+from ace.constants import MAX_LENGTH_STANDARDFIELDS, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO
 from companies.models import Company
 from django.contrib.auth.models import UserManager
 
@@ -91,12 +91,37 @@ class User(AbstractBaseUser , PermissionsMixin):
 class Candidate(models.Model):
 
     studentID = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+    creditCompleted = models.FloatField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= 0)
+    creditLeft = models.FloatField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= 0)
+    gpa = models.FloatField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= 0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
+    internationalStudent = models.CharField(choices=YES_NO, max_length = 3, default="No")
+    travel = models.CharField(choices=YES_NO, max_length = 3, default="No")
+    timeCommitment = models.CharField(choices=YES_NO, max_length = 3, default="No")
+    transcript = models.FileField(upload_to='candidate/transcript/', default="")
+
+    def __str__(self):
+        return self.user.email
 
 class Employer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
     company = models.ForeignKey(Company, on_delete=models.CASCADE, default= "")
 
+    def __str__(self):
+        return self.user.email
+
 class PreferredName(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
     preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+
+    def __str__(self):
+        return self.user.email
+
+class Language(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    language = models.CharField(choices=LANGUAGE_CHOICES, max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+    fluency = models.CharField(choices=LANGUAGE_FLUENCY_CHOICES, max_length = MAX_LENGTH_STANDARDFIELDS,default= "")
+    details = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
+
+    def __str__(self):
+        return self.user.email
