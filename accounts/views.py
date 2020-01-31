@@ -67,7 +67,14 @@ def login_user(request):
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password')
             user = authenticate(email=email, password=raw_password)
+
+            if not user:
+                request.session['warning'] = "Wrong email or password entered"
+                context = {'form': form}
+                return  HttpResponseRedirect('/login')
+
             login(request, user)
+
 
             if 'redirect' in request.session:
                 redirect = request.session['redirect']
