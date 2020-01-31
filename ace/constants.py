@@ -99,3 +99,33 @@ YES_NO = (
     ("No", "No"),
     ("Yes", "Yes"),
 )
+
+# Job applications
+
+JOB_APPLICATION_STATUS = (
+    ("Pending", "Pending Coop Review"),
+    ("Submitted", "Submitted to Employer"),
+    ("Interviewing", "Selected for Interview"),
+    ("Not Selected", "Not Selected"),
+    ("Ranked", "Ranked by Employer"),
+    ("Matched", "Matched"),
+    ("Closed", "Closed"),
+)
+
+# Company
+
+COMPANY_STATUS = (
+    ("Pending", "Pending Coop Review"),
+    ("Approved", "Approved"),
+    ("Not Approved", "Not Approved"),
+)
+
+# Job 
+JOB_STATUS = (
+    ("Pending", "Pending Coop Review"),
+    ("Waiting", "Collecting applications"),
+    ("Review", "Open for Review"),
+    ("Interviewing", "Intervierwing"),
+    ("Not Approved", "Not Approved"),
+    ("Closed", "Closed")
+)

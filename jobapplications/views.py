@@ -48,3 +48,37 @@ def add_resume(request, pk= None, *args, **kwargs):
 def download_test(request, pk):
     download = get_object_or_404(Job, pk=pk)
     return sendfile(request, download.company.image.path)
+
+
+def browse_job_applications(request):
+
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please login before applying to a job"
+        return HttpResponseRedirect('/login')
+
+
+    
+
+    return render(request, "dashboard-manage-applications.html")
+
+
+def view_application_details(request, pk):
+    context = {}
+
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please login before applying to a job"
+        return HttpResponseRedirect('/login')
+
+     if request.user.user_type == USER_TYPE_EMPLOYER:
+
+        jobsWithPermission = Job.objects.filter(JobAccessPermission__employer=request.user)
+
+
+        jobApplications.objects.filter(job=jobsWithPermission)
+
+
+    return render(request, "dashboard-manage-applications.html")
