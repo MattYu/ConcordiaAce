@@ -27,6 +27,7 @@
 - six
 
 -matching==1.1
+-weasyprint
 
 
 # Dev installation
@@ -61,6 +62,7 @@
    - pip install django-file-resubmit
    - pip install six
    - pip install matching
+   - pip install weasyprint
   
 7) Run server. Go to Ace folder.
   - python manage.py makemigrations
