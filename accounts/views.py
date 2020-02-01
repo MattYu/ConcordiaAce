@@ -3,6 +3,7 @@ from accounts.forms import RegistrationForm, LoginForm
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -11,8 +12,10 @@ from django.template.loader import render_to_string
 from accounts.models import account_activation_token, User
 from django.core.mail import EmailMessage
 
+from .decorators import check_recaptcha
 
 # Create your views here.
+@check_recaptcha
 def register_user(request):
     context = {}
     
@@ -25,7 +28,7 @@ def register_user(request):
             extra_language_count=request.POST.get('extra_language_count'),
             )
         print(form.errors)
-        if form.is_valid():
+        if form.is_valid() and request.recaptcha_is_valid:
             
             form.save()
             email = form.cleaned_data.get('email')
@@ -46,8 +49,9 @@ def register_user(request):
                         mail_subject, message, to=[to_email]
             )
             email.send()
-            
+            messages.success(request, 'Candidate account created!')
             return HttpResponseRedirect('/')
+
 
     else:
         form = RegistrationForm(registrationType=None, employerCompany=None, extra_language_count=1)
