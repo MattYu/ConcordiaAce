@@ -32,6 +32,8 @@
 
 -requests
 
+- pypdf2
+
 
 # Dev installation
 1) Install git
