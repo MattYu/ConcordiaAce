@@ -76,6 +76,7 @@
       - User type = 4
   - python manage.py runserver
 
+8) Push your branch. When ready to merge, make a pull request. Please never merge directly into master. 
   
 
 # Commands
