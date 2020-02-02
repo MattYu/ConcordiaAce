@@ -8,9 +8,7 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
 from ace.constants import USER_TYPE_EMPLOYER, USER_TYPE_CANDIDATE
 from django.contrib.sites.shortcuts import get_current_site
-from weasyprint import HTML
 from django.http import HttpResponse
-from urllib3 import PoolManager
 from io import BytesIO, StringIO
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import requests
