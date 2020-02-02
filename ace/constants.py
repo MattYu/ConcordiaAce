@@ -130,3 +130,10 @@ JOB_STATUS = (
     ("Not Approved", "Not Approved"),
     ("Closed", "Closed")
 )
+
+# Download
+
+FILE_TYPE_RESUME = 1
+FILE_TYPE_COVER_LETTER = 2
+FILE_TYPE_TRANSCRIPT = 3
+FILE_TYPE_OTHER = 4
