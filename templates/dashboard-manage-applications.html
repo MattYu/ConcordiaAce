@@ -1,4 +1,5 @@
 <!doctype html>
+{% load static %}
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -8,36 +9,36 @@
     <title>Oficiona</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href={% static "assets/css/bootstrap.min.css" %}>
 
     <!-- External Css -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="assets/css/themify-icons.css" />
-    <link rel="stylesheet" href="assets/css/et-line.css" />
-    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css" />
-    <link rel="stylesheet" href="assets/css/plyr.css" />
-    <link rel="stylesheet" href="assets/css/flag.css" />
-    <link rel="stylesheet" href="assets/css/slick.css" /> 
-    <link rel="stylesheet" href="assets/css/owl.carousel.min.css" />
-    <link rel="stylesheet" href="assets/css/jquery.nstSlider.min.css" />
+    <link rel="stylesheet" href={% static "assets/css/fontawesome-all.min.css" %}>
+    <link rel="stylesheet" href={% static "assets/css/themify-icons.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/et-line.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/bootstrap-select.min.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/plyr.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/flag.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/slick.css" %} /> 
+    <link rel="stylesheet" href={% static "assets/css/owl.carousel.min.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/jquery.nstSlider.min.css" %} />
 
     <!-- Custom Css -->
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="dashboard/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href={% static "css/main.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "dashboard/css/dashboard.css" %}>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="icon" href="images/favicon.png">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/icon-114x114.png">
+    <link rel="icon" href={% static "images/favicon.png">
+    <link rel="apple-touch-icon" href={% static "images/apple-touch-icon.png" %}>
+    <link rel="apple-touch-icon" sizes="72x72" href={% static "images/icon-72x72.png" %}>
+    <link rel="apple-touch-icon" sizes="114x114" href={% static "images/icon-114x114.png" %}>
 
 
     <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.min.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src={% static "assets/js/html5shiv.min.js" %}></script>
+    <script src={% static "assets/js/respond.min.js" %}></script>
     <![endif]-->
 
   </head>
@@ -282,6 +283,30 @@
                         </td>
                       </tr>
                       <tr class="candidates-list">
+                        {% if jobApplications %}
+                          {% for application in jobApplications %}
+                          <td class="title">
+                            <div class="thumb">
+                              <img src={{application.job.company.image.url}} class="img-fluid" alt="">
+                            </div>
+                            <div class="body">
+                              <h5><a href="#">{{application.firstName}} {{application.lastName}}</a></h5>
+                              <div class="info">
+                                <span class="designation"><a href="#"><i data-feather="check-square"></i>{{application.job.title}}</a></span>
+                                <span class="location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="status"><i data-feather="check-circle"></i>Shortlisted</td>
+                          <td class="action">
+                            <a href="#" class="download"><i data-feather="download"></i></a>
+                            <a href="#" class="inbox"><i data-feather="mail"></i></a>
+                            <a href="#" class="remove"><i data-feather="trash-2"></i></a>
+                          </td>
+                        </tr>
+                          {% endfor %}
+
+                        {% endif %}
                         <td class="title">
                           <div class="thumb">
                             <img src="dashboard/images/user-2.jpg" class="img-fluid" alt="">
@@ -355,6 +380,106 @@
                       </div>
                     </nav>                
                   </div>
+                </div>
+              </div>
+                            <div class="job-filter-wrapper">
+                <div class="selected-options same-pad">
+                  <div class="selection-title">
+                    <h4>You Selected</h4>
+                    <a href="#">Clear All</a>
+                  </div>
+                  <ul class="filtered-options">
+                  </ul>
+                </div>
+                <div class="job-filter-dropdown same-pad category">
+                  <select class="selectpicker">
+                    <option value="" selected>Category</option>
+                    <option value="california">Accounting / Finance</option>
+                    <option value="california">Education</option>
+                    <option value="california">Design &amp; Creative</option>
+                    <option value="california">Health Care</option>
+                    <option value="california">Engineer &amp; Architects</option>
+                    <option value="california">Marketing &amp; Sales</option>
+                    <option value="california">Garments / Textile</option>
+                    <option value="california">Customer Support</option>
+                    <option value="california">Digital Media</option>
+                    <option value="california">Telecommunication</option>
+                  </select>
+                </div>
+                <div class="job-filter-dropdown same-pad location">
+                  <select class="selectpicker">
+                    <option value="" selected>Location</option>
+                    <option value="california">Chicago</option>
+                    <option value="california">New York City</option>
+                    <option value="california">San Francisco</option>
+                    <option value="california">Washington</option>
+                    <option value="california">Boston</option>
+                    <option value="california">Los Angeles</option>
+                    <option value="california">Seattle</option>
+                    <option value="california">Las Vegas</option>
+                    <option value="california">San Diego</option>
+                  </select>
+                </div>
+                <div data-id="job-type" class="job-filter job-type same-pad">
+                  <h4 class="option-title">Job Type</h4>
+                  <ul>
+                    <li class="full-time"><i data-feather="clock"></i><a href="#" data-attr="Full Time">Full Time</a></li>
+                    <li class="part-time"><i data-feather="clock"></i><a href="#" data-attr="Part Time">Part Time</a></li>
+                    <li class="freelance"><i data-feather="clock"></i><a href="#" data-attr="Freelance">Freelance</a></li>
+                    <li class="temporary"><i data-feather="clock"></i><a href="#" data-attr="Temporary">Temporary</a></li>
+                  </ul>
+                </div>
+                <div data-id="experience" class="job-filter experience same-pad">
+                  <h4 class="option-title">Experience</h4>
+                  <ul>
+                    <li><a href="#" data-attr="Fresh">Fresh</a></li>
+                    <li><a href="#" data-attr="Less than 1 year">Less than 1 year</a></li>
+                    <li><a href="#" data-attr="2 Year">2 Year</a></li>
+                    <li><a href="#" data-attr="3 Year">3 Year</a></li>
+                    <li><a href="#" data-attr="4 Year">4 Year</a></li>
+                    <li><a href="#" data-attr="5 Year">5 Year</a></li>
+                    <li><a href="#" data-attr="Avobe 5 Years">Avobe 5 Years</a></li>
+                  </ul>
+                </div>
+                <div class="job-filter same-pad">
+                  <h4 class="option-title">Salary Range</h4>
+                  <div class="price-range-slider">
+                    <div class="nstSlider" data-range_min="0" data-range_max="10000" 
+                     data-cur_min="0"    data-cur_max="6130">
+                      <div class="bar"></div>
+                      <div class="leftGrip"></div>
+                      <div class="rightGrip"></div>
+                      <div class="grip-label">
+                        <span class="leftLabel"></span>
+                        <span class="rightLabel"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div data-id="post" class="job-filter post same-pad">
+                  <h4 class="option-title">Date Posted</h4>
+                  <ul>
+                    <li><a href="#" data-attr="Last hour">Last hour</a></li>
+                    <li><a href="#" data-attr="Last 24 hour">Last 24 hour</a></li>
+                    <li><a href="#" data-attr="Last 7 days">Last 7 days</a></li>
+                    <li><a href="#" data-attr="Last 14 days">Last 14 days</a></li>
+                    <li><a href="#" data-attr="Last 30 days">Last 30 days</a></li>
+                  </ul>
+                </div>
+                <div data-id="gender" class="job-filter same-pad gender">
+                  <h4 class="option-title">Gender</h4>
+                  <ul>
+                    <li><a href="#" data-attr="Male">Male</a></li>
+                    <li><a href="#" data-attr="Female">Female</a></li>
+                  </ul>
+                </div>
+                <div data-id="qualification" class="job-filter qualification same-pad">
+                  <h4 class="option-title">Qualification</h4>
+                  <ul>
+                    <li><a href="#" data-attr="Matriculation">Matriculation</a></li>
+                    <li><a href="#" data-attr="Intermidiate">Intermidiate</a></li>
+                    <li><a href="#" data-attr="Gradute">Gradute</a></li>
+                  </ul>
                 </div>
               </div>
               <div class="dashboard-sidebar">
@@ -566,27 +691,27 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/feather.min.js"></script>
-    <script src="assets/js/bootstrap-select.min.js"></script>
-    <script src="assets/js/jquery.nstSlider.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/visible.js"></script>
-    <script src="assets/js/jquery.countTo.js"></script>
-    <script src="assets/js/chart.js"></script>
-    <script src="assets/js/plyr.js"></script>
-    <script src="assets/js/tinymce.min.js"></script>
-    <script src="assets/js/slick.min.js"></script>
-    <script src="assets/js/jquery.ajaxchimp.min.js"></script>
+    <script src={% static "assets/js/jquery.min.js" %}></script>
+    <script src={% static "assets/js/popper.min.js" %}></script>
+    <script src={% static "assets/js/bootstrap.min.js" %}></script>
+    <script src={% static "assets/js/feather.min.js" %}></script>
+    <script src={% static "assets/js/bootstrap-select.min.js" %}></script>
+    <script src={% static "assets/js/jquery.nstSlider.min.js" %}></script>
+    <script src={% static "assets/js/owl.carousel.min.js" %}></script>
+    <script src={% static "assets/js/visible.js" %}></script>
+    <script src={% static "assets/js/jquery.countTo.js" %}></script>
+    <script src={% static "assets/js/chart.js" %}></script>
+    <script src={% static "assets/js/plyr.js" %}></script>
+    <script src={% static "assets/js/tinymce.min.js" %}></script>
+    <script src={% static "assets/js/slick.min.js" %}></script>
+    <script src={% static "assets/js/jquery.ajaxchimp.min.js" %}></script>
 
-    <script src="js/custom.js"></script>
-    <script src="dashboard/js/dashboard.js"></script>
-    <script src="dashboard/js/datePicker.js"></script>
-    <script src="dashboard/js/upload-input.js"></script>
+    <script src={% static "js/custom.js" %}></script>
+    <script src={% static "dashboard/js/dashboard.js" %}></script>
+    <script src={% static "dashboard/js/datePicker.js" %}></script>
+    <script src={% static "dashboard/js/upload-input.js" %}></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
-    <script src="js/map.js"></script>
+    <script src={% static "js/map.js" %}></script>
   </body>
 </html>

@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 
 from view import home_page
 from joblistings.views import job_details, post_job, download_jobPDF
-from jobapplications.views import add_resume, download_test
+from jobapplications.views import add_resume, download_test, browse_job_applications, concatinate_applicationPDF
 from accounts.views import register_user, logout_user, login_user, activate
 from django.urls import include
 
@@ -37,6 +37,9 @@ urlpatterns = [
     path('logout/', logout_user),
     path('login/', login_user),
     path('activate/<uidb64>/<token>', activate, name="activate"),
+    path('jobApplications/', browse_job_applications),
+    #path('applicationDetails/<int:pk>/', ),
+    path('concatinateApplications/', concatinate_applicationPDF),
 ]
 
 if settings.DEBUG:

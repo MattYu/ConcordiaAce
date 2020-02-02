@@ -14,6 +14,8 @@ from django.core.mail import EmailMessage
 
 from .decorators import check_recaptcha
 
+DEBUG =True
+
 # Create your views here.
 @check_recaptcha
 def register_user(request):
@@ -48,8 +50,10 @@ def register_user(request):
             email = EmailMessage(
                         mail_subject, message, to=[to_email]
             )
-            email.send()
-            messages.success(request, 'Candidate account created!')
+
+            if not DEBUG:
+              email.send()
+              messages.success(request, 'Candidate account created!')
             return HttpResponseRedirect('/')
 
 
@@ -72,7 +76,14 @@ def login_user(request):
             email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password')
             user = authenticate(email=email, password=raw_password)
+
+            if not user:
+                request.session['warning'] = "Wrong email or password entered"
+                context = {'form': form}
+                return  HttpResponseRedirect('/login')
+
             login(request, user)
+
 
             if 'redirect' in request.session:
                 redirect = request.session['redirect']
