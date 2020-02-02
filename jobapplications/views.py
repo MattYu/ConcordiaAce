@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from joblistings.models import Job
-from jobapplications.models import JobApplication
+from jobapplications.models import JobApplication, Resume, CoverLetter
 from jobapplications.forms import ApplicationForm, resumeUpload
 from django_sendfile import sendfile
 import uuid
@@ -13,6 +13,14 @@ from io import BytesIO, StringIO
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import requests
 
+from ace.constants import FILE_TYPE_RESUME, FILE_TYPE_COVER_LETTER, FILE_TYPE_TRANSCRIPT, FILE_TYPE_OTHER
+
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
+from django_sendfile import sendfile
+from accounts.models import downloadProtectedFile_token, User, Candidate
+import uuid
+from django.db import transaction
 
 #u = uuid.uuid4()
 #u.hex
@@ -57,9 +65,10 @@ def download_test(request, pk):
     download = get_object_or_404(Job, pk=pk)
     return sendfile(request, download.company.image.path)
 
-
+@transaction.atomic
 def browse_job_applications(request):
     context = {}
+    jobApplications = None
 
     if not request.user.is_authenticated:
 
@@ -74,6 +83,70 @@ def browse_job_applications(request):
 
         context = {"jobApplications" : jobApplications}
     
+    if (request.method == 'POST'):
+    #if request.POST.get("pdf"):
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename=downloadApplications.pdf'
+        writer = PdfFileWriter()
+        # Change to https in prod (although django should automatically force https if settings.py is configured corretly in prod)
+        base_url = "http://" + str(get_current_site(request).domain)  + "/getFile"
+    
+        User.objects.filter(id=request.user.id).update(protect_file_temp_download_key=str(uuid.uuid4().hex))
+        token = downloadProtectedFile_token.make_token(request.user)
+
+        for application in jobApplications:
+            uid = urlsafe_base64_encode(force_bytes(request.user.pk))
+            candidateId = urlsafe_base64_encode(force_bytes(application.pk))
+
+
+            fileId = Resume.objects.get(JobApplication=application).id
+            fileId = urlsafe_base64_encode(force_bytes(fileId))
+            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_RESUME))
+
+            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+            getFile = requests.get(url).content
+            memoryFile = BytesIO(getFile)
+            pdfFile = PdfFileReader(memoryFile)
+  
+            for pageNum in range(pdfFile.getNumPages()):
+                currentPage = pdfFile.getPage(pageNum)
+                #currentPage.mergePage(watermark.getPage(0))
+                writer.addPage(currentPage)
+
+            fileId = CoverLetter.objects.get(JobApplication=application).id
+            fileId = urlsafe_base64_encode(force_bytes(fileId))
+            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_COVER_LETTER))
+
+            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+            getFile = requests.get(url).content
+            memoryFile = BytesIO(getFile)
+            pdfFile = PdfFileReader(memoryFile)
+
+            for pageNum in range(pdfFile.getNumPages()):
+                currentPage = pdfFile.getPage(pageNum)
+                #currentPage.mergePage(watermark.getPage(0))
+                writer.addPage(currentPage)
+
+
+            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_TRANSCRIPT))
+
+            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+            getFile = requests.get(url).content
+            memoryFile = BytesIO(getFile)
+            pdfFile = PdfFileReader(memoryFile)
+
+            for pageNum in range(pdfFile.getNumPages()):
+                currentPage = pdfFile.getPage(pageNum)
+                #currentPage.mergePage(watermark.getPage(0))
+                writer.addPage(currentPage)
+        
+        outputStream = BytesIO()
+        writer.write(outputStream)
+        response.write(outputStream.getvalue())
+
+        User.objects.filter(id=request.user.id).update(protect_file_temp_download_key="")
+
+        return response
 
     return render(request, "dashboard-manage-applications.html", context)
 
@@ -101,7 +174,6 @@ def view_application_details(request, pk):
 
 def concatinate_applicationPDF(request):
 
-    manager = PoolManager(10)
     
 
     response = HttpResponse()
@@ -137,3 +209,37 @@ def concatinate_applicationPDF(request):
     response.write(outputStream.getvalue())
     return response
     
+def get_protected_file(request, uid, candidateId, filetype, fileid, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=uid)
+
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and downloadProtectedFile_token.check_token(user, token):
+
+        fileType = force_text(urlsafe_base64_decode(filetype))
+        fileId = force_text(urlsafe_base64_decode(fileid))
+        candidateId = force_text(urlsafe_base64_decode(candidateId))
+
+        if fileType == str(FILE_TYPE_RESUME):
+            resume = Resume.objects.get(id=fileId).resume
+            filePath = resume.path
+
+
+        if fileType == str(FILE_TYPE_COVER_LETTER):
+            coverLetter = CoverLetter.objects.get(id=fileId).coverLetter
+            filePath = coverLetter.path
+ 
+
+        if fileType == str(FILE_TYPE_TRANSCRIPT):
+            transcript = Candidate.objects.get(id=candidateId).transcript
+            filePath = transcript.path
+
+        if fileType == str(FILE_TYPE_OTHER):
+            filePath = None
+
+        return sendfile(request, filePath)
+    else:
+        return HttpResponse('Invalid permission token')
+
