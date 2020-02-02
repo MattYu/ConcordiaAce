@@ -109,6 +109,7 @@ JOB_APPLICATION_STATUS = (
     ("Not Selected", "Not Selected"),
     ("Ranked", "Ranked by Employer"),
     ("Matched", "Matched"),
+    ("Not Matched", "Not Matched"),
     ("Closed", "Closed"),
 )
 

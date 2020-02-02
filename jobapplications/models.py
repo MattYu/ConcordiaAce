@@ -71,4 +71,16 @@ class CoverLetter(models.Model):
     JobApplication = models.ManyToManyField(JobApplication)
 
     
+class Ranking(models.Model):
 
+    employerRank = models.IntegerField(default= 1000)
+    userRank = models.IntegerField(default= 1000)
+    preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+
+    jobApplication = models.ForeignKey(JobApplication, on_delete=models.CASCADE, default= "")
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
+    candidate = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
+    status = models.CharField(max_length = 20, default= "Pending", choices= JOB_APPLICATION_STATUS)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

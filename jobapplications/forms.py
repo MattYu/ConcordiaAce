@@ -58,8 +58,12 @@ class ApplicationForm(forms.Form):
         extra_edu_fields = kwargs.pop('extra_edu_count', 1)
         extra_exp_fields = kwargs.pop('extra_exp_count', 1)
         extra_doc_fields = kwargs.pop('extra_doc_count', 0)
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
     
+        if user:
+            self.fields['firstName'].initial = user.firstName
+            self.fields['lastName'].initial = user.lastName
 
         self.fields['extra_edu_count'].initial = max(min(int(extra_edu_fields), 10),1)
         self.educationFields = []
@@ -188,7 +192,7 @@ class ApplicationForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
 
-        if not cleaned_data.get('resume'):
+        if not cleaned_data.get('resume') and self.is_valid():
             raise forms.ValidationError('You have to upload a resume')
 
         self.cleaned_data = cleaned_data

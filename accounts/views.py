@@ -12,6 +12,8 @@ from accounts.models import account_activation_token, User
 from django.core.mail import EmailMessage
 
 
+DEBUG =True
+
 # Create your views here.
 def register_user(request):
     context = {}
@@ -45,7 +47,8 @@ def register_user(request):
             email = EmailMessage(
                         mail_subject, message, to=[to_email]
             )
-            email.send()
+            if not DEBUG:
+                email.send()
             
             return HttpResponseRedirect('/')
 

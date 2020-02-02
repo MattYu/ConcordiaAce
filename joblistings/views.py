@@ -1,7 +1,7 @@
 #from django.views import ListView
 from django.shortcuts import render, get_object_or_404
 from django import forms
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 
 from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
@@ -10,6 +10,7 @@ from joblistings.forms import JobForm
 from companies.models import Company
 from accounts.models import Employer
 from django_sendfile import sendfile
+
 
 # Create your views here.
 
@@ -50,8 +51,6 @@ def post_job(request,  *args, **kwargs):
                 jobAccessPermission = JobAccessPermission()
                 jobAccessPermission.job = job
                 jobAccessPermission.save()
-                print(request.user)
-                print(request.user.pk)
                 jobAccessPermission.employer.add(Employer.objects.get(user=request.user))
                 
 
@@ -71,3 +70,4 @@ def post_job(request,  *args, **kwargs):
 def download_jobPDF(request, pk):
     download = get_object_or_404(JobPDFDescription, job=pk)
     return sendfile(request, download.descriptionFile.path)
+
