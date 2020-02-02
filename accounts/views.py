@@ -66,6 +66,7 @@ def register_user(request):
 def login_user(request):
     if (request.method == 'POST'):
         form = LoginForm(request.POST)
+
         if form.is_valid():
 
             email = form.cleaned_data.get('email')
@@ -99,6 +100,14 @@ def login_user(request):
     if 'danger' in request.session:
         context['danger'] = request.session['danger']
         del request.session['danger']
+
+    if 'attempts' in request.session:
+        request.session['attempts'] += 1
+        if request.session['attempts'] > 3:
+            context['locked'] = True
+    else:
+        request.session['attempts'] = 1
+        context['locked'] = False
 
     return render(request, "login.html", context)
 
