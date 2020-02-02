@@ -292,6 +292,12 @@
                     </label>
                   </div>
                 </div>
+                {% block content %}
+                  {% csrf_token %}
+                  <script src='https://www.google.com/recaptcha/api.js'></script>
+                  <div class="g-recaptcha" data-sitekey="6LcU4dQUAAAAALjqzMSN-ee3Wna5gzXMgbYXcHxT"></div>
+                  <br>
+                {% endblock %}
                 <button class="button primary-bg btn-block">Register</button>
                 {% else %}
                 <div class="more-option terms">

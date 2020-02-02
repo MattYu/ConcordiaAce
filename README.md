@@ -30,6 +30,8 @@
 
 -weasyprint
 
+-requests
+
 
 # Dev installation
 1) Install git

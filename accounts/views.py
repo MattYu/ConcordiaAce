@@ -3,6 +3,7 @@ from accounts.forms import RegistrationForm, LoginForm
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -11,10 +12,12 @@ from django.template.loader import render_to_string
 from accounts.models import account_activation_token, User
 from django.core.mail import EmailMessage
 
+from .decorators import check_recaptcha
 
 DEBUG =True
 
 # Create your views here.
+@check_recaptcha
 def register_user(request):
     context = {}
     
@@ -27,7 +30,7 @@ def register_user(request):
             extra_language_count=request.POST.get('extra_language_count'),
             )
         print(form.errors)
-        if form.is_valid():
+        if form.is_valid() and request.recaptcha_is_valid:
             
             form.save()
             email = form.cleaned_data.get('email')
@@ -47,10 +50,12 @@ def register_user(request):
             email = EmailMessage(
                         mail_subject, message, to=[to_email]
             )
+
             if not DEBUG:
-                email.send()
-            
+              email.send()
+              messages.success(request, 'Candidate account created!')
             return HttpResponseRedirect('/')
+
 
     else:
         form = RegistrationForm(registrationType=None, employerCompany=None, extra_language_count=1)
@@ -65,6 +70,7 @@ def register_user(request):
 def login_user(request):
     if (request.method == 'POST'):
         form = LoginForm(request.POST)
+
         if form.is_valid():
 
             email = form.cleaned_data.get('email')
@@ -105,6 +111,14 @@ def login_user(request):
     if 'danger' in request.session:
         context['danger'] = request.session['danger']
         del request.session['danger']
+
+    if 'attempts' in request.session:
+        request.session['attempts'] += 1
+        if request.session['attempts'] > 3:
+            context['locked'] = True
+    else:
+        request.session['attempts'] = 1
+        context['locked'] = False
 
     return render(request, "login.html", context)
 
