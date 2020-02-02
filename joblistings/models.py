@@ -1,7 +1,7 @@
 from django.db import models
 from companies.models import Company
 from tinymce import models as tinymce_models
-from ace.constants import MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, CATEGORY_CHOICES, LOCATION_CHOICES
+from ace.constants import MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, CATEGORY_CHOICES, LOCATION_CHOICES, JOB_STATUS
 from accounts.models import Employer
 
 # Create your models here.
@@ -21,6 +21,8 @@ class Job(models.Model):
     description = tinymce_models.HTMLField(max_length = MAX_LENGTH_DESCRIPTION, default= "")
     responsabilities = tinymce_models.HTMLField(max_length = MAX_LENGTH_RESPONSABILITIES, default= "")
     requirements = tinymce_models.HTMLField(max_length = MAX_LENGTH_REQUIREMENTS, default= "")
+
+    status = models.CharField(max_length = 20, default= "Pending", choices= JOB_STATUS)
 
     # Job Location
     country = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "Canada", choices= LOCATION_CHOICES)
