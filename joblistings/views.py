@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 
 
 from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
-from joblistings.models import Job, JobPDFDescription, JobAccessPermission
+from joblistings.models import Job, JobPDFDescription
 from joblistings.forms import JobForm
 from companies.models import Company
 from accounts.models import Employer
@@ -48,10 +48,8 @@ def post_job(request,  *args, **kwargs):
             job = form.save()
 
             if request.user.user_type == USER_TYPE_EMPLOYER:
-                jobAccessPermission = JobAccessPermission()
-                jobAccessPermission.job = job
-                jobAccessPermission.save()
-                jobAccessPermission.employer.add(Employer.objects.get(user=request.user))
+                job.jobAccessPermission.add(Employer.objects.get(user=request.user)) 
+                job.save()
                 
 
             job_pk = job.pk

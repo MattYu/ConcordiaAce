@@ -13,7 +13,7 @@ from io import BytesIO, StringIO
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import requests
 
-from ace.constants import FILE_TYPE_RESUME, FILE_TYPE_COVER_LETTER, FILE_TYPE_TRANSCRIPT, FILE_TYPE_OTHER
+from ace.constants import FILE_TYPE_RESUME, FILE_TYPE_COVER_LETTER, FILE_TYPE_TRANSCRIPT, FILE_TYPE_OTHER, USER_TYPE_SUPER, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
@@ -77,11 +77,15 @@ def browse_job_applications(request):
         return HttpResponseRedirect('/login')
 
 
-    if request.user.user_type == 4:
+    if request.user.user_type == USER_TYPE_SUPER:
         
         jobApplications = JobApplication.objects.all()
 
         context = {"jobApplications" : jobApplications}
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+
+        jobApplications = JobApplication.objects.filter(job__permission__employer__user__id = request.user.id)
     
     if (request.method == 'POST'):
     #if request.POST.get("pdf"):
