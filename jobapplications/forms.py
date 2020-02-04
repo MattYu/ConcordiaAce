@@ -5,6 +5,7 @@ from tinymce.widgets import TinyMCE
 from django.core.validators import FileExtensionValidator
 from django.shortcuts import get_object_or_404
 from joblistings.models import Job
+from accounts.models import Candidate
 import uuid
 
 class resumeUpload(forms.ModelForm):
@@ -205,7 +206,7 @@ class ApplicationForm(forms.Form):
         jobApplication.lastName = cleaned_data.get('lastName')
         jobApplication.preferredName = cleaned_data.get('preferredName')
         jobApplication.job = get_object_or_404(Job, pk=pk.pk)
-        jobApplication.candidate = user
+        jobApplication.candidate = Candidate.objects.get(user=user)
         jobApplication.save()
 
         resume = Resume()

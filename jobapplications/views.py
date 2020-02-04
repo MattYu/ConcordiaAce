@@ -13,12 +13,12 @@ from io import BytesIO, StringIO
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import requests
 
-from ace.constants import FILE_TYPE_RESUME, FILE_TYPE_COVER_LETTER, FILE_TYPE_TRANSCRIPT, FILE_TYPE_OTHER
+from ace.constants import FILE_TYPE_RESUME, FILE_TYPE_COVER_LETTER, FILE_TYPE_TRANSCRIPT, FILE_TYPE_OTHER, USER_TYPE_SUPER, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django_sendfile import sendfile
-from accounts.models import downloadProtectedFile_token, User, Candidate
+from accounts.models import downloadProtectedFile_token, User, Candidate, Employer
 import uuid
 from django.db import transaction
 
@@ -77,9 +77,15 @@ def browse_job_applications(request):
         return HttpResponseRedirect('/login')
 
 
-    if request.user.user_type == 4:
+    if request.user.user_type == USER_TYPE_SUPER:
         
         jobApplications = JobApplication.objects.all()
+
+        context = {"jobApplications" : jobApplications}
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+
+        jobApplications = JobApplication.objects.filter(job__jobAccessPermission = Employer.objects.get(user=request.user))
 
         context = {"jobApplications" : jobApplications}
     
@@ -96,7 +102,7 @@ def browse_job_applications(request):
 
         for application in jobApplications:
             uid = urlsafe_base64_encode(force_bytes(request.user.pk))
-            candidateId = urlsafe_base64_encode(force_bytes(application.pk))
+            candidateId = urlsafe_base64_encode(force_bytes(application.candidate.pk))
 
 
             fileId = Resume.objects.get(JobApplication=application).id
@@ -107,11 +113,16 @@ def browse_job_applications(request):
             getFile = requests.get(url).content
             memoryFile = BytesIO(getFile)
             pdfFile = PdfFileReader(memoryFile)
+
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!2")
   
             for pageNum in range(pdfFile.getNumPages()):
                 currentPage = pdfFile.getPage(pageNum)
                 #currentPage.mergePage(watermark.getPage(0))
                 writer.addPage(currentPage)
+
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!3")
+
 
             fileId = CoverLetter.objects.get(JobApplication=application).id
             fileId = urlsafe_base64_encode(force_bytes(fileId))
@@ -122,30 +133,41 @@ def browse_job_applications(request):
             memoryFile = BytesIO(getFile)
             pdfFile = PdfFileReader(memoryFile)
 
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!4")
+
             for pageNum in range(pdfFile.getNumPages()):
                 currentPage = pdfFile.getPage(pageNum)
                 #currentPage.mergePage(watermark.getPage(0))
                 writer.addPage(currentPage)
 
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!5")
 
             fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_TRANSCRIPT))
-
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
             url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+            print(url)
+            
             getFile = requests.get(url).content
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
             memoryFile = BytesIO(getFile)
             pdfFile = PdfFileReader(memoryFile)
 
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
+
             for pageNum in range(pdfFile.getNumPages()):
                 currentPage = pdfFile.getPage(pageNum)
                 #currentPage.mergePage(watermark.getPage(0))
                 writer.addPage(currentPage)
-        
+
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
+            
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!7")
         outputStream = BytesIO()
         writer.write(outputStream)
         response.write(outputStream.getvalue())
 
         User.objects.filter(id=request.user.id).update(protect_file_temp_download_key="")
-
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!8")
         return response
 
     return render(request, "dashboard-manage-applications.html", context)
@@ -171,49 +193,12 @@ def view_application_details(request, pk):
 
     return render(request, "dashboard-manage-applications.html")
 
-
-def concatinate_applicationPDF(request):
-
-    
-
-    response = HttpResponse()
-    response['Content-Disposition'] = 'attachment; filename=form.pdf'
-
-    getFile = requests.get("http://127.0.0.1:8000/jobDescription/1/").content
-
-        
-    writer = PdfFileWriter()
-    memoryFile = BytesIO(getFile)
-
-    
-    pdfFile = PdfFileReader(memoryFile)
-
-    for pageNum in range(pdfFile.getNumPages()):
-        currentPage = pdfFile.getPage(pageNum)
-        #currentPage.mergePage(watermark.getPage(0))
-        writer.addPage(currentPage)
-
-    getFile = requests.get("http://127.0.0.1:8000/jobDescription/1/").content
-
-    pdfFile = PdfFileReader(memoryFile)
-
-    for pageNum in range(pdfFile.getNumPages()):
-        currentPage = pdfFile.getPage(pageNum)
-        #currentPage.mergePage(watermark.getPage(0))
-        writer.addPage(currentPage)
-    #pdf11 = pdf1.render()
-    #http_response = HttpResponse(pdf11, content_type='application/pdf')
-    #http_response['Content-Disposition'] = 'filename="report.pdf"'
-    outputStream = BytesIO()
-    writer.write(outputStream)
-    response.write(outputStream.getvalue())
-    return response
     
 def get_protected_file(request, uid, candidateId, filetype, fileid, token):
     try:
         uid = force_text(urlsafe_base64_decode(uid))
         user = User.objects.get(pk=uid)
-
+    
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and downloadProtectedFile_token.check_token(user, token):
@@ -235,6 +220,7 @@ def get_protected_file(request, uid, candidateId, filetype, fileid, token):
         if fileType == str(FILE_TYPE_TRANSCRIPT):
             transcript = Candidate.objects.get(id=candidateId).transcript
             filePath = transcript.path
+            
 
         if fileType == str(FILE_TYPE_OTHER):
             filePath = None
