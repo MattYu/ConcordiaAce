@@ -1,5 +1,6 @@
 <!doctype html>
 {% load static %}
+{% load navbar_tag %}
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -267,107 +268,21 @@
                       {% for job in jobs %}
                       <tr class="job-items">
                         <td class="title">
-                          <h5><a href="/job-details/{{job.id}}">{{job.title}}</a></h5>
+                          <h5><a href="/job-details/{{job.job.id}}">{{job.job.title}} [{{job.job.id}}]</a></h5>
                           <div class="info">
-                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>Full Time</a></span>
+                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>{{job.job.company.name}}</a></span>
+                            <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>{{job.job.created_at}}</a></span>
                           </div>
                         </td>
-                        <td class="application"><a href="#">6 Application(s)</a></td>
-                        <td class="deadline">Oct 31,  2019</td>
-                        <td class="status active">Active</td>
+                        <td class="application"><a href="/jobApplications/{{job.job.id}}">{{job.count}} {% if user.user_type != 4 %} Approved {% endif %}Application(s)</a></td>
+                        <td class="deadline">{{job.job.expirationDate}}</td>
+                        <td class="status active">{{job.job.status}}</td>
                         <td class="action">
                           <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
                           <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                          <a href="#" class="remove" title="Delete"><i data-feather="trash-2"></i></a>
                         </td>
                       </tr>
                       {% endfor %}
-                      <tr class="job-items">
-                        <td class="title">
-                          <h5><a href="#">Designer Required </a></h5>
-                          <div class="info">
-                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            <span class="job-type freelance"><a href="#"><i data-feather="clock"></i>Freelance</a></span>
-                          </div>
-                        </td>
-                        <td class="application"><a href="#">6 Application(s)</a></td>
-                        <td class="deadline">Oct 31,  2019</td>
-                        <td class="status pending">Pending</td>
-                        <td class="action">
-                          <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
-                          <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                          <a href="#" class="remove" title="Delete"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
-                      <tr class="job-items">
-                        <td class="title">
-                          <h5><a href="#">Restaurant Team Member - Crew</a></h5>
-                          <div class="info">
-                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            <span class="job-type temporary"><a href="#"><i data-feather="clock"></i>Temporary</a></span>
-                          </div>
-                        </td>
-                        <td class="application"><a href="#">6 Application(s)</a></td>
-                        <td class="deadline">Oct 31,  2019</td>
-                        <td class="status expired">Expired</td>
-                        <td class="action">
-                          <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
-                          <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                          <a href="#" class="remove" title="Delete"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
-                      <tr class="job-items">
-                        <td class="title">
-                          <h5><a href="#">Land Development Marketer</a></h5>
-                          <div class="info">
-                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>Full Time</a></span>
-                          </div>
-                        </td>
-                        <td class="application"><a href="#">6 Application(s)</a></td>
-                        <td class="deadline">Oct 31,  2019</td>
-                        <td class="status active">Active</td>
-                        <td class="action">
-                          <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
-                          <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                          <a href="#" class="remove" title="Delete"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
-                      <tr class="job-items">
-                        <td class="title">
-                          <h5><a href="#">Designer Required </a></h5>
-                          <div class="info">
-                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            <span class="job-type freelance"><a href="#"><i data-feather="clock"></i>Freelance</a></span>
-                          </div>
-                        </td>
-                        <td class="application"><a href="#">6 Application(s)</a></td>
-                        <td class="deadline">Oct 31,  2019</td>
-                        <td class="status pending">Pending</td>
-                        <td class="action">
-                          <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
-                          <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                          <a href="#" class="remove" title="Delete"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
-                      <tr class="job-items">
-                        <td class="title">
-                          <h5><a href="#">Restaurant Team Member - Crew</a></h5>
-                          <div class="info">
-                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            <span class="job-type temporary"><a href="#"><i data-feather="clock"></i>Temporary</a></span>
-                          </div>
-                        </td>
-                        <td class="application"><a href="#">6 Application(s)</a></td>
-                        <td class="deadline">Oct 31,  2019</td>
-                        <td class="status expired">Expired</td>
-                        <td class="action">
-                          <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
-                          <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                          <a href="#" class="remove" title="Delete"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                   <div class="pagination-list text-center">
@@ -386,12 +301,8 @@
               </div>
               <div class="dashboard-sidebar">
                 <div class="company-info">
-                  <div class="thumb">
-                    <img src="dashboard/images/company-logo.png" class="img-fluid" alt="">
-                  </div>
                   <div class="company-body">
-                    <h5>Degoin</h5>
-                    <span>@username</span>
+                    <h5>{{user.email}}</h5>
                   </div>
                 </div>
                 <div class="profile-progress">
@@ -411,8 +322,8 @@
                   <ul>
                     <li><i class="fas fa-home"></i><a href="employer-dashboard.html">Dashboard</a></li>
                     <li><i class="fas fa-user"></i><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
-                    <li class="active"><i class="fas fa-briefcase"></i><a href="employer-dashboard-manage-job.html">Manage Jobs</a></li>
-                    <li><i class="fas fa-users"></i><a href="employer-dashboard-manage-candidate.html">Manage Candidates</a></li>
+                    <li class="active"><i class="fas fa-briefcase"></i><a href="/manageJobs/">Manage Jobs</a></li>
+                    <li><i class="fas fa-users"></i><a href="/jobApplications/">Manage Applications</a></li>
                     <li><i class="fas fa-heart"></i><a href="#">Shortlisted Resumes</a></li>
                     <li><i class="fas fa-plus-square"></i><a href="employer-dashboard-post-job.html">Post New Job</a></li>
                     <li><i class="fas fa-comment"></i><a href="employer-dashboard-message.html">Message</a></li>

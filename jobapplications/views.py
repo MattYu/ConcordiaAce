@@ -93,27 +93,28 @@ def browse_job_applications(request, jobId= -1):
         else:
             if jobId != None:
                 query = Q(job__pk=jobId)
+                context["job"] = Job.objects.get(pk=jobId)
 
-            jobApplication.objects.filter(query)
+            jobApplications = jobApplication.objects.filter(query).order_by('-created_at')
 
-        context = {"jobApplications" : jobApplications}
+        context["jobApplications"] = jobApplications
 
     if request.user.user_type == USER_TYPE_EMPLOYER:
         query = Q(job__jobAccessPermission=Employer.objects.get(user=request.user))
 
         if jobId != None:
             query &= Q(job__pk=jobId)
+            context["job"] = Job.objects.get(pk=jobId)
 
-        jobApplications = JobApplication.objects.filter(query)
+        jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
 
-
-        context = {"jobApplications" : jobApplications}
+        context["jobApplications"] = jobApplications
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
 
-        jobApplications = JobApplication.objects.filter(candidate= Candidate.objects.get(user=request.user))
+        jobApplications = JobApplication.objects.filter(candidate= Candidate.objects.get(user=request.user)).order_by('-created_at')
 
-        context = {"jobApplications" : jobApplications}
+        context["jobApplications"] = jobApplications
     
     if (request.method == 'POST'):
     #if request.POST.get("pdf"):

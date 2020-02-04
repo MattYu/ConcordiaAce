@@ -10,6 +10,8 @@ from joblistings.forms import JobForm
 from companies.models import Company
 from accounts.models import Employer, Candidate
 from django_sendfile import sendfile
+from jobapplications.models import JobApplication
+from django.db.models import Q
 
 # Create your views here.
 
@@ -41,7 +43,7 @@ def post_job(request,  *args, **kwargs):
             return  HttpResponseRedirect('/')
 
     if (request.method == "POST"):
-        form = JobForm(data=request.POST, files=request.FILES)
+        form = JobForm(user=request.user, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.clean()
             job = form.save()
@@ -57,9 +59,8 @@ def post_job(request,  *args, **kwargs):
 
             return HttpResponseRedirect('/job-details/' + str(job_pk))
 
-        
-        print(request.POST)
-    jobForm = JobForm()
+    
+    jobForm = JobForm(user=request.user)
     context = {'form' : jobForm}
 
     return render(request, "employer-dashboard-post-job.html", context)
@@ -74,15 +75,46 @@ def manage_jobs(request):
 
     if request.user.user_type == USER_TYPE_SUPER:
         
-        jobs = Job.objects.all()
+        jobQuery = Job.objects.all()
 
-        context = {"jobs" : jobs}
+        jobs = {}
+
+        jobs = []
+        for job in jobQuery:
+            obj = {}
+
+            obj['job'] = job
+            obj['count'] = JobApplication.objects.filter(job=job).count()
+            jobs.append(obj)
+
+        context = {
+                    "jobs" : jobs,
+                    'user' : request.user,
+                }
 
     if request.user.user_type == USER_TYPE_EMPLOYER:
 
-        jobs = Job.objects.filter(jobAccessPermission = Employer.objects.get(user=request.user))
+        jobQuery = Job.objects.filter(jobAccessPermission = Employer.objects.get(user=request.user))
 
-        context = {"jobs" : jobs}
+        query1 = ~Q(status="Pending Review")
+        query2 = ~Q(status="Not Approved")
+
+
+        jobs = []
+        for job in jobQuery:
+            obj = {}
+
+            obj['job'] = job
+
+            obj['count'] = JobApplication.objects.filter(query1|query2,job=job).count()
+            
+            jobs.append(obj)
+
+
+        context = {
+                    "jobs" : jobs,
+                    'user' : request.user,
+                }
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
 
