@@ -257,11 +257,7 @@
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>Job Title</th>
-                        <th>Applications</th>
-                        <th>Deadline</th>
-                        <th>Status</th>
-                        <th class="action">Action</th>
+                        <th>STEP 1: Select a job</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -274,29 +270,12 @@
                             <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>{{job.job.created_at}}</a></span>
                           </div>
                         </td>
-                        <td class="application"><a href="/jobApplications/{{job.job.id}}">{{job.count}} Application(s)</a></td>
-                        <td class="deadline">{{job.job.expirationDate}}</td>
+                        <td class="application"><a href="/employerRanking/{{job.job.id}}">{{job.count}} Application(s)</a></td>
                         <td class="status active">{{job.job.status}}</td>
-                        <td class="action">
-                          <a href="#" class="preview" title="Preview"><i data-feather="eye"></i></a>
-                          <a href="#" class="edit" title="Edit"><i data-feather="edit"></i></a>
-                        </td>
                       </tr>
                       {% endfor %}
                     </tbody>
                   </table>
-                  <div class="pagination-list text-center">
-                    <nav class="navigation pagination">
-                      <div class="nav-links">
-                        <a class="prev page-numbers" href="#"><i class="fas fa-angle-left"></i></a>
-                        <a class="page-numbers" href="#">1</a>
-                        <span aria-current="page" class="page-numbers current">2</span>
-                        <a class="page-numbers" href="#">3</a>
-                        <a class="page-numbers" href="#">4</a>
-                        <a class="next page-numbers" href="#"><i class="fas fa-angle-right"></i></a>
-                      </div>
-                    </nav>                
-                  </div>
                 </div>
               </div>
               <div class="dashboard-sidebar">
@@ -326,9 +305,9 @@
                   <ul>
                     <li><i class="fas fa-home"></i><a href="employer-dashboard.html">Dashboard</a></li>
                     <li><i class="fas fa-user"></i><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
-                    <li class="active"><i class="fas fa-briefcase"></i><a href="/manageJobs/">Manage Jobs</a></li>
+                    <li><i class="fas fa-briefcase"></i><a href="/manageJobs/">Manage Jobs</a></li>
                     <li><i class="fas fa-users"></i><a href="/jobApplications/">Manage Applications</a></li>
-                    <li><i class="fas fa-heart"></i><a href="#">Shortlisted Resumes</a></li>
+                    <li class="active"><i class="fas fa-heart"></i><a href="/employerRanking">Interview Ranking</a></li>
                     <li><i class="fas fa-plus-square"></i><a href="employer-dashboard-post-job.html">Post New Job</a></li>
                     <li><i class="fas fa-comment"></i><a href="employer-dashboard-message.html">Message</a></li>
                     <li><i class="fas fa-calculator"></i><a href="employer-dashboard-pricing.html">Pricing Plans</a></li>

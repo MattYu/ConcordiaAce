@@ -25,6 +25,8 @@ from accounts.views import register_user, logout_user, login_user, activate
 from django.urls import include
 from django.urls import register_converter
 
+from jobmatchings.views import employer_view_rankings
+
 class OptionalIntConverter:
     regex = '[0-9]*'
  
@@ -55,7 +57,8 @@ urlpatterns = [
     path('jobApplications/<optional_int:jobId>', browse_job_applications),
     path('jobApplicationDetails/<int:pk>/', view_application_details),
     path('getFile/<str:uid>/<str:candidateId>/<str:filetype>/<str:fileid>/<token>/', get_protected_file),
-    path('manageJobs/', manage_jobs)
+    path('manageJobs/', manage_jobs),
+    path('employerRanking/<optional_int:jobId>', employer_view_rankings),
 ]
 
 if settings.DEBUG:
