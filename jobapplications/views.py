@@ -95,7 +95,7 @@ def browse_job_applications(request, jobId= -1):
                 query = Q(job__pk=jobId)
                 context["job"] = Job.objects.get(pk=jobId)
 
-            jobApplications = jobApplication.objects.filter(query).order_by('-created_at')
+            jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
 
         context["jobApplications"] = jobApplications
 
