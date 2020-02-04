@@ -21,6 +21,7 @@ from django_sendfile import sendfile
 from accounts.models import downloadProtectedFile_token, User, Candidate, Employer, Language, PreferredName
 import uuid
 from django.db import transaction
+from django.db.models import Q
 
 #u = uuid.uuid4()
 #u.hex
@@ -72,7 +73,7 @@ def download_test(request, pk):
     return sendfile(request, download.company.image.path)
 
 @transaction.atomic
-def browse_job_applications(request):
+def browse_job_applications(request, jobId= -1):
     context = {}
     jobApplications = None
 
@@ -84,14 +85,27 @@ def browse_job_applications(request):
 
 
     if request.user.user_type == USER_TYPE_SUPER:
-        
-        jobApplications = JobApplication.objects.all()
+        kwargs = {}
+
+        if jobId == None:
+            jobApplications = JobApplication.objects.all()
+
+        else:
+            if jobId != None:
+                query = Q(job__pk=jobId)
+
+            jobApplication.objects.filter(query)
 
         context = {"jobApplications" : jobApplications}
 
     if request.user.user_type == USER_TYPE_EMPLOYER:
+        query = Q(job__jobAccessPermission=Employer.objects.get(user=request.user))
 
-        jobApplications = JobApplication.objects.filter(job__jobAccessPermission = Employer.objects.get(user=request.user))
+        if jobId != None:
+            query &= Q(job__pk=jobId)
+
+        jobApplications = JobApplication.objects.filter(query)
+
 
         context = {"jobApplications" : jobApplications}
 

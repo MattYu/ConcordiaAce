@@ -4,13 +4,12 @@ from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
 
 
-from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
+from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, USER_TYPE_SUPER
 from joblistings.models import Job, JobPDFDescription
 from joblistings.forms import JobForm
 from companies.models import Company
-from accounts.models import Employer
+from accounts.models import Employer, Candidate
 from django_sendfile import sendfile
-
 
 # Create your views here.
 
@@ -64,6 +63,34 @@ def post_job(request,  *args, **kwargs):
     context = {'form' : jobForm}
 
     return render(request, "employer-dashboard-post-job.html", context)
+
+def manage_jobs(request):
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please login first"
+        return HttpResponseRedirect('/login')
+
+
+    if request.user.user_type == USER_TYPE_SUPER:
+        
+        jobs = Job.objects.all()
+
+        context = {"jobs" : jobs}
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+
+        jobs = Job.objects.filter(jobAccessPermission = Employer.objects.get(user=request.user))
+
+        context = {"jobs" : jobs}
+
+    if request.user.user_type == USER_TYPE_CANDIDATE:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: This page is only accessible to employers"
+        return HttpResponseRedirect('/')
+
+    return render(request, "dashboard-manage-job.html", context)
 
 def download_jobPDF(request, pk):
     download = get_object_or_404(JobPDFDescription, job=pk)
