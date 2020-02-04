@@ -1,4 +1,5 @@
  {% load static %}
+
       <nav class="navbar navbar-expand-xl absolute-nav transparent-nav cp-nav navbar-light bg-light fluid-nav">
         <a class="navbar-brand" href="/">
           <img src={% static "images/concordia-logo.png" %} class="img-fluid" style="width:230px;height:80px;" alt="">
@@ -103,6 +104,12 @@
               </ul>
             </li>
             <li class="menu-item post-job"><a title="Title" href="/employer-dashboard-post-job"><i class="fas fa-plus"></i>Post a Job</a></li>
+            {% if user.is_authenticated %}
+            <li class="menu-item post-job"><a title="Title" href="/jobApplications"><i class="fas"></i>See Applications</a></li>
+              {% if user.user_type == 4 %}
+                 <li class="menu-item post-job"><a title="Title" href="/admin"><i></i>Admin DB</a></li>
+              {% endif %}
+            {% endif %}
           </ul>
           <ul class="navbar-nav ml-auto account-nav">
             <li class="dropdown menu-item header-top-notification">
@@ -145,9 +152,14 @@
                 </div>
               </div>
             </li>
+            {% if user.is_authenticated %}
+            <li class="menu-item login-popup"><a> {{user.email}}</a></li>
+            <li class="menu-item login-popup"><a href="/logout">Logout</a></li>
+            {% else %}
             <li class="menu-item login-popup"><a href= "/login">Login</a></li>
-            <li class="menu-item login-popup"><button title="Title" type="button" data-toggle="modal" data-target="#exampleModalLong">Login</button></li>
             <li class="menu-item login-popup"><a href= "/register">Registration</a></li>
+            {% endif %}
+
           </ul> 
         </div>
       </nav>
@@ -248,3 +260,4 @@
           </div>
         </div>
       </div>
+      

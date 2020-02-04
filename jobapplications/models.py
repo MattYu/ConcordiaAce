@@ -17,7 +17,7 @@ class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
     #skillList = models.CharField(max_length = MAX_LENGTH_LONGSTANDARDFIELDS,  default= "")
     #aboutYou = tinymce_models.HTMLField(max_length = MAX_LENGTH_STANDARDTEXTAREA, default= "")
-    candidate = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, default= "1")
     status = models.CharField(max_length = 20, default= "Pending", choices= JOB_APPLICATION_STATUS)
 
     created_at = models.DateTimeField(auto_now_add=True)
