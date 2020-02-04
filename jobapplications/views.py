@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from joblistings.models import Job
-from jobapplications.models import JobApplication, Resume, CoverLetter
+from jobapplications.models import JobApplication, Resume, CoverLetter, Education, Experience
 from jobapplications.forms import ApplicationForm, resumeUpload
 from django_sendfile import sendfile
 import uuid
@@ -18,7 +18,7 @@ from ace.constants import FILE_TYPE_RESUME, FILE_TYPE_COVER_LETTER, FILE_TYPE_TR
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django_sendfile import sendfile
-from accounts.models import downloadProtectedFile_token, User, Candidate, Employer
+from accounts.models import downloadProtectedFile_token, User, Candidate, Employer, Language, PreferredName
 import uuid
 from django.db import transaction
 
@@ -37,6 +37,12 @@ def add_resume(request, pk= None, *args, **kwargs):
         if request.user.user_type == USER_TYPE_EMPLOYER:
             request.session['info'] = "You are logged in as an employer. Only candidates can access this page"
             return  HttpResponseRedirect('/')
+
+        jobApplication = JobApplication.objects.get(job__pk=pk, candidate=Candidate.objects.get(user=request.user))
+
+        if jobApplication:
+            request.session['info'] = "You already applied to this job"
+            return HttpResponseRedirect('/jobApplicationDetails/' + str(jobApplication.pk) + "/")
     
     instance = get_object_or_404(Job, pk=pk)
     context = {'job': instance}
@@ -88,6 +94,12 @@ def browse_job_applications(request):
         jobApplications = JobApplication.objects.filter(job__jobAccessPermission = Employer.objects.get(user=request.user))
 
         context = {"jobApplications" : jobApplications}
+
+    if request.user.user_type == USER_TYPE_CANDIDATE:
+
+        jobApplications = JobApplication.objects.filter(candidate= Candidate.objects.get(user=request.user))
+
+        context = {"jobApplications" : jobApplications}
     
     if (request.method == 'POST'):
     #if request.POST.get("pdf"):
@@ -113,16 +125,11 @@ def browse_job_applications(request):
             getFile = requests.get(url).content
             memoryFile = BytesIO(getFile)
             pdfFile = PdfFileReader(memoryFile)
-
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!2")
   
             for pageNum in range(pdfFile.getNumPages()):
                 currentPage = pdfFile.getPage(pageNum)
                 #currentPage.mergePage(watermark.getPage(0))
                 writer.addPage(currentPage)
-
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!3")
-
 
             fileId = CoverLetter.objects.get(JobApplication=application).id
             fileId = urlsafe_base64_encode(force_bytes(fileId))
@@ -133,41 +140,28 @@ def browse_job_applications(request):
             memoryFile = BytesIO(getFile)
             pdfFile = PdfFileReader(memoryFile)
 
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!4")
-
             for pageNum in range(pdfFile.getNumPages()):
                 currentPage = pdfFile.getPage(pageNum)
                 #currentPage.mergePage(watermark.getPage(0))
                 writer.addPage(currentPage)
 
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!5")
-
             fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_TRANSCRIPT))
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
             url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
-            print(url)
-            
+
             getFile = requests.get(url).content
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
             memoryFile = BytesIO(getFile)
             pdfFile = PdfFileReader(memoryFile)
 
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
-
             for pageNum in range(pdfFile.getNumPages()):
                 currentPage = pdfFile.getPage(pageNum)
                 #currentPage.mergePage(watermark.getPage(0))
                 writer.addPage(currentPage)
 
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!6")
-            
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!7")
         outputStream = BytesIO()
         writer.write(outputStream)
         response.write(outputStream.getvalue())
 
         User.objects.filter(id=request.user.id).update(protect_file_temp_download_key="")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!8")
         return response
 
     return render(request, "dashboard-manage-applications.html", context)
@@ -182,16 +176,47 @@ def view_application_details(request, pk):
         request.session['warning'] = "Warning: Please login before applying to a job"
         return HttpResponseRedirect('/login')
 
+    if request.user.user_type == USER_TYPE_SUPER:
+        jobApplication = get_object_or_404(JobApplication, id=pk)
+
+        context = {"jobApplication" : jobApplication}
+
     if request.user.user_type == USER_TYPE_EMPLOYER:
 
-        jobsWithPermission = Job.objects.filter(JobAccessPermission__employer=request.user)
-        jobApplications.objects.filter(job=jobsWithPermission)
+        jobApplication = get_object_or_404(JobApplication, id=pk, job__jobAccessPermission = Employer.objects.get(user=request.user))
+
+        context = {"jobApplication" : jobApplication}
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
-        jobApplications.objects.filter(candidate=request.user)
+        jobApplication = get_object_or_404(JobApplication,id=pk, candidate=Candidate.objects.get(user=request.user))
 
+        context = {"jobApplication" : jobApplication}
 
-    return render(request, "dashboard-manage-applications.html")
+    educations = Education.objects.filter(JobApplication=jobApplication)
+
+    experience = Experience.objects.filter(JobApplication=jobApplication)
+
+    preferredName = PreferredName.objects.get(user=jobApplication.candidate.user)
+
+    context['educations'] = educations
+    context['experience'] = experience
+    context['preferredName'] = preferredName.preferredName
+    context['user'] = request.user
+
+    if 'warning' in request.session:
+        context['warning'] = request.session['warning']
+        del request.session['warning']
+    if 'success' in request.session:
+        context['success'] = request.session['success']
+        del request.session['success']
+    if 'info' in request.session:
+        context['info'] = request.session['info']
+        del request.session['info']
+    if 'danger' in request.session:
+        context['danger'] = request.session['danger']
+        del request.session['danger']
+
+    return render(request, "application-details.html", context)
 
     
 def get_protected_file(request, uid, candidateId, filetype, fileid, token):

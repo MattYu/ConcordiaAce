@@ -219,22 +219,85 @@
       </div>
     </header>
 
+  
     <!-- Candidates Details -->
     <div class="alice-bg padding-top-60 section-padding-bottom">
       <div class="container">
+            {% if success %}
+      <div class="dashboard-content-wrapper">
+        <div class="alert-wrap">
+          <div class="jy-alert success-alert">
+            <div class="icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <p>{{success}}</p>
+            <div class="close_">
+              <a href=""><i class="fas fa-times"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if info %}
+      <div class="dashboard-content-wrapper">
+        <div class="alert-wrap">
+          <div class="jy-alert info-aler">
+            <div class="icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <p>{{info}}</p>
+            <div class="close_">
+              <a href=""><i class="fas fa-times"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if warning %}
+      <div class="dashboard-content-wrapper">
+        <div class="alert-wrap">
+          <div class="jy-alert warning-alert">
+            <div class="icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <p>{{warning}}</p>
+            <div class="close_">
+              <a href=""><i class="fas fa-times"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% if danger %}
+      <div class="dashboard-content-wrapper">
+        <div class="alert-wrap">
+          <div class="jy-alert danger-alert">
+            <div class="icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <p>{{danger}}</p>
+            <div class="close_">
+              <a href=""><i class="fas fa-times"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
         <div class="row">
           <div class="col">
             <div class="candidate-details">
               <div class="title-and-info">
                 <div class="title">
-                  <div class="thumb">
-                    <img src="images/candidate/thumb-1.jpg" class="img-fluid" alt="">
-                  </div>
                   <div class="title-body">
-                    <h4>Micheal N. Taylor</h4>
+                    <h4> {% if preferredName %} {{preferredName}} ({{jobApplication.candidate.user.firstName}}){% else %}{{jobApplication.candidate.user.firstName}} {% endif %} {{jobApplication.candidate.user.lastName}} </h4>
                     <div class="info">
-                      <span class="candidate-designation"><i data-feather="check-square"></i>ios Developer</span>
-                      <span class="candidate-location"><i data-feather="map-pin"></i>Los Angeles</span>
+                      <span class="candidate-designation"><i data-feather="check-square"></i>Application Status: {{jobApplication.status}}</span>
+                    </div>
+                    <div class="info">
+                      <span class="candidate-designation"><i data-feather="check-square"></i>Applied to: {{jobApplication.job.title}} At {{jobApplication.job.company.name}}</span>
+                    </div>
+                    <div class="info">
+                      <span class="candidate-designation"><i data-feather="check-square"></i>On {{jobApplication.created_at}}</span>
                     </div>
                   </div>
                 </div>
@@ -271,6 +334,7 @@
                     </div>
                     <div class="edication-background details-section">
                       <h4><i data-feather="book"></i>Education Background</h4>
+
                       <div class="education-label">
                         <span class="study-year">2018 - Present</span>
                         <h5>Masters in Software Engineering<span>@ Engineering University</span></h5>
@@ -624,7 +688,7 @@
     <script src={% static "assets/js/slick.min.js" %}></script>
     <script src={% static "assets/js/jquery.ajaxchimp.min.js" %}></script>
 
-    <script src{% static ="js/custom.js" %}></script>
+    <script src={% static "js/custom.js" %}></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
     <script src={% static "js/map.js" %}></script>
