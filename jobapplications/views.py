@@ -256,7 +256,7 @@ def view_application_details(request, pk):
     preferredName = PreferredName.objects.get(user=jobApplication.candidate.user)
 
     context['educations'] = educations
-    context['experience'] = experience
+    context['experiences'] = experience
     context['preferredName'] = preferredName.preferredName
     context['user'] = request.user
 
@@ -350,9 +350,7 @@ def get_protected_file_withAuth(request, fileType, applicationId):
         jobApplications = JobApplication.objects.filter(job__jobAccessPermission=Employer.objects.get(user=request.user), id=applicationId).count()
         
         if jobApplications == 0:
-            request.session['redirect'] = request.path
-            request.session['warning'] = "Warning: You do not have access to this file"
-            return HttpResponseRedirect('/')
+            return HttpResponse('Invalid permission token')
 
         if fileType == (FILE_TYPE_RESUME):
             fileId = Resume.objects.get(JobApplication__id=applicationId).id
@@ -382,9 +380,7 @@ def get_protected_file_withAuth(request, fileType, applicationId):
 
 
         if jobApplications == 0:
-            request.session['redirect'] = request.path
-            request.session['warning'] = "Warning: You do not have access to this file"
-            return HttpResponseRedirect('/')
+            return HttpResponse('Invalid permission token')
 
         if fileType == (FILE_TYPE_RESUME):
             fileId = Resume.objects.get(JobApplication__id=applicationId).id
