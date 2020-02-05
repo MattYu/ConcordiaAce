@@ -57,6 +57,7 @@ def employer_view_rankings(request, jobId= None):
                         rank.save()
 
 
+
             form = EmployerRankingForm(jobId=jobId)
 
             context["form"] = form
