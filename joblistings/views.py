@@ -34,10 +34,13 @@ def job_search(request, *args, **kwargs):
         qs = Job.objects.filter(*args).distinct()
         qs = list(set(qs))
 
-        queryset = []
-        for q in qs:
-            if q.location.lower() == location or q.country.lower() == location:
-                queryset.append(q)
+        if location == "All Locations":
+            queryset = qs
+        else:
+            queryset = []
+            for q in qs:
+                if q.location.lower() == location.lower() or q.country.lower() == location.lower():
+                    queryset.append(q)
  
         context = {
             'joblist': queryset,
