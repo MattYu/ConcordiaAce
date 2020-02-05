@@ -5,6 +5,7 @@ from ace.constants import MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_R
 from accounts.models import Employer
 
 # Create your models here.
+
 class Job(models.Model):
     title = models.CharField(max_length = MAX_LENGTH_TITLE)
     
@@ -32,6 +33,8 @@ class Job(models.Model):
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE, default= "")
 
+    jobAccessPermission = models.ManyToManyField(Employer)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -50,12 +53,7 @@ class JobPDFDescription(models.Model):
     def __str__(self):
         return self.job.title
 
-class JobAccessPermission(models.Model):
-    employer = models.ManyToManyField(Employer)
-    job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
 
-    def __str__(self):
-        return self.job.title
     
 
 

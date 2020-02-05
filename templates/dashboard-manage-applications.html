@@ -1,5 +1,6 @@
 <!doctype html>
 {% load static %}
+{% load navbar_tag %}
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -250,9 +251,18 @@
       <div class="container no-gliters">
         <div class="row no-gliters">
           <div class="col">
+
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper">
                 <div class="manage-candidate-container">
+                  <form method="POST" class="job-post-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <button class="button" class="add-new-field" name="pdf" id="pdf">Download Select List as PDF</button>
+                  </form>
+                  <br>
+                  {% if job %}
+                      <h6>Applications for {{job.title}} [{{job.id}}] at {{job.company.name}}</h6>
+                  {% endif %}
                   <table class="table">
                     <thead>
                       <tr>
@@ -262,110 +272,30 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="candidates-list">
-                        <td class="title">
-                          <div class="thumb">
-                            <img src="dashboard/images/user-1.jpg" class="img-fluid" alt="">
-                          </div>
-                          <div class="body">
-                            <h5><a href="#">Lula Wallace</a></h5>
-                            <div class="info">
-                              <span class="designation"><a href="#"><i data-feather="check-square"></i>Senior UI / UX Designer</a></span>
-                              <span class="location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="status"><i data-feather="check-circle"></i>Shortlisted</td>
-                        <td class="action">
-                          <a href="#" class="download"><i data-feather="download"></i></a>
-                          <a href="#" class="inbox"><i data-feather="mail"></i></a>
-                          <a href="#" class="remove"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
-                      <tr class="candidates-list">
+                      
                         {% if jobApplications %}
                           {% for application in jobApplications %}
+                        <tr class="candidates-list">
                           <td class="title">
                             <div class="thumb">
                               <img src={{application.job.company.image.url}} class="img-fluid" alt="">
                             </div>
                             <div class="body">
-                              <h5><a href="#">{{application.firstName}} {{application.lastName}}</a></h5>
+                              <h5><a href="/jobApplicationDetails/{{application.id}}">{{application.firstName}} {{application.lastName}}</a></h5>
                               <div class="info">
-                                <span class="designation"><a href="#"><i data-feather="check-square"></i>{{application.job.title}}</a></span>
-                                <span class="location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
+                                <span class="designation"><a href="/job-details/{{application.job.id}}"><i data-feather="check-square"></i>{{application.job.title}}</a></span>
+                                <span class="location"><a href="#"><i data-feather="map-pin"></i></a></span>
                               </div>
                             </div>
                           </td>
-                          <td class="status"><i data-feather="check-circle"></i>Shortlisted</td>
+                          <td class="status"><i data-feather="check-circle"></i>{{application.status}}</td>
                           <td class="action">
                             <a href="#" class="download"><i data-feather="download"></i></a>
                             <a href="#" class="inbox"><i data-feather="mail"></i></a>
-                            <a href="#" class="remove"><i data-feather="trash-2"></i></a>
                           </td>
                         </tr>
                           {% endfor %}
-
                         {% endif %}
-                        <td class="title">
-                          <div class="thumb">
-                            <img src="dashboard/images/user-2.jpg" class="img-fluid" alt="">
-                          </div>
-                          <div class="body">
-                            <h5><a href="#">Hertha A. Sullivan</a></h5>
-                            <div class="info">
-                              <span class="designation"><a href="#"><i data-feather="check-square"></i>Senior UI / UX Designer</a></span>
-                              <span class="location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="status"><i data-feather="check-circle"></i>Shortlisted</td>
-                        <td class="action">
-                          <a href="#" class="download"><i data-feather="download"></i></a>
-                          <a href="#" class="inbox"><i data-feather="mail"></i></a>
-                          <a href="#" class="remove"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
-                      <tr class="candidates-list">
-                        <td class="title">
-                          <div class="thumb">
-                            <img src="dashboard/images/user-3.jpg" class="img-fluid" alt="">
-                          </div>
-                          <div class="body">
-                            <h5><a href="#">David Johnston</a></h5>
-                            <div class="info">
-                              <span class="designation"><a href="#"><i data-feather="check-square"></i>Senior UI / UX Designer</a></span>
-                              <span class="location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="status"><i data-feather="check-circle"></i>Shortlisted</td>
-                        <td class="action">
-                          <a href="#" class="download"><i data-feather="download"></i></a>
-                          <a href="#" class="inbox"><i data-feather="mail"></i></a>
-                          <a href="#" class="remove"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
-                      <tr class="candidates-list">
-                        <td class="title">
-                          <div class="thumb">
-                            <img src="dashboard/images/user-4.jpg" class="img-fluid" alt="">
-                          </div>
-                          <div class="body">
-                            <h5><a href="#">Robert Hayes</a></h5>
-                            <div class="info">
-                              <span class="designation"><a href="#"><i data-feather="check-square"></i>Senior UI / UX Designer</a></span>
-                              <span class="location"><a href="#"><i data-feather="map-pin"></i>New Orleans</a></span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="status"><i data-feather="check-circle"></i>Shortlisted</td>
-                        <td class="action">
-                          <a href="#" class="download"><i data-feather="download"></i></a>
-                          <a href="#" class="inbox"><i data-feather="mail"></i></a>
-                          <a href="#" class="remove"><i data-feather="trash-2"></i></a>
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                   <div class="pagination-list text-center">
@@ -484,12 +414,8 @@
               </div>
               <div class="dashboard-sidebar">
                 <div class="company-info">
-                  <div class="thumb">
-                    <img src="dashboard/images/company-logo.png" class="img-fluid" alt="">
-                  </div>
                   <div class="company-body">
-                    <h5>Degoin</h5>
-                    <span>@username</span>
+                    <h5>{{user.email}}</h5>
                   </div>
                 </div>
                 <div class="profile-progress">
@@ -509,9 +435,13 @@
                   <ul>
                     <li><i class="fas fa-home"></i><a href="employer-dashboard.html">Dashboard</a></li>
                     <li><i class="fas fa-user"></i><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
-                    <li><i class="fas fa-briefcase"></i><a href="employer-dashboard-manage-job.html">Manage Jobs</a></li>
-                    <li class="active"><i class="fas fa-users"></i><a href="employer-dashboard-manage-candidate.html">Manage Candidates</a></li>
-                    <li><i class="fas fa-heart"></i><a href="#">Shortlisted Resumes</a></li>
+                    <li><i class="fas fa-briefcase"></i><a href="/manageJobs">Manage Jobs</a></li>
+                    <li class="active"><i class="fas fa-users"></i><a href="/jobApplications/">Manage Applications</a></li>
+                    {% if user.user_type == 1 %}
+                    <li><i class="fas fa-heart"></i><a href="/candidateRanking">Interview Ranking</a></li>
+                    {% else %}
+                    <li><i class="fas fa-heart"></i><a href="/employerRanking">Interview Ranking</a></li>
+                    {% endif %}
                     <li><i class="fas fa-plus-square"></i><a href="employer-dashboard-post-job.html">Post New Job</a></li>
                     <li><i class="fas fa-comment"></i><a href="employer-dashboard-message.html">Message</a></li>
                     <li><i class="fas fa-calculator"></i><a href="employer-dashboard-pricing.html">Pricing Plans</a></li>

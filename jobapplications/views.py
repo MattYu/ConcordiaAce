@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from joblistings.models import Job
-from jobapplications.models import JobApplication
+from jobapplications.models import JobApplication, Resume, CoverLetter, Education, Experience, Ranking
 from jobapplications.forms import ApplicationForm, resumeUpload
 from django_sendfile import sendfile
 import uuid
@@ -8,13 +8,20 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
 from ace.constants import USER_TYPE_EMPLOYER, USER_TYPE_CANDIDATE
 from django.contrib.sites.shortcuts import get_current_site
-from weasyprint import HTML
 from django.http import HttpResponse
-from urllib3 import PoolManager
 from io import BytesIO, StringIO
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import requests
 
+from ace.constants import FILE_TYPE_RESUME, FILE_TYPE_COVER_LETTER, FILE_TYPE_TRANSCRIPT, FILE_TYPE_OTHER, USER_TYPE_SUPER, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
+
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
+from django_sendfile import sendfile
+from accounts.models import downloadProtectedFile_token, User, Candidate, Employer, Language, PreferredName
+import uuid
+from django.db import transaction
+from django.db.models import Q
 
 #u = uuid.uuid4()
 #u.hex
@@ -31,6 +38,12 @@ def add_resume(request, pk= None, *args, **kwargs):
         if request.user.user_type == USER_TYPE_EMPLOYER:
             request.session['info'] = "You are logged in as an employer. Only candidates can access this page"
             return  HttpResponseRedirect('/')
+
+        jobApplication = JobApplication.objects.filter(job__pk=pk, candidate=Candidate.objects.get(user=request.user)).count()
+
+        if jobApplication !=0:
+            request.session['info'] = "You already applied to this job"
+            return HttpResponseRedirect('/jobApplicationDetails/' + str(jobApplication.pk) + "/")
     
     instance = get_object_or_404(Job, pk=pk)
     context = {'job': instance}
@@ -59,9 +72,10 @@ def download_test(request, pk):
     download = get_object_or_404(Job, pk=pk)
     return sendfile(request, download.company.image.path)
 
-
-def browse_job_applications(request):
+@transaction.atomic
+def browse_job_applications(request, jobId= -1):
     context = {}
+    jobApplications = None
 
     if not request.user.is_authenticated:
 
@@ -70,12 +84,107 @@ def browse_job_applications(request):
         return HttpResponseRedirect('/login')
 
 
-    if request.user.user_type == 4:
-        
-        jobApplications = JobApplication.objects.all()
+    if request.user.user_type == USER_TYPE_SUPER:
+        kwargs = {}
 
-        context = {"jobApplications" : jobApplications}
+        if jobId == None:
+            jobApplications = JobApplication.objects.all()
+
+        else:
+            if jobId != None:
+                query = Q(job__pk=jobId)
+                context["job"] = Job.objects.get(pk=jobId)
+
+            jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
+
+        context["jobApplications"] = jobApplications
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+        query = Q(job__jobAccessPermission=Employer.objects.get(user=request.user))
+        query &= ~Q(status="Pending Review")
+        query &= ~Q(status="Not Approved")
+        
+        if jobId != None:
+            query &= Q(job__pk=jobId)
+            context["job"] = Job.objects.get(pk=jobId)
+
+
+
+        jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
+
+        for q in jobApplications:
+            print(q.status)
+
+        context["jobApplications"] = jobApplications
+
+    if request.user.user_type == USER_TYPE_CANDIDATE:
+
+        jobApplications = JobApplication.objects.filter(candidate= Candidate.objects.get(user=request.user)).order_by('-created_at')
+
+        context["jobApplications"] = jobApplications
     
+    if (request.method == 'POST'):
+    #if request.POST.get("pdf"):
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename=downloadApplications.pdf'
+        writer = PdfFileWriter()
+        # Change to https in prod (although django should automatically force https if settings.py is configured corretly in prod)
+        base_url = "http://" + str(get_current_site(request).domain)  + "/getFile"
+    
+        User.objects.filter(id=request.user.id).update(protect_file_temp_download_key=str(uuid.uuid4().hex))
+        token = downloadProtectedFile_token.make_token(request.user)
+
+        for application in jobApplications:
+            uid = urlsafe_base64_encode(force_bytes(request.user.pk))
+            candidateId = urlsafe_base64_encode(force_bytes(application.candidate.pk))
+
+
+            fileId = Resume.objects.get(JobApplication=application).id
+            fileId = urlsafe_base64_encode(force_bytes(fileId))
+            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_RESUME))
+
+            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+            getFile = requests.get(url).content
+            memoryFile = BytesIO(getFile)
+            pdfFile = PdfFileReader(memoryFile)
+  
+            for pageNum in range(pdfFile.getNumPages()):
+                currentPage = pdfFile.getPage(pageNum)
+                #currentPage.mergePage(watermark.getPage(0))
+                writer.addPage(currentPage)
+
+            fileId = CoverLetter.objects.get(JobApplication=application).id
+            fileId = urlsafe_base64_encode(force_bytes(fileId))
+            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_COVER_LETTER))
+
+            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+            getFile = requests.get(url).content
+            memoryFile = BytesIO(getFile)
+            pdfFile = PdfFileReader(memoryFile)
+
+            for pageNum in range(pdfFile.getNumPages()):
+                currentPage = pdfFile.getPage(pageNum)
+                #currentPage.mergePage(watermark.getPage(0))
+                writer.addPage(currentPage)
+
+            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_TRANSCRIPT))
+            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+
+            getFile = requests.get(url).content
+            memoryFile = BytesIO(getFile)
+            pdfFile = PdfFileReader(memoryFile)
+
+            for pageNum in range(pdfFile.getNumPages()):
+                currentPage = pdfFile.getPage(pageNum)
+                #currentPage.mergePage(watermark.getPage(0))
+                writer.addPage(currentPage)
+
+        outputStream = BytesIO()
+        writer.write(outputStream)
+        response.write(outputStream.getvalue())
+
+        User.objects.filter(id=request.user.id).update(protect_file_temp_download_key="")
+        return response
 
     return render(request, "dashboard-manage-applications.html", context)
 
@@ -89,53 +198,115 @@ def view_application_details(request, pk):
         request.session['warning'] = "Warning: Please login before applying to a job"
         return HttpResponseRedirect('/login')
 
-    if request.user.user_type == USER_TYPE_EMPLOYER:
+    if request.user.user_type == USER_TYPE_SUPER:
+        jobApplication = get_object_or_404(JobApplication, id=pk)
 
-        jobsWithPermission = Job.objects.filter(JobAccessPermission__employer=request.user)
-        jobApplications.objects.filter(job=jobsWithPermission)
+        context = {"jobApplication" : jobApplication}
+
+        if request.method == 'POST':
+            if request.POST.get('Approved'):
+                jobApplication.status= "Submitted"
+                jobApplication.save()
+            if request.POST.get('Reject'):
+                jobApplication.status= "Not Approved"
+                jobApplication.save()
+
+        if jobApplication.status == "Pending Review" or jobApplication.status== "Not Approved":
+            context['showButton'] = True
+
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+        query = Q(job__jobAccessPermission = Employer.objects.get(user=request.user))
+        query &= ~Q(status="Pending Review")
+        query &= ~Q(status="Not Approved")
+        query &= Q(id=pk)
+
+        jobApplication = get_object_or_404(JobApplication, query)
+
+        context = {"jobApplication" : jobApplication}
+
+        if request.method == 'POST':
+            if request.POST.get('Approved'):
+                ranking = Ranking()
+                ranking.jobApplication = jobApplication
+                ranking.job = jobApplication.job
+                ranking.candidate = jobApplication.candidate
+                ranking.save()
+                jobApplication.status= "Interviewing"
+                jobApplication.save()
+
+            if request.POST.get('Reject'):
+                jobApplication.status= "Not Selected"
+                jobApplication.save()
+
+        if jobApplication.status == "Submitted" or jobApplication.status== "Not Selected":
+            context['showButton'] = True
+
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
-        jobApplications.objects.filter(candidate=request.user)
+        jobApplication = get_object_or_404(JobApplication,id=pk, candidate=Candidate.objects.get(user=request.user))
 
+        context = {"jobApplication" : jobApplication}
 
-    return render(request, "dashboard-manage-applications.html")
+    educations = Education.objects.filter(JobApplication=jobApplication)
 
+    experience = Experience.objects.filter(JobApplication=jobApplication)
 
-def concatinate_applicationPDF(request):
+    preferredName = PreferredName.objects.get(user=jobApplication.candidate.user)
 
-    manager = PoolManager(10)
+    context['educations'] = educations
+    context['experience'] = experience
+    context['preferredName'] = preferredName.preferredName
+    context['user'] = request.user
+
+    if 'warning' in request.session:
+        context['warning'] = request.session['warning']
+        del request.session['warning']
+    if 'success' in request.session:
+        context['success'] = request.session['success']
+        del request.session['success']
+    if 'info' in request.session:
+        context['info'] = request.session['info']
+        del request.session['info']
+    if 'danger' in request.session:
+        context['danger'] = request.session['danger']
+        del request.session['danger']
+
+    return render(request, "application-details.html", context)
+
     
-
-    response = HttpResponse()
-    response['Content-Disposition'] = 'attachment; filename=form.pdf'
-
-    getFile = requests.get("http://127.0.0.1:8000/jobDescription/1/").content
-
-        
-    writer = PdfFileWriter()
-    memoryFile = BytesIO(getFile)
-
+def get_protected_file(request, uid, candidateId, filetype, fileid, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=uid)
     
-    pdfFile = PdfFileReader(memoryFile)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and downloadProtectedFile_token.check_token(user, token):
 
-    for pageNum in range(pdfFile.getNumPages()):
-        currentPage = pdfFile.getPage(pageNum)
-        #currentPage.mergePage(watermark.getPage(0))
-        writer.addPage(currentPage)
+        fileType = force_text(urlsafe_base64_decode(filetype))
+        fileId = force_text(urlsafe_base64_decode(fileid))
+        candidateId = force_text(urlsafe_base64_decode(candidateId))
 
-    getFile = requests.get("http://127.0.0.1:8000/jobDescription/1/").content
+        if fileType == str(FILE_TYPE_RESUME):
+            resume = Resume.objects.get(id=fileId).resume
+            filePath = resume.path
 
-    pdfFile = PdfFileReader(memoryFile)
 
-    for pageNum in range(pdfFile.getNumPages()):
-        currentPage = pdfFile.getPage(pageNum)
-        #currentPage.mergePage(watermark.getPage(0))
-        writer.addPage(currentPage)
-    #pdf11 = pdf1.render()
-    #http_response = HttpResponse(pdf11, content_type='application/pdf')
-    #http_response['Content-Disposition'] = 'filename="report.pdf"'
-    outputStream = BytesIO()
-    writer.write(outputStream)
-    response.write(outputStream.getvalue())
-    return response
-    
+        if fileType == str(FILE_TYPE_COVER_LETTER):
+            coverLetter = CoverLetter.objects.get(id=fileId).coverLetter
+            filePath = coverLetter.path
+ 
+
+        if fileType == str(FILE_TYPE_TRANSCRIPT):
+            transcript = Candidate.objects.get(id=candidateId).transcript
+            filePath = transcript.path
+            
+
+        if fileType == str(FILE_TYPE_OTHER):
+            filePath = None
+
+        return sendfile(request, filePath)
+    else:
+        return HttpResponse('Invalid permission token')
+

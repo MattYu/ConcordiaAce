@@ -5,6 +5,7 @@ from tinymce.widgets import TinyMCE
 from companies.models import Company
 from joblistings.models import Job, JobPDFDescription
 from django.shortcuts import get_object_or_404
+from accounts.models import Employer
 
 
 class JobForm(forms.Form):
@@ -82,8 +83,12 @@ class JobForm(forms.Form):
         exclude = ('company',)
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        company = Company.objects.all()
+        if user.user_type == 4:
+            company = Company.objects.all()
+        else:
+            company = [Employer.objects.get(user=user).company]
         company_choices = []
         for obj in company:
             company_choices.append((obj.pk, obj))

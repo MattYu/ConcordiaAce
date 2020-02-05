@@ -80,6 +80,7 @@ USER_TYPE_CHOICES = (
 
 USER_TYPE_EMPLOYER = 2
 USER_TYPE_CANDIDATE = 1
+USER_TYPE_SUPER = 4
 
 LANGUAGE_CHOICES = (
     ("English", "English"),
@@ -103,11 +104,13 @@ YES_NO = (
 # Job applications
 
 JOB_APPLICATION_STATUS = (
-    ("Pending", "Pending Coop Review"),
+    ("Pending Review", "Pending Coop Review"),
+    ("Not Approved", "Not Approved"),
     ("Submitted", "Submitted to Employer"),
     ("Interviewing", "Selected for Interview"),
     ("Not Selected", "Not Selected"),
     ("Ranked", "Ranked by Employer"),
+    ("1st", "1st"),
     ("Matched", "Matched"),
     ("Not Matched", "Not Matched"),
     ("Closed", "Closed"),
@@ -116,17 +119,27 @@ JOB_APPLICATION_STATUS = (
 # Company
 
 COMPANY_STATUS = (
-    ("Pending", "Pending Coop Review"),
+    ("Pending Review", "Pending Coop Review"),
+    ("Not Approved", "Not Approved"),
+    ("Not Approved", "Pending Coop Review"),
     ("Approved", "Approved"),
     ("Not Approved", "Not Approved"),
 )
 
 # Job 
 JOB_STATUS = (
-    ("Pending", "Pending Coop Review"),
+    ("Pending Review", "Pending Coop Review"),
+    ("Not Approved", "Not Approved"),
     ("Waiting", "Collecting applications"),
     ("Review", "Open for Review"),
     ("Interviewing", "Intervierwing"),
     ("Not Approved", "Not Approved"),
     ("Closed", "Closed")
 )
+
+# Download
+
+FILE_TYPE_RESUME = 1
+FILE_TYPE_COVER_LETTER = 2
+FILE_TYPE_TRANSCRIPT = 3
+FILE_TYPE_OTHER = 4

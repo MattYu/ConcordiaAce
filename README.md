@@ -21,6 +21,8 @@
 - requests
 - psycopg2
 
+- pypdf2
+
 
 # Dev installation
 1) Install git
@@ -63,8 +65,10 @@
   - python manage.py makemigrations
   - python manage.py migrate
   - python manage.py createsuperuser
+      - User type = 4
   - python manage.py runserver
 
+8) Push your branch. When ready to merge, make a pull request. Please never merge directly into master. 
   
 
 # Commands

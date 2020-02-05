@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'joblistings',
     'companies',
     'jobapplications',
-    'accounts'
+    'accounts',
+    'jobmatchings',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,5 @@ EMAIL_HOST_USER = 'concordia.ace.coop@gmail.com'
 EMAIL_HOST_PASSWORD = 'aceconcordiadev'
 EMAIL_PORT = 587
 
+# SECURITY WARNING: Uncomment below in production once certificate at hand to force HTTPS 
+#SECURE_SSL_REDIRECT = True

@@ -5,13 +5,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Q
 
 
-from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER
-from joblistings.models import Job, JobPDFDescription, JobAccessPermission
+from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, USER_TYPE_SUPER
+from joblistings.models import Job, JobPDFDescription
 from joblistings.forms import JobForm
 from companies.models import Company
-from accounts.models import Employer
+from accounts.models import Employer, Candidate
 from django_sendfile import sendfile
-
+from jobapplications.models import JobApplication
+from django.db.models import Q
 
 
 # Create your views here.
@@ -76,16 +77,14 @@ def post_job(request,  *args, **kwargs):
             return  HttpResponseRedirect('/')
 
     if (request.method == "POST"):
-        form = JobForm(data=request.POST, files=request.FILES)
+        form = JobForm(user=request.user, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.clean()
             job = form.save()
 
             if request.user.user_type == USER_TYPE_EMPLOYER:
-                jobAccessPermission = JobAccessPermission()
-                jobAccessPermission.job = job
-                jobAccessPermission.save()
-                jobAccessPermission.employer.add(Employer.objects.get(user=request.user))
+                job.jobAccessPermission.add(Employer.objects.get(user=request.user)) 
+                job.save()
                 
 
             job_pk = job.pk
@@ -94,12 +93,70 @@ def post_job(request,  *args, **kwargs):
 
             return HttpResponseRedirect('/job-details/' + str(job_pk))
 
-        
-        print(request.POST)
-    jobForm = JobForm()
+    
+    jobForm = JobForm(user=request.user)
     context = {'form' : jobForm}
 
     return render(request, "employer-dashboard-post-job.html", context)
+
+def manage_jobs(request):
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please login first"
+        return HttpResponseRedirect('/login')
+
+
+    if request.user.user_type == USER_TYPE_SUPER:
+        
+        jobQuery = Job.objects.all()
+
+        jobs = {}
+
+        jobs = []
+        for job in jobQuery:
+            obj = {}
+
+            obj['job'] = job
+            obj['count'] = JobApplication.objects.filter(job=job).count()
+            jobs.append(obj)
+
+        context = {
+                    "jobs" : jobs,
+                    'user' : request.user,
+                }
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+
+        jobQuery = Job.objects.filter(jobAccessPermission = Employer.objects.get(user=request.user))
+
+        query1 = ~Q(status="Pending Review")
+        query2 = ~Q(status="Not Approved")
+
+
+        jobs = []
+        for job in jobQuery:
+            obj = {}
+
+            obj['job'] = job
+
+            obj['count'] = JobApplication.objects.filter(query1|query2,job=job).count()
+            
+            jobs.append(obj)
+
+
+        context = {
+                    "jobs" : jobs,
+                    'user' : request.user,
+                }
+
+    if request.user.user_type == USER_TYPE_CANDIDATE:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: This page is only accessible to employers"
+        return HttpResponseRedirect('/')
+
+    return render(request, "dashboard-manage-job.html", context)
 
 def download_jobPDF(request, pk):
     download = get_object_or_404(JobPDFDescription, job=pk)

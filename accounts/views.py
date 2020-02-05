@@ -11,6 +11,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from accounts.models import account_activation_token, User
 from django.core.mail import EmailMessage
+from django.db import transaction 
+
 
 from .decorators import check_recaptcha
 
@@ -66,7 +68,7 @@ def register_user(request):
 
     return render(request, "register.html", context)
 
-
+@transaction.atomic
 def login_user(request):
     if (request.method == 'POST'):
         form = LoginForm(request.POST)
@@ -126,7 +128,8 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
-
+    
+@transaction.atomic
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))

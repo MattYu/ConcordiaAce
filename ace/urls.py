@@ -19,10 +19,27 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from view import home_page
-from joblistings.views import job_details, post_job, download_jobPDF, job_search
-from jobapplications.views import add_resume, download_test, browse_job_applications, concatinate_applicationPDF
+from joblistings.views import job_details, post_job, download_jobPDF, manage_jobs, job_search
+from jobapplications.views import add_resume, download_test, browse_job_applications, get_protected_file, view_application_details
 from accounts.views import register_user, logout_user, login_user, activate
 from django.urls import include
+from django.urls import register_converter
+
+from jobmatchings.views import employer_view_rankings, candidate_view_rankings
+
+class OptionalIntConverter:
+    regex = '[0-9]*'
+ 
+    def to_python(self, value):
+        if value:
+            return int(value)
+        else:
+            return None
+ 
+    def to_url(self, value):
+        return str(value) if value is not None else ''
+ 
+register_converter(OptionalIntConverter, 'optional_int')
 
 urlpatterns = [
     path('', home_page),
@@ -37,10 +54,15 @@ urlpatterns = [
     path('logout/', logout_user),
     path('login/', login_user),
     path('activate/<uidb64>/<token>', activate, name="activate"),
-    path('jobApplications/', browse_job_applications),
-    #path('applicationDetails/<int:pk>/', ),
     path('concatinateApplications/', concatinate_applicationPDF),
     path('search/', job_search)
+    path('jobApplications/<optional_int:jobId>', browse_job_applications),
+    path('jobApplicationDetails/<int:pk>/', view_application_details),
+    path('getFile/<str:uid>/<str:candidateId>/<str:filetype>/<str:fileid>/<token>/', get_protected_file),
+    path('manageJobs/', manage_jobs),
+    path('employerRanking/<optional_int:jobId>', employer_view_rankings),
+    path('candidateRanking/', candidate_view_rankings),
+
 ]
 
 if settings.DEBUG:

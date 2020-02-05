@@ -17,14 +17,14 @@ class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
     #skillList = models.CharField(max_length = MAX_LENGTH_LONGSTANDARDFIELDS,  default= "")
     #aboutYou = tinymce_models.HTMLField(max_length = MAX_LENGTH_STANDARDTEXTAREA, default= "")
-    candidate = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
-    status = models.CharField(max_length = 20, default= "Pending", choices= JOB_APPLICATION_STATUS)
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, default= "1")
+    status = models.CharField(max_length = 20, default= "Pending Review", choices= JOB_APPLICATION_STATUS)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.job.title + ' - ' + self.candidate.email
+        return self.job.title + ' - ' + self.candidate.user.email
 
 class Education(models.Model):
     institute = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
@@ -74,13 +74,17 @@ class CoverLetter(models.Model):
 class Ranking(models.Model):
 
     employerRank = models.IntegerField(default= 1000)
-    userRank = models.IntegerField(default= 1000)
-    preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+    candidateRank = models.IntegerField(default= 1000)
 
     jobApplication = models.ForeignKey(JobApplication, on_delete=models.CASCADE, default= "")
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
-    candidate = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
-    status = models.CharField(max_length = 20, default= "Pending", choices= JOB_APPLICATION_STATUS)
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, default= "")
+    status = models.CharField(max_length = 20, default= "Interviewing", choices= JOB_APPLICATION_STATUS)
+
+    is_ranking_open_for_employer = models.BooleanField(default=True)
+    is_ranking_open_for_candidate = models.BooleanField(default=False)
+
+    is_closed = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

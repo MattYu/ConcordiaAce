@@ -12,9 +12,16 @@ class TokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         return (
             six.text_type(user.pk) + six.text_type(timestamp) +
-            six.text_type(user.is_email_confirmed)
+            six.text_type(user.is_email_confirmed) 
         )
 account_activation_token = TokenGenerator()
+
+class ApplicationsTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return (
+            six.text_type(user.pk) + six.text_type(timestamp) + six.text_type(user.protect_file_temp_download_key)
+        )
+downloadProtectedFile_token = ApplicationsTokenGenerator()
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, firstName, lastName, user_type, password=None):
@@ -69,8 +76,9 @@ class User(AbstractBaseUser , PermissionsMixin):
     is_email_confirmed = models.BooleanField(default=False)
     firstName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
     lastName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
-
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
+
+    protect_file_temp_download_key = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['firstName', 'lastName', 'user_type']
