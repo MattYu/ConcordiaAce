@@ -23,6 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'r#y4_mwy(0xuhb8xo2_))0dg8qhb@dnz1(!*@ac3tgrbl@^8q@'
 # Secret reCaptcha key: Do not expose in prod
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LcU4dQUAAAAAPuB2fRHexfmyTP8Gg52B87crNPD'
+# TODO - Add Google maps API Key
+GOOGLE_MAPS_API_KEY = None 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

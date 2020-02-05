@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
+from django.db.models import Q
 
 
 from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, USER_TYPE_SUPER
@@ -13,7 +14,40 @@ from django_sendfile import sendfile
 from jobapplications.models import JobApplication
 from django.db.models import Q
 
+
 # Create your views here.
+def job_search(request, *args, **kwargs):
+    if request.method == 'POST':
+        keywords = request.POST['keyword']
+        location = request.POST['search-location']
+
+        args = []
+        queries = keywords.split(" ")
+        for query in queries:
+            q1 = Q(company__name__icontains=query)
+            q2 = Q(description__icontains=query)
+            q3 = Q(title__icontains=query)
+            q4 = Q(responsabilities__icontains=query)
+            combined_q = q1 | q2 | q3 | q4
+            args.append(combined_q)
+
+        qs = Job.objects.filter(*args).distinct()
+        qs = list(set(qs))
+
+        queryset = []
+        for q in qs:
+            if q.location.lower() == location or q.country.lower() == location:
+                queryset.append(q)
+ 
+        context = {
+            'joblist': queryset,
+            'job_num': str(len(queryset))
+        }
+
+        return render(request, 'job-listing.html', context)
+
+    return HttpResponseRedirect("/")
+
 
 def job_details(request, pk=None, *args, **kwargs):
     instance = get_object_or_404(Job, pk=pk)
