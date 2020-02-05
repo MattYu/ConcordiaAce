@@ -39,7 +39,8 @@ def job_search(request, *args, **kwargs):
                 queryset.append(q)
  
         context = {
-            'joblist': queryset
+            'joblist': queryset,
+            'job_num': str(len(queryset))
         }
 
         return render(request, 'job-listing.html', context)

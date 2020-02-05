@@ -1,4 +1,6 @@
 <!doctype html>
+{% load static %}
+{% load navbar_tag %}
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -8,30 +10,30 @@
     <title>Oficiona</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href={% static "assets/css/bootstrap.min.css" %}>
 
     <!-- External Css -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="assets/css/themify-icons.css" />
-    <link rel="stylesheet" href="assets/css/et-line.css" />
-    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css" />
-    <link rel="stylesheet" href="assets/css/plyr.css" />
-    <link rel="stylesheet" href="assets/css/flag.css" />
-    <link rel="stylesheet" href="assets/css/slick.css" /> 
-    <link rel="stylesheet" href="assets/css/owl.carousel.min.css" />
-    <link rel="stylesheet" href="assets/css/jquery.nstSlider.min.css" />
+    <link rel="stylesheet" href={% static "assets/css/fontawesome-all.min.css" %}>
+    <link rel="stylesheet" href={% static "assets/css/themify-icons.css" %}/>
+    <link rel="stylesheet" href={% static "assets/css/et-line.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/bootstrap-select.min.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/plyr.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/flag.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/slick.css" %} /> 
+    <link rel="stylesheet" href={% static "assets/css/owl.carousel.min.css" %} />
+    <link rel="stylesheet" href={% static "assets/css/jquery.nstSlider.min.css" %} />
 
     <!-- Custom Css -->
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href={% static "css/main.css" %}>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7CRoboto:300i,400,500" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="icon" href="images/favicon.png">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/icon-114x114.png">
+    <link rel="icon" href="{% static images/favicon.png">
+    <link rel="apple-touch-icon" href={% static "images/apple-touch-icon.png" %}>
+    <link rel="apple-touch-icon" sizes="72x72" href={% static "images/icon-72x72.png" %}>
+    <link rel="apple-touch-icon" sizes="114x114" href={% static "images/icon-114x114.png" %}>
 
 
     <!--[if lt IE 9]>
@@ -48,7 +50,7 @@
           <div class="col">
             <div class="header-top">
               <div class="logo-area">
-                <a href="index.html"><img src="images/logo-2.png" alt=""></a>
+                <a href="../"><img src={% static "images/concordia-logo.png" %} alt=""></a>
               </div>
               <div class="header-top-toggler">
                 <div class="header-top-toggler-button"></div>
@@ -98,7 +100,7 @@
                   <div class="account-card">
                     <div class="header-top-account-info">
                       <a href="#" class="account-thumb">
-                        <img src="images/account/thumb-1.jpg" class="img-fluid" alt="">
+                        <img src={% static "images/account/thumb-1.jpg" %} class="img-fluid" alt="">
                       </a>
                       <div class="account-body">
                         <h5><a href="#">Robert Chavez</a></h5>
@@ -270,7 +272,7 @@
                     </div>
                   </div>
                   <div class="showing-number">
-                    <span>Showing 1–12 of 28 Jobs</span>
+                    <span>Showing {{ job_num }} jobs</span>
                   </div>
                 </div>
                 <div class="job-filter-result">
@@ -283,7 +285,7 @@
                     </div>
                     <div class="body">
                       <div class="content">
-                        <h4><a href="job-details/{{job.pk}}/">{{job.title}}</a></h4>
+                        <h4><a href="../job-details/{{job.pk}}/">{{job.title}}</a></h4>
                         <div class="info">
                           <span class="company"><a href="#"><i data-feather="briefcase"></i>{{job.company.name}}</a></span>
                           <span class="office-location"><a href="#"><i data-feather="map-pin"></i>{{job.location}}</a></span>
@@ -300,30 +302,6 @@
                     </div>
                   </div>
                   {% endfor %}
-                  <div class="job-list">
-                    <div class="thumb">
-                      <a href="#">
-                        <img src="images/job/company-logo-2.png" class="img-fluid" alt="">
-                      </a>
-                    </div>
-                    <div class="body">
-                      <div class="content">
-                        <h4><a href="job-details.html">Project Manager</a></h4>
-                        <div class="info">
-                          <span class="company"><a href="#"><i data-feather="briefcase"></i>Degoin</a></span>
-                          <span class="office-location"><a href="#"><i data-feather="map-pin"></i>San Francisco</a></span>
-                          <span class="job-type part-time"><a href="#"><i data-feather="clock"></i>Part Time</a></span>
-                        </div>
-                      </div>
-                      <div class="more">
-                        <div class="buttons">
-                          <a href="#" class="button" data-toggle="modal" data-target="#apply-popup-id">Apply Now</a>
-                          <a href="#" class="favourite"><i data-feather="heart"></i></a>
-                        </div>
-                        <p class="deadline">Deadline: Oct 31,  2019</p>
-                      </div>
-                    </div>
-                  </div>
                   <div class="apply-popup">
                     <div class="modal fade" id="apply-popup-id" tabindex="-1" role="dialog" aria-hidden="true">
                       <div class="modal-dialog" role="document">
@@ -435,7 +413,7 @@
                     <li><a href="#" data-attr="3 Year">3 Year</a></li>
                     <li><a href="#" data-attr="4 Year">4 Year</a></li>
                     <li><a href="#" data-attr="5 Year">5 Year</a></li>
-                    <li><a href="#" data-attr="Avobe 5 Years">Avobe 5 Years</a></li>
+                    <li><a href="#" data-attr="Above 5 Years">Above 5 Years</a></li>
                   </ul>
                 </div>
                 <div class="job-filter same-pad">
@@ -474,8 +452,8 @@
                   <h4 class="option-title">Qualification</h4>
                   <ul>
                     <li><a href="#" data-attr="Matriculation">Matriculation</a></li>
-                    <li><a href="#" data-attr="Intermidiate">Intermidiate</a></li>
-                    <li><a href="#" data-attr="Gradute">Gradute</a></li>
+                    <li><a href="#" data-attr="Intermidiate">Intermediate</a></li>
+                    <li><a href="#" data-attr="Gradute">Graduate</a></li>
                   </ul>
                 </div>
               </div>
@@ -486,54 +464,7 @@
     </div>
     <!-- Job Listing End -->
 
-    <!-- Call to Action -->
-    <div class="call-to-action-bg padding-top-90 padding-bottom-90">
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <div class="call-to-action-2">
-              <div class="call-to-action-content">
-                <h2>For Find Your Dream Job or Candidate</h2>
-                <p>Add resume or post a job. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec.</p>
-              </div>
-              <div class="call-to-action-button">
-                <a href="add-resume.html" class="button">Add Resume</a>
-                <span>Or</span>
-                <a href="post-job.html" class="button">Post A Job</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Call to Action End -->
-
     <!-- Footer -->
-    <footer class="footer-bg">
-      <div class="footer-top border-bottom section-padding-top padding-bottom-40">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="footer-logo">
-                <a href="#">
-                  <img src="images/footer-logo.png" class="img-fluid" alt="">
-                </a>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="footer-social">
-                <ul class="social-icons">
-                  <li><a href="#"><i data-feather="facebook"></i></a></li>
-                  <li><a href="#"><i data-feather="twitter"></i></a></li>
-                  <li><a href="#"><i data-feather="linkedin"></i></a></li>
-                  <li><a href="#"><i data-feather="instagram"></i></a></li>
-                  <li><a href="#"><i data-feather="youtube"></i></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="footer-widget-wrapper padding-bottom-60 padding-top-80">
         <div class="container">
           <div class="row">
@@ -594,56 +525,30 @@
           </div>
         </div>
       </div>
-      <div class="footer-bottom-area">
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <div class="footer-bottom border-top">
-                <div class="row">
-                  <div class="col-xl-4 col-lg-5 order-lg-2">
-                    <div class="footer-app-download">
-                      <a href="#" class="apple-app">Apple Store</a>
-                      <a href="#" class="android-app">Google Play</a>
-                    </div>
-                  </div>
-                  <div class="col-xl-4 col-lg-4 order-lg-1">
-                    <p class="copyright-text">Copyright <a href="#">Oficiona</a> 2019, All right reserved</p>
-                  </div>
-                  <div class="col-xl-4 col-lg-3 order-lg-3">
-                    <div class="back-to-top">
-                      <a href="#">Back to top<i class="fas fa-angle-up"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </footer>
     <!-- Footer End -->
 
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/feather.min.js"></script>
-    <script src="assets/js/bootstrap-select.min.js"></script>
-    <script src="assets/js/jquery.nstSlider.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/visible.js"></script>
-    <script src="assets/js/jquery.countTo.js"></script>
-    <script src="assets/js/chart.js"></script>
-    <script src="assets/js/plyr.js"></script>
-    <script src="assets/js/tinymce.min.js"></script>
-    <script src="assets/js/slick.min.js"></script>
-    <script src="assets/js/jquery.ajaxchimp.min.js"></script>
+    <script src={% static "assets/js/jquery.min.js" %}></script>
+    <script src={% static "assets/js/popper.min.js" %}></script>
+    <script src={% static "assets/js/bootstrap.min.js" %}></script>
+    <script src={% static "assets/js/feather.min.js" %}></script>
+    <script src={% static "assets/js/bootstrap-select.min.js" %}></script>
+    <script src={% static "assets/js/jquery.nstSlider.min.js" %}></script>
+    <script src={% static "assets/js/owl.carousel.min.js" %}></script>
+    <script src={% static "assets/js/visible.js" %}></script>
+    <script src={% static "assets/js/jquery.countTo.js" %}></script>
+    <script src={% static "assets/js/chart.js" %}></script>
+    <script src={% static "assets/js/plyr.js" %}></script>
+    <script src={% static "assets/js/tinymce.min.js" %}></script>
+    <script src={% static "assets/js/slick.min.js" %}></script>
+    <script src={% static "assets/js/jquery.ajaxchimp.min.js" %}></script>
 
-    <script src="js/custom.js"></script>
+    <script src={% static "js/custom.js" %}></script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
-    <script src="js/map.js"></script>
+    <script src={% static "js/map.js" %}></script>
   </body>
 </html>
