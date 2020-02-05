@@ -61,9 +61,10 @@
               <p> Concordia Institute for Co-operative Education</p>
 
               <div class="banner-search">
-                <form action="#" class="search-form">
-                  <input type="text" placeholder="Enter Keywords">
-                  <select class="selectpicker" id="search-location">
+                <form action="/search/" class="search-form" method="POST">
+                  {% csrf_token %}
+                  <input type="text" placeholder="Enter Keywords" id="keyword" name="keyword" required>
+                  <select class="selectpicker" id="search-location" name="search-location">
                     <option value="" selected>Location</option>
                     <option value="california">California</option>
                     <option value="las-vegas">Las Vegas</option>
@@ -74,7 +75,7 @@
                     <option value="washington">Washington DC</option>
                     <option value="neveda">Neveda</option>
                   </select>
-                  <button class="button primary-bg"><i class="fas fa-search"></i>Search Job</button>
+                  <button class="button primary-bg" type="submit"><i class="fas fa-search"></i>Search Job</button>
                 </form>
                 <div class="trending-key">
                   <span>Trending Keywords:</span>
