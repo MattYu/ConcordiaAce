@@ -254,42 +254,57 @@
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper">
                 <div class="manage-job-container">
-                <form method="POST" class="job-post-form" enctype="multipart/form-data">
-                        {% csrf_token %}
                   <table class="table">
                     <thead>
+                    {% if jobs %}
                       <tr>
-                        <th>Rank the employer. Note: ranking submission opens on Match Day</th>
+                        <th>STEP 1: Select a job</th>
                       </tr>
+                    {% endif %}
                     </thead>
                     <tbody>
-                      {% for rank in form.get_ranking_fields  %}
+                    {% if jobs %}
+                      {% for job in jobs %}
+                      <tr class="job-items"> <a href="/viewMatch/{{job.job.id}}" />
+                        <td class="title">
+                          <h5><a href="/job-details/{{job.job.id}}">{{job.job.title}} [{{job.job.id}}]</a></h5>
+                          <div class="info">
+                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>{{job.job.company.name}}</a></span>
+                            <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>{{job.job.created_at}}</a></span>
+                          </div>
+                        </td>
+                        <td class="application"><a href="/viewMatch/{{job.job.id}}">{{job.count}} Match(es)</a></td>
+                        <td class="status active"><a href="/viewMatch/{{job.job.id}}"> <i class="fas fa-plus"></i>SELECT</a></td>
+                      </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr class="job-items"> <a href="/viewMatch/{{job.id}}" />
+                        <td class="title">
+                          <h5><a href="/job-details/{{job.job.id}}">{{job.title}} [{{job.id}}]</a></h5>
+                          <div class="info">
+                            <span class="office-location"><a href="#"><i data-feather="map-pin"></i>{{job.company.name}}</a></span>
+                            <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>{{job.created_at}}</a></span>
+                          </div>
+                        </td>
+                      </tr>
+                      {% for match in matches  %}
                         <tr class="candidates-list">
                           <td class="title">
                             <div class="body">
-                              <h5><a href="/jobApplicationDetails/{{rank.rank.jobApplication.id}}">View your application</a></h5>
+                              <h5><a href="/jobApplicationDetails/{{match.jobApplication.id}}">{{match.jobApplication.firstName}} {{match.jobApplication.lastName}}</a></h5>
                               <div class="info">
-                                <span class="designation"><a href="/job-details/{{rank.rank.job.id}}"><i data-feather="check-square"></i>{{rank.rank.jobApplication.job.title}}</a></span>
-                                <span class="location"><a href="#"><i data-feather="map-pin"></i>{{rank.rank.jobApplication.job.company.name}}</a></span>
+                                <span class="designation"><a href="/job-details/{{match.job.id}}"><i data-feather="check-square"></i>{{match.jobApplication.job.title}}</a></span>
+                                <span class="location"><a href="#"><i data-feather="map-pin"></i></a></span>
                               </div>
                             </div>
                           </td>
-                          <td class="status"><i data-feather="check-circle"></i>{{application.status}}</td>
-                          <td> {{rank.employerRank}} </td>
-                          <td class="action">
-                            {{rank.rankField}}
-                          </td>
+                          <td class="status"><i data-feather="check-circle"></i>Matched</td>
                         </tr>
                       {% endfor %}
                       
+                    {% endif %}
                     </tbody>
                   </table>
-                      <tr>
-                        <div>
-                        <button class="button">Submit Rankings</button>
-                        </div>
-                        </tr>
-                </form>
                 </div>
               </div>
               <div class="dashboard-sidebar">
