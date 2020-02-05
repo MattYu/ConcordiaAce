@@ -32,7 +32,7 @@ class EmployerRankingForm(forms.Form):
             (1000, "Not yet ranked"),
         )
         
-        for rank in Ranking.objects.filter(job__id=jobId, is_closed=False).all():
+        for rank in Ranking.objects.filter(job__id=jobId).all():
             field_name = '%s' % (rank.id,)
             rankingDict = {}
 
