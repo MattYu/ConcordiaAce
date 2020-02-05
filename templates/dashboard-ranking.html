@@ -254,11 +254,19 @@
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper">
                 <div class="manage-job-container">
+                <form method="POST" class="job-post-form" enctype="multipart/form-data">
+                        {% csrf_token %}
                   <table class="table">
                     <thead>
+                    {% if jobs %}
                       <tr>
                         <th>STEP 1: Select a job</th>
                       </tr>
+                    {% else %}
+                      <tr>
+                        <th>STEP 2: Submit your rankings. You can edit again prior to the match day deadline</th>
+                      </tr>
+                    {% endif %}
                     </thead>
                     <tbody>
                     {% if jobs %}
@@ -298,14 +306,22 @@
                           </td>
                           <td class="status"><i data-feather="check-circle"></i>{{application.status}}</td>
                           <td class="action">
-                            <a href="#" class="download"><i data-feather="download"></i></a>
-                            <a href="#" class="inbox"><i data-feather="mail"></i></a>
+                            {{rank.rankField}}
                           </td>
                         </tr>
                       {% endfor %}
+                      
                     {% endif %}
                     </tbody>
                   </table>
+                  {% if not jobs %}
+                      <tr>
+                        <div>
+                        <button class="button">Submit Rankings</button>
+                        </div>
+                        </tr>
+                  {% endif %}
+                </form>
                 </div>
               </div>
               <div class="dashboard-sidebar">
