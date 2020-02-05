@@ -41,68 +41,6 @@
             </li>
           </ul>
           <ul class="navbar-nav ml-auto main-nav">
-            <li class="menu-item active"><a title="Home" href={% static  "home-1.html"  %}>Home</a></li>
-            <li class="menu-item dropdown">
-              <a title="" href= "#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Jobs</a>
-              <ul  class="dropdown-menu">
-                <li class="menu-item"><a  href={% static  "job-listing.html"  %}>Job Listing</a></li>
-                <li class="menu-item"><a  href={% static  "job-listing-with-map.html"  %}>Job Listing With Map</a></li>
-                <li class="menu-item"><a  href={% static  "job-details.html"  %}>Job Details</a></li>
-                <li class="menu-item"><a  href={% static  "/employer-dashboard-post-job"  %}>Post Job</a></li>
-              </ul>
-            </li>
-            <li class="menu-item dropdown">
-              <a title="" href= "#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Employer</a>
-              <ul  class="dropdown-menu">
-                <li class="menu-item"><a  href={% static  "employer-listing.html"  %}>Employer Listing</a></li>
-                <li class="menu-item"><a  href={% static  "employer-details.html"  %}>Employer Details</a></li>
-                <li class="menu-item"><a  href={% static  "employer-dashboard.html"  %}>Dashboard</a></li>
-                <li class="menu-item"><a  href={% static  "employer-dashboard-edit-profile.html"  %}>Edit Profile</a></li>
-                <li class="menu-item"><a  href={% static  "employer-dashboard-manage-candidate.html"  %}>Manage Candidate</a></li>
-                <li class="menu-item"><a  href={% static  "employer-dashboard-manage-job.html"  %}>Manage Job</a></li>
-                <li class="menu-item"><a href={% static  "employer-dashboard-message.html"  %}>Message</a></li>
-                <li class="menu-item"><a href={% static  "employer-dashboard-pricing.html"  %}>Pricing</a></li>
-                <li class="menu-item"><a  href={% static  "employer-dashboard-post-job.html"  %}>Post Job</a></li>
-              </ul>
-            </li>
-            <li class="menu-item dropdown">
-              <a title="" href= "#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Candidate</a>
-              <ul  class="dropdown-menu">
-                <li class="menu-item"><a  href={% static  "candidate.html" %}>Candidate List</a></li>
-                <li class="menu-item"><a  href={% static  "candidate-details.html" %}>Candidate Details</a></li>
-                <li class="menu-item"><a  href={% static  "dashboard.html" %}>Dashboard</a></li>
-                <li class="menu-item"><a  href={% static  "dashboard-edit-profile.html" %}>Edit Profile</a></li>
-                <li class="menu-item"><a  href={% static  "add-resume.html" %}>Add Resume</a></li>
-                <li class="menu-item"><a  href={% static  "resume.html" %}>Resume</a></li>
-                <li class="menu-item"><a  href={% static  "edit-resume.html" %}>Edit Resume</a></li>
-                <li class="menu-item"><a  href={% static  "dashboard-bookmark.html" %}>Bookmarked</a></li>
-                <li class="menu-item"><a  href={% static  "dashboard-applied.html" %}>Applied</a></li>
-                <li class="menu-item"><a  href={% static  "dashboard-pricing.html" %}>Pricing</a></li>
-                <li class="menu-item"><a  href={% static  "dashboard-message.html" %}>Message</a></li>
-                <li class="menu-item"><a  href={% static  "dashboard-alert.html" %}>Alert</a></li>
-              </ul>
-            </li>
-            <li class="menu-item dropdown">
-              <a title="" href= "#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Pages</a>
-              <ul  class="dropdown-menu">
-                <li class="menu-item"><a  href={% static  "about-us.html" %}>About Us</a></li>
-                <li class="menu-item"><a  href={% static  "blog.html" %}>Blog</a></li>
-                <li class="menu-item"><a  href={% static  "blog-grid.html" %}>Blog Grid</a></li>
-                <li class="menu-item"><a  href={% static  "blog-details.html" %}>Blog Details</a></li>
-                <li class="menu-item"><a  href={% static  "contact.html" %}>Contact Us</a></li>
-                <li class="menu-item"><a  href={% static  "pricing.html" %}>Pricing</a></li>
-                <li class="menu-item"><a  href={% static  "how-it-work.html" %}>How It Works</a></li>
-                <li class="menu-item"><a  href={% static  "faq.html" %}>FAQ</a></li>
-                <li class="menu-item"><a  href={% static  "checkout.html" %}>Checkout</a></li>
-                <li class="menu-item"><a  href={% static  "payment-complete.html" %}>Payment Complete</a></li>
-                <li class="menu-item"><a  href={% static  "invoice.html" %}>Invoice</a></li>
-                <li class="menu-item"><a  href={% static  "terms-and-condition.html" %}>Terms And Condition</a></li>
-                <li class="menu-item"><a href={% static  "404.html" %}>404 Page</a></li>
-                <li class="menu-item"><a href={% static  "login.html" %}>Login</a></li>
-                <li class="menu-item"><a href={% static  "register.html" %}>Register</a></li>
-                <li class="menu-item"><a href="/logout">Logout</a></li>
-              </ul>
-            </li>
             <li class="menu-item post-job"><a title="Title" href="/employer-dashboard-post-job"><i class="fas fa-plus"></i>Post a Job</a></li>
             {% if user.is_authenticated %}
             <li class="menu-item post-job"><a title="Title" href="/jobApplications"><i class="fas"></i>See Applications</a></li>

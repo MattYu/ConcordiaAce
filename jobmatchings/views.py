@@ -50,7 +50,7 @@ def employer_view_rankings(request, jobId= None):
                         "job" : jobQuery,
                         }
 
-            form = EmployerRankingForm(ranking=rankings)
+            form = EmployerRankingForm(jobId=jobId)
 
             context["form"] = form
 
