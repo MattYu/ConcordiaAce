@@ -42,7 +42,7 @@ def job_search(request, *args, **kwargs):
             'joblist': queryset
         }
 
-        return render(request, 'joblist_view.html', context)
+        return render(request, 'job-listing.html', context)
 
     return HttpResponseRedirect("/")
 
