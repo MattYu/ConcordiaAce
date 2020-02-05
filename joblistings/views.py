@@ -32,19 +32,17 @@ def job_search(request, *args, **kwargs):
 
         qs = Job.objects.filter(*args).distinct()
         qs = list(set(qs))
-        
-        results = []
+
+        queryset = []
         for q in qs:
             if q.location.lower() == location or q.country.lower() == location:
-                results.append(q)
-
-        print("NNNNNNNNNNNNNNNNNN" + str(results))
+                queryset.append(q)
  
         context = {
-            'queryset': results
+            'joblist': queryset
         }
 
-        return render(request, 'job-listing.html', context)
+        return render(request, 'joblist_view.html', context)
 
     return HttpResponseRedirect("/")
 
