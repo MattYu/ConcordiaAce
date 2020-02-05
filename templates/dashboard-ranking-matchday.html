@@ -259,34 +259,32 @@
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>Rank the employer. Note: ranking submission opens on Match Day</th>
+                        <th>Follows the steps carefully</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% for rank in form.get_ranking_fields  %}
-                        <tr class="candidates-list">
-                          <td class="title">
-                            <div class="body">
-                              <h5><a href="/jobApplicationDetails/{{rank.rank.jobApplication.id}}">View your application</a></h5>
-                              <div class="info">
-                                <span class="designation"><a href="/job-details/{{rank.rank.job.id}}"><i data-feather="check-square"></i>{{rank.rank.jobApplication.job.title}}</a></span>
-                                <span class="location"><a href="#"><i data-feather="map-pin"></i>{{rank.rank.jobApplication.job.company.name}}</a></span>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="status"><i data-feather="check-circle"></i>{{application.status}}</td>
-                          <td> {{rank.employerRank}} </td>
-                          <td class="action">
-                            {{rank.rankField}}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                      
+
                     </tbody>
                   </table>
                       <tr>
                         <div>
-                        <button class="button">Submit Rankings</button>
+                        <input type="submit" class="add-new-field" formnovalidate value="1 - Close Employers Ranking and Open Candidates Ranking" name="closeEmp" id="closeEmp">
+                        </div>
+                        </tr>
+                        <tr>
+                        <div>
+                        <input type="submit" class="add-new-field" formnovalidate value="2 - Close Candidates Ranking" name="closeCan" id="closeCan">
+                        </div>
+                        </tr>
+
+                        <tr>
+                        <div>
+                        <input type="submit" class="add-new-field" formnovalidate value="3- Generate Matching" name="MATCH" id="MATCH">
+                        </div>
+                        </tr>
+                        <tr>
+                        <div>
+                         View match history
                         </div>
                         </tr>
                 </form>
@@ -321,7 +319,10 @@
                     <li><i class="fas fa-user"></i><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
                     <li><i class="fas fa-briefcase"></i><a href="/manageJobs/">Manage Jobs</a></li>
                     <li><i class="fas fa-users"></i><a href="/jobApplications/">Manage Applications</a></li>
-                    <li class="active"><i class="fas fa-heart"></i><a href="/employerRanking">Interview Ranking</a></li>
+                    <li><i class="fas fa-heart"></i><a href="/employerRanking">Interview Ranking</a></li>
+                    {% if user.user_type == 4 %}
+                    <li class="active"><i class="fas fa-plus-square"></i><a href="/matchDay">Admin Matchday</a></li>
+                    {% endif %}
                     <li><i class="fas fa-plus-square"></i><a href="/viewMatch">View Match</a></li>
                     <li><i class="fas fa-plus-square"></i><a href="employer-dashboard-post-job.html">Post New Job</a></li>
                     <li><i class="fas fa-comment"></i><a href="employer-dashboard-message.html">Message</a></li>
