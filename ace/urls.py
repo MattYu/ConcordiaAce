@@ -54,8 +54,8 @@ urlpatterns = [
     path('logout/', logout_user),
     path('login/', login_user),
     path('activate/<uidb64>/<token>', activate, name="activate"),
-    path('concatinateApplications/', concatinate_applicationPDF),
-    path('search/', job_search)
+    #path('concatinateApplications/', concatinate_applicationPDF),
+    path('search/', job_search),
     path('jobApplications/<optional_int:jobId>', browse_job_applications),
     path('jobApplicationDetails/<int:pk>/', view_application_details),
     path('getFile/<str:uid>/<str:candidateId>/<str:filetype>/<str:fileid>/<token>/', get_protected_file),
