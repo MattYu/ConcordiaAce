@@ -16,7 +16,14 @@ class MatchingHistory(models.Model):
 
     matches = models.ManyToManyField(Match)
 
+    open_matching_to_employer = models.BooleanField(default= True)
+    open_matching_to_candidate = models.BooleanField(default= False)
+
+    matchingInProgress = models.BooleanField(default=False)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
 
 

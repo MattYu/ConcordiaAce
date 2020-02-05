@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
-from jobapplications.models import JobApplication
+from jobapplications.models import JobApplication, Ranking
 from django.db.models import Q
 from joblistings.models import Job
 from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, USER_TYPE_SUPER
 from accounts.models import Employer, Candidate
+from jobmatchings.forms import EmployerRankingForm
 
 # Create your views here.
 def employer_view_rankings(request, jobId= None):
@@ -17,51 +18,76 @@ def employer_view_rankings(request, jobId= None):
 
 
     if request.user.user_type == USER_TYPE_SUPER:
+
+        if jobId == None:
         
-        jobQuery = Job.objects.all()
+            jobQuery = Job.objects.all()
 
-        jobs = {}
+            jobs = {}
 
-        jobs = []
+            jobs = []
 
-        query1 = Q(status="Interviewing")
-        query2 = Q(status="Not Approved")
+            query1 = Q(status="Interviewing")
+            query2 = Q(status="Ranked")
+            query3 = Q(status="1st")
 
-        for job in jobQuery:
-            obj = {}
+            for job in jobQuery:
+                obj = {}
 
-            obj['job'] = job
-            obj['count'] = JobApplication.objects.filter(job=job).count()
-            jobs.append(obj)
+                obj['job'] = job
+                obj['count'] = JobApplication.objects.filter(query1|query2|query3, job=job).count()
+                jobs.append(obj)
 
-        context = {
-                    "jobs" : jobs,
-                    'user' : request.user,
-                }
+            context = {
+                        "jobs" : jobs,
+                        'user' : request.user,
+                    }
+
+        else:
+            jobQuery = get_object_or_404(Job, id=jobId)
+
+            context = {
+                        "job" : jobQuery,
+                        }
+
+            form = EmployerRankingForm(ranking=rankings)
+
+            context["form"] = form
 
     if request.user.user_type == USER_TYPE_EMPLOYER:
 
-        jobQuery = Job.objects.filter(jobAccessPermission = Employer.objects.get(user=request.user))
+        if jobId == None:
+            jobQuery = Job.objects.filter(jobAccessPermission = Employer.objects.get(user=request.user))
 
-        query1 = ~Q(status="Pending Review")
-        query2 = ~Q(status="Not Approved")
-
-
-        jobs = []
-        for job in jobQuery:
-            obj = {}
-
-            obj['job'] = job
-
-            obj['count'] = JobApplication.objects.filter(query1|query2,job=job).count()
-            
-            jobs.append(obj)
+            query1 = Q(status="Interviewing")
+            query2 = Q(status="Ranked")
+            query3 = Q(status="1st")
 
 
-        context = {
-                    "jobs" : jobs,
-                    'user' : request.user,
-                }
+            jobs = []
+            for job in jobQuery:
+                obj = {}
+
+                obj['job'] = job
+
+                obj['count'] = JobApplication.objects.filter(query1|query2|query3,job=job).count()
+                
+                jobs.append(obj)
+
+            context = {
+                        "jobs" : jobs,
+                        'user' : request.user,
+                        }
+        else:
+            jobQuery = get_object_or_404(Job, id=jobId, jobAccessPermission = Employer.objects.get(user=request.user))
+
+            context = {
+                        "job" : jobQuery,
+                        }
+
+            form = EmployerRankingForm(jobId=jobId)
+
+            context["form"] = form
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
 

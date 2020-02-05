@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from joblistings.models import Job
-from jobapplications.models import JobApplication, Resume, CoverLetter, Education, Experience
+from jobapplications.models import JobApplication, Resume, CoverLetter, Education, Experience, Ranking
 from jobapplications.forms import ApplicationForm, resumeUpload
 from django_sendfile import sendfile
 import uuid
@@ -39,9 +39,9 @@ def add_resume(request, pk= None, *args, **kwargs):
             request.session['info'] = "You are logged in as an employer. Only candidates can access this page"
             return  HttpResponseRedirect('/')
 
-        jobApplication = JobApplication.objects.get(job__pk=pk, candidate=Candidate.objects.get(user=request.user))
+        jobApplication = JobApplication.objects.filter(job__pk=pk, candidate=Candidate.objects.get(user=request.user)).count()
 
-        if jobApplication:
+        if jobApplication !=0:
             request.session['info'] = "You already applied to this job"
             return HttpResponseRedirect('/jobApplicationDetails/' + str(jobApplication.pk) + "/")
     
@@ -101,12 +101,19 @@ def browse_job_applications(request, jobId= -1):
 
     if request.user.user_type == USER_TYPE_EMPLOYER:
         query = Q(job__jobAccessPermission=Employer.objects.get(user=request.user))
-
+        query &= ~Q(status="Pending Review")
+        query &= ~Q(status="Not Approved")
+        
         if jobId != None:
             query &= Q(job__pk=jobId)
             context["job"] = Job.objects.get(pk=jobId)
 
+
+
         jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
+
+        for q in jobApplications:
+            print(q.status)
 
         context["jobApplications"] = jobApplications
 
@@ -196,11 +203,45 @@ def view_application_details(request, pk):
 
         context = {"jobApplication" : jobApplication}
 
-    if request.user.user_type == USER_TYPE_EMPLOYER:
+        if request.method == 'POST':
+            if request.POST.get('Approved'):
+                jobApplication.status= "Submitted"
+                jobApplication.save()
+            if request.POST.get('Reject'):
+                jobApplication.status= "Not Approved"
+                jobApplication.save()
 
-        jobApplication = get_object_or_404(JobApplication, id=pk, job__jobAccessPermission = Employer.objects.get(user=request.user))
+        if jobApplication.status == "Pending Review" or jobApplication.status== "Not Approved":
+            context['showButton'] = True
+
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+        query = Q(job__jobAccessPermission = Employer.objects.get(user=request.user))
+        query &= ~Q(status="Pending Review")
+        query &= ~Q(status="Not Approved")
+        query &= Q(id=pk)
+
+        jobApplication = get_object_or_404(JobApplication, query)
 
         context = {"jobApplication" : jobApplication}
+
+        if request.method == 'POST':
+            if request.POST.get('Approved'):
+                ranking = Ranking()
+                ranking.jobApplication = jobApplication
+                ranking.job = jobApplication.job
+                ranking.candidate = jobApplication.candidate
+                ranking.save()
+                jobApplication.status= "Interviewing"
+                jobApplication.save()
+
+            if request.POST.get('Reject'):
+                jobApplication.status= "Not Selected"
+                jobApplication.save()
+
+        if jobApplication.status == "Submitted" or jobApplication.status== "Not Selected":
+            context['showButton'] = True
+
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
         jobApplication = get_object_or_404(JobApplication,id=pk, candidate=Candidate.objects.get(user=request.user))

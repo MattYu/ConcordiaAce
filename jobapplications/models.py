@@ -18,7 +18,7 @@ class JobApplication(models.Model):
     #skillList = models.CharField(max_length = MAX_LENGTH_LONGSTANDARDFIELDS,  default= "")
     #aboutYou = tinymce_models.HTMLField(max_length = MAX_LENGTH_STANDARDTEXTAREA, default= "")
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, default= "1")
-    status = models.CharField(max_length = 20, default= "Pending", choices= JOB_APPLICATION_STATUS)
+    status = models.CharField(max_length = 20, default= "Pending Review", choices= JOB_APPLICATION_STATUS)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -75,12 +75,13 @@ class Ranking(models.Model):
 
     employerRank = models.IntegerField(default= 1000)
     userRank = models.IntegerField(default= 1000)
-    preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
 
     jobApplication = models.ForeignKey(JobApplication, on_delete=models.CASCADE, default= "")
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
-    candidate = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
-    status = models.CharField(max_length = 20, default= "Pending", choices= JOB_APPLICATION_STATUS)
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, default= "")
+    status = models.CharField(max_length = 20, default= "Interviewing", choices= JOB_APPLICATION_STATUS)
+
+    is_ranking_open = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
