@@ -325,14 +325,14 @@ def view_matching(request, jobId= None):
                         "job" : jobQuery,
                         }
 
-            matches = Match.objects.filer(job__id=jobId)
+            matches = Match.objects.filter(job__id=jobId)
 
             context["matches"] = matches
 
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
 
-        matches = Match.objects.filer(candidate=Candidate.objects.get(user=request.user))
+        matches = Match.objects.filter(candidate=Candidate.objects.get(user=request.user))
 
         context = {
                     "job": True,

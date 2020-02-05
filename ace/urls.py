@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 
 from view import home_page
 from joblistings.views import job_details, post_job, download_jobPDF, manage_jobs, job_search
-from jobapplications.views import add_resume, download_test, browse_job_applications, get_protected_file, view_application_details
+from jobapplications.views import add_resume, download_test, browse_job_applications, get_protected_file, get_protected_file_withAuth, view_application_details
 from accounts.views import register_user, logout_user, login_user, activate
 from django.urls import include
 from django.urls import register_converter
@@ -63,7 +63,8 @@ urlpatterns = [
     path('employerRanking/<optional_int:jobId>', employer_view_rankings),
     path('candidateRanking/', candidate_view_rankings),
     path('matchDay/', admin_matchmaking),
-    path('viewMatch/<optional_int:jobId>', view_matching)
+    path('viewMatch/<optional_int:jobId>', view_matching),
+    path('getFileWithAuth/<int:fileType>/<int:applicationId>/', get_protected_file_withAuth),
 
 ]
 

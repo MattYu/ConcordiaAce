@@ -51,7 +51,7 @@
           <div class="col">
             <div class="header-top">
               <div class="logo-area">
-                <a href="index.html"><img src="images/logo-2.png" alt=""></a>
+                <a href="/"><img src={% static "images/concordia-logo.png" %} alt=""></a>
               </div>
               <div class="header-top-toggler">
                 <div class="header-top-toggler-button"></div>
@@ -321,7 +321,7 @@
                   </div>
                 </div>
                 <div class="download-resume">
-                  <a href="#">Download CV <i data-feather="download"></i></a>
+                  <a href="/getFileWithAuth/2/{{jobApplication.pk}}">Download CV <i data-feather="download"></i></a>
                 </div>
               </div>
               <div class="skill-and-profile">
@@ -348,48 +348,34 @@
                   <div class="col-xl-7 col-lg-8">
                     <div class="about-details details-section">
                       <h4><i data-feather="align-left"></i>About Me</h4>
-                      <p>Combined with a handful of model sentence structures, to generate lorem Ipsum which  It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including.</p>
-                      <p>Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable </p>
                     </div>
                     <div class="edication-background details-section">
                       <h4><i data-feather="book"></i>Education Background</h4>
-
+                      {% for edu in educations %}
                       <div class="education-label">
-                        <span class="study-year">2018 - Present</span>
-                        <h5>Masters in Software Engineering<span>@ Engineering University</span></h5>
-                        <p>Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage</p>
+                        <span class="study-year">{{edu.period}}</span>
+                        <h5>{{edu.title}}<span>@ {{edu.institute}}</span></h5>
+                        <p>{{edu.description}}</p>
                       </div>
-                      <div class="education-label">
-                        <span class="study-year">2014 - 2018</span>
-                        <h5>Diploma in Graphics Design<span>@ Graphic Arts Institute</span></h5>
-                        <p>Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage</p>
-                      </div>
-                      <div class="education-label">
-                        <span class="study-year">2008 - 2014</span>
-                        <h5>Secondary School Certificate<span>@  Engineering High School</span></h5>
-                        <p>Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage</p>
-                      </div>
+                      {% endfor %}
                     </div>
                     <div class="experience details-section">
-                      <h4><i data-feather="briefcase"></i>Work Experiance</h4>
+                      <h4><i data-feather="briefcase"></i>Work Experience</h4>
+                      {% for exp in experiences %}
                       <div class="experience-section">
-                        <span class="service-year">2016 - Present</span>
-                        <h5>Lead UI/UX Designer<span>@ Codepassengers LTD</span></h5>
-                        <p>Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage</p>
+                        <span class="service-year">{{exp.period}}</span>
+                        <h5>{{exp.title}}<span>@ {{exp.companyName}}</span></h5>
+                        <p>{{exp.description}}</p>
                       </div>
-                      <div class="experience-section">
-                        <span class="service-year">2012 - 2016</span>
-                        <h5>Former Graphic Designer<span>@ Graphicreeeo CO</span></h5>
-                        <p>Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage</p>
-                      </div>
+                      {% endfor %}
                     </div>
                     <div class="professonal-skill details-section">
-                      <h4><i data-feather="feather"></i>Professional Skill</h4>
-                      <p>Combined with a handful of model sentence structures, to generate lorem Ipsum which  It has survived not only five centuries, but also the leap into electronic typesetting</p>
+                      <h4><i data-feather="feather"></i>Professional Languages</h4>
+                      <p></p>
                       <div class="progress-group">
                         <div class="progress-item">
                           <div class="progress-head">
-                            <p class="progress-on">Photoshop</p>
+                            <p class="progress-on">English</p>
                           </div>
                           <div class="progress-body">
                             <div class="progress">
@@ -400,7 +386,7 @@
                         </div>
                         <div class="progress-item">
                           <div class="progress-head">
-                            <p class="progress-on">HTML/CSS</p>
+                            <p class="progress-on">French</p>
                           </div>
                           <div class="progress-body">
                             <div class="progress">
@@ -411,7 +397,7 @@
                         </div>
                         <div class="progress-item">
                           <div class="progress-head">
-                            <p class="progress-on">JavaScript</p>
+                            <p class="progress-on">Spanish</p>
                           </div>
                           <div class="progress-body">
                             <div class="progress">
@@ -422,7 +408,7 @@
                         </div>
                         <div class="progress-item">
                           <div class="progress-head">
-                            <p class="progress-on">PHP</p>
+                            <p class="progress-on">Mandarin</p>
                           </div>
                           <div class="progress-body">
                             <div class="progress">
@@ -488,20 +474,18 @@
                       <div class="information">
                         <h4>Information</h4>
                         <ul>
-                          <li><span>Category:</span> Design & Creative</li>
-                          <li><span>Location:</span> Los Angeles</li>
+                          <li><span>Category:</span> Todo</li>
+                          <li><span>Location:</span> Todo</li>
                           <li><span>Status:</span> Full-time</li>
-                          <li><span>Experience:</span> 3 year(s)</li>
-                          <li><span>Salary:</span> $32k - $36k</li>
-                          <li><span>Gender:</span> Male</li>
-                          <li><span>Age:</span> 24 Year(s)</li>
-                          <li><span>Qualification:</span> Gradute</li>
+                          <li><span>Experience:</span> Todo</li>
+                          <li><span>Salary:</span> Todo </li>
+                          <li><span>Qualification:</span> Graduate</li>
                         </ul>
                       </div>
                       <div class="buttons">
                         <a href="#" class="button contact-button" data-toggle="modal" data-target="#exampleModal">Contact Me</a>
-                        <a href="#" class="button cover-download"><i data-feather="download"></i>Cover Letter</a>
-                        <a href="#" class="button contact-download"><i data-feather="download"></i>Contact</a>
+                        <a href="/getFileWithAuth/1/{{jobApplication.pk}}/" class="button cover-download"><i data-feather="download"></i>Cover Letter</a>
+                        <a href="/getFileWithAuth/3/{{jobApplication.pk}}/" class="button contact-download"><i data-feather="download"></i>Transcript</a>
                       </div>
                       <!-- Modal -->
                       <div class="modal fade contact-form-modal" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">

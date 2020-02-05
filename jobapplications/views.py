@@ -43,6 +43,7 @@ def add_resume(request, pk= None, *args, **kwargs):
 
         if jobApplication !=0:
             request.session['info'] = "You already applied to this job"
+            jobApplication = JobApplication.objects.get(job__pk=pk, candidate=Candidate.objects.get(user=request.user))
             return HttpResponseRedirect('/jobApplicationDetails/' + str(jobApplication.pk) + "/")
     
     instance = get_object_or_404(Job, pk=pk)
@@ -255,7 +256,7 @@ def view_application_details(request, pk):
     preferredName = PreferredName.objects.get(user=jobApplication.candidate.user)
 
     context['educations'] = educations
-    context['experience'] = experience
+    context['experiences'] = experience
     context['preferredName'] = preferredName.preferredName
     context['user'] = request.user
 
@@ -310,3 +311,97 @@ def get_protected_file(request, uid, candidateId, filetype, fileid, token):
     else:
         return HttpResponse('Invalid permission token')
 
+
+def get_protected_file_withAuth(request, fileType, applicationId):
+
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please login before applying to a job"
+        return HttpResponseRedirect('/login')
+
+    if request.user.user_type == USER_TYPE_SUPER:
+
+        if fileType == (FILE_TYPE_RESUME):
+            fileId = Resume.objects.get(JobApplication__id=applicationId).id
+            resume = Resume.objects.get(id=fileId).resume
+            filePath = resume.path
+
+
+        if fileType == (FILE_TYPE_COVER_LETTER):
+            fileId = CoverLetter.objects.get(JobApplication__id=applicationId).id
+            coverLetter = CoverLetter.objects.get(id=fileId).coverLetter
+            filePath = coverLetter.path
+ 
+
+        if fileType == (FILE_TYPE_TRANSCRIPT):
+            candidateId = JobApplication.objects.get(id=applicationId).candidate.id
+            transcript = Candidate.objects.get(id=candidateId).transcript
+            filePath = transcript.path
+            
+
+        if fileType == (FILE_TYPE_OTHER):
+            filePath = None
+
+
+        return sendfile(request, filePath)
+
+    if request.user.user_type == USER_TYPE_EMPLOYER:
+        jobApplications = JobApplication.objects.filter(job__jobAccessPermission=Employer.objects.get(user=request.user), id=applicationId).count()
+        
+        if jobApplications == 0:
+            return HttpResponse('Invalid permission token')
+
+        if fileType == (FILE_TYPE_RESUME):
+            fileId = Resume.objects.get(JobApplication__id=applicationId).id
+            resume = Resume.objects.get(id=fileId).resume
+            filePath = resume.path
+
+
+        if fileType == (FILE_TYPE_COVER_LETTER):
+            fileId = CoverLetter.objects.get(JobApplication__id=applicationId).id
+            coverLetter = CoverLetter.objects.get(id=fileId).coverLetter
+            filePath = coverLetter.path
+ 
+
+        if fileType == (FILE_TYPE_TRANSCRIPT):
+            candidateId = JobApplication.objects.get(id=applicationId).candidate.id
+            transcript = Candidate.objects.get(id=candidateId).transcript
+            filePath = transcript.path
+            
+
+        if fileType == (FILE_TYPE_OTHER):
+            filePath = None
+
+        return sendfile(request, filePath)
+
+    if request.user.user_type == USER_TYPE_CANDIDATE:
+        jobApplications = JobApplication.objects.filter(candidate=Candidate.objects.get(user=request.user), id=applicationId).count()
+
+
+        if jobApplications == 0:
+            return HttpResponse('Invalid permission token')
+
+        if fileType == (FILE_TYPE_RESUME):
+            fileId = Resume.objects.get(JobApplication__id=applicationId).id
+            resume = Resume.objects.get(id=fileId).resume
+            filePath = resume.path
+
+
+        if fileType == (FILE_TYPE_COVER_LETTER):
+            fileId = CoverLetter.objects.get(JobApplication__id=applicationId).id
+            coverLetter = CoverLetter.objects.get(id=fileId).coverLetter
+            filePath = coverLetter.path
+ 
+
+        if fileType == (FILE_TYPE_TRANSCRIPT):
+            candidateId = JobApplication.objects.get(id=applicationId).candidate.id
+            transcript = Candidate.objects.get(id=candidateId).transcript
+            filePath = transcript.path
+            
+
+        if fileType == (FILE_TYPE_OTHER):
+            filePath = None  
+        return sendfile(request, filePath)     
+    else:
+        return HttpResponse('Invalid permission token')

@@ -143,7 +143,7 @@ def manage_jobs(request):
 
             obj['job'] = job
 
-            obj['count'] = JobApplication.objects.filter(query1|query2,job=job).count()
+            obj['count'] = JobApplication.objects.filter(query1,query2,job=job).count()
             
             jobs.append(obj)
 
