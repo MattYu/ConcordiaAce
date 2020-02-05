@@ -6,7 +6,7 @@ from django.db.models import Q
 from joblistings.models import Job
 from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, USER_TYPE_SUPER
 from accounts.models import Employer, Candidate
-from jobmatchings.forms import EmployerRankingForm
+from jobmatchings.forms import EmployerRankingForm, CandidateRankingForm
 
 # Create your views here.
 def employer_view_rankings(request, jobId= None):
@@ -50,7 +50,15 @@ def employer_view_rankings(request, jobId= None):
                         "job" : jobQuery,
                         }
 
-            form = EmployerRankingForm(ranking=rankings)
+            if (request.method == "POST"):
+                for rank in Ranking.objects.filter(job__id=jobId).all():
+                    if request.POST.get(str(rank.id)):
+                        rank.employerRank = int(request.POST.get(str(rank.id)))
+                        rank.save()
+
+
+
+            form = EmployerRankingForm(jobId=jobId)
 
             context["form"] = form
 
@@ -81,6 +89,12 @@ def employer_view_rankings(request, jobId= None):
         else:
             jobQuery = get_object_or_404(Job, id=jobId, jobAccessPermission = Employer.objects.get(user=request.user))
 
+            if (request.method == "POST"):
+                for rank in Ranking.objects.filter(job__id=jobId).all():
+                    if request.POST.get(str(rank.id)):
+                        rank.employerRank = int(request.POST.get(str(rank.id)))
+                        rank.save()
+
             context = {
                         "job" : jobQuery,
                         }
@@ -96,3 +110,22 @@ def employer_view_rankings(request, jobId= None):
         return HttpResponseRedirect('/')
 
     return render(request, "dashboard-ranking.html", context)
+
+
+def candidate_view_rankings(request):
+    if not request.user.is_authenticated:
+
+        request.session['redirect'] = request.path
+        request.session['warning'] = "Warning: Please login first"
+        return HttpResponseRedirect('/login')
+
+
+    if request.user.user_type == USER_TYPE_CANDIDATE:
+
+        form = CandidateRankingForm(candidateId=Candidate.objects.get(user=request.user).id)
+        
+        context = {
+            "form" : form,
+            }
+
+    return render(request, "dashboard-ranking-candidate.html", context)

@@ -283,7 +283,7 @@
                             <div class="body">
                               <h5><a href="/jobApplicationDetails/{{application.id}}">{{application.firstName}} {{application.lastName}}</a></h5>
                               <div class="info">
-                                <span class="designation"><a href="/job-details/{{job.id}}"><i data-feather="check-square"></i>{{application.job.title}}</a></span>
+                                <span class="designation"><a href="/job-details/{{application.job.id}}"><i data-feather="check-square"></i>{{application.job.title}}</a></span>
                                 <span class="location"><a href="#"><i data-feather="map-pin"></i></a></span>
                               </div>
                             </div>
@@ -437,7 +437,11 @@
                     <li><i class="fas fa-user"></i><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
                     <li><i class="fas fa-briefcase"></i><a href="/manageJobs">Manage Jobs</a></li>
                     <li class="active"><i class="fas fa-users"></i><a href="/jobApplications/">Manage Applications</a></li>
+                    {% if user.user_type == 1 %}
+                    <li><i class="fas fa-heart"></i><a href="/candidateRanking">Interview Ranking</a></li>
+                    {% else %}
                     <li><i class="fas fa-heart"></i><a href="/employerRanking">Interview Ranking</a></li>
+                    {% endif %}
                     <li><i class="fas fa-plus-square"></i><a href="employer-dashboard-post-job.html">Post New Job</a></li>
                     <li><i class="fas fa-comment"></i><a href="employer-dashboard-message.html">Message</a></li>
                     <li><i class="fas fa-calculator"></i><a href="employer-dashboard-pricing.html">Pricing Plans</a></li>
