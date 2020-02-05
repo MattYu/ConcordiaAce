@@ -53,9 +53,11 @@ def register_user(request):
                         mail_subject, message, to=[to_email]
             )
 
-            if not DEBUG:
-              email.send()
-              messages.success(request, 'Candidate account created!')
+            try:
+                email.send()
+                messages.success(request, 'Candidate account created!')
+            except:
+                pass
             return HttpResponseRedirect('/')
 
 
