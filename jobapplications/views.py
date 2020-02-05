@@ -43,6 +43,7 @@ def add_resume(request, pk= None, *args, **kwargs):
 
         if jobApplication !=0:
             request.session['info'] = "You already applied to this job"
+            jobApplication = JobApplication.objects.get(job__pk=pk, candidate=Candidate.objects.get(user=request.user))
             return HttpResponseRedirect('/jobApplicationDetails/' + str(jobApplication.pk) + "/")
     
     instance = get_object_or_404(Job, pk=pk)
