@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from view import home_page
-from joblistings.views import job_details, post_job, download_jobPDF, manage_jobs, job_search
+from joblistings.views import job_details, post_job, download_jobPDF, manage_jobs, job_search, list_all_jobs
 from jobapplications.views import add_resume, download_test, browse_job_applications, get_protected_file, get_protected_file_withAuth, view_application_details
 from accounts.views import register_user, logout_user, login_user, activate
 from django.urls import include
@@ -56,6 +56,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', activate, name="activate"),
     #path('concatinateApplications/', concatinate_applicationPDF),
     path('search/', job_search),
+    path('jobs/', list_all_jobs),
     path('jobApplications/<optional_int:jobId>', browse_job_applications),
     path('jobApplicationDetails/<int:pk>/', view_application_details),
     path('getFile/<str:uid>/<str:candidateId>/<str:filetype>/<str:fileid>/<token>/', get_protected_file),

@@ -61,31 +61,10 @@
               <p> Concordia Institute for Co-operative Education</p>
 
               <div class="banner-search">
-                <form action="/search/" class="search-form" method="POST">
+                <form action="/jobs/" class="search-form" method="POST">
                   {% csrf_token %}
-                  <input type="text" placeholder="Enter Keywords" id="keyword" name="keyword" required>
-                  <select class="selectpicker" id="search-location" name="search-location">
-                    <option value="" selected>Location</option>
-                    <option value="All Locations">All Locations</option>
-                    <option value="Montreal">Montreal</option>
-                    <option value="Ottawa">Ottawa</option>
-                    <option value="Toronto">Toronto</option>
-                    <option value="Redmond">Redmond</option>
-                    <option value="Calgary">Calgary</option>
-                    <option value="Vancouver">Vancouver</option>
-                    <option value="San Francisco">San Francisco</option>
-                  </select>
-                  <button class="button primary-bg" type="submit"><i class="fas fa-search"></i>Search Job</button>
+                  <button class="button primary-bg" type="submit"><i class="fas fa-search"></i>Browse All Jobs</button>
                 </form>
-                <div class="trending-key">
-                  <span>Trending Keywords:</span>
-                  <a href= "#">designer</a>
-                  <a href= "#">php</a>
-                  <a href= "#">ios</a>
-                  <a href= "#">Android</a>
-                  <a href= "#">Accounting</a>
-                  <a href= "#">Management</a>
-                </div>
               </div>
             </div>
           </div>
@@ -156,113 +135,6 @@
         </div>
         {% endif %}
       </div>
-    <!-- Explore Job -->
-    <div class="section-padding-top padding-bottom-90">
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <div class="section-header">
-              <h2>Explore The Right Job</h2>
-              <p>Some key info for find job easily</p>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-4 col-md-6">
-            <div class="explore-job">
-              <div class="explore-job-header">
-                <h5 class="title">TOP Category</h5>
-                <i data-feather="bookmark"></i>
-              </div>
-              <div class="key-info">
-                <ul>
-                  <li><a href= "job-listing.html">Accounting / Finance<span>(233)</span></a></li>
-                  <li><a href= "job-listing.html">Education<span>(46)</span></a></li>
-                  <li><a href= "job-listing.html">Design &amp; Creative<span>(156)</span></a></li>
-                  <li><a href= "job-listing.html">Health Care<span>(98)</span></a></li>
-                  <li><a href= "job-listing.html">Engineer &amp; Architects<span>(584)</span></a></li>
-                  <li><a href= "job-listing.html">Marketing &amp; Sales<span>(188)</span></a></li>
-                  <li><a href= "job-listing.html">Garments / Textile<span>(124)</span></a></li>
-                  <li><a href= "job-listing.html">Customer Support<span>(15)</span></a></li>
-                  <li><a href= "job-listing.html">Accounting / Finance<span>(233)</span></a></li>
-                  <li><a href= "job-listing.html">Education<span>(46)</span></a></li>
-                  <li><a href= "job-listing.html">Design &amp; Creative<span>(156)</span></a></li>
-                  <li><a href= "job-listing.html">Health Care<span>(98)</span></a></li>
-                  <li><a href= "job-listing.html">Engineer &amp; Architects<span>(584)</span></a></li>
-                  <li><a href= "job-listing.html">Marketing &amp; Sales<span>(188)</span></a></li>
-                  <li><a href= "job-listing.html">Garments / Textile<span>(124)</span></a></li>
-                  <li><a href= "job-listing.html">Customer Support<span>(15)</span></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6">
-            <div class="explore-job">
-              <div class="explore-job-header">
-                <h5 class="title">TOP Cities</h5>
-                <i data-feather="map-pin"></i>
-              </div>
-              <div class="key-info">
-                <ul>
-                  <li><a href= "job-listing.html">New York<span>(233)</span></a></li>
-                  <li><a href= "job-listing.html">Los Angeles<span>(46)</span></a></li>
-                  <li><a href= "job-listing.html">California<span>(156)</span></a></li>
-                  <li><a href= "job-listing.html">Chicago<span>(98)</span></a></li>
-                  <li><a href= "job-listing.html">Illinois<span>(584)</span></a></li>
-                  <li><a href= "job-listing.html">Houston<span>(188)</span></a></li>
-                  <li><a href= "job-listing.html">Phoenix<span>(124)</span></a></li>
-                  <li><a href= "job-listing.html">Texas<span>(15)</span></a></li>
-                  <li><a href= "job-listing.html">Arizona<span>(233)</span></a></li>
-                  <li><a href= "job-listing.html">Philadelphia<span>(46)</span></a></li>
-                  <li><a href= "job-listing.html">Pennsylvania<span>(156)</span></a></li>
-                  <li><a href= "job-listing.html">San Antonio<span>(98)</span></a></li>
-                  <li><a href= "job-listing.html">San Diego<span>(584)</span></a></li>
-                  <li><a href= "job-listing.html">Dallas<span>(188)</span></a></li>
-                  <li><a href= "job-listing.html">San Jose<span>(124)</span></a></li>
-                  <li><a href= "job-listing.html">Austin<span>(15)</span></a></li>
-                  <li><a href= "job-listing.html">Jacksonville<span>(25)</span></a></li>
-                  <li><a href= "job-listing.html">Florida<span>(53)</span></a></li>
-                  <li><a href= "job-listing.html">San Francisco<span>(74)</span></a></li>
-                  <li><a href= "job-listing.html">Columbus<span>(26)</span></a></li>
-                  <li><a href= "job-listing.html">Ohio<span>(58)</span></a></li>
-                  <li><a href= "job-listing.html">Indianapolis<span>(96)</span></a></li>
-                  <li><a href= "job-listing.html">Indiana<span>(123)</span></a></li>
-                  <li><a href= "job-listing.html">Fort Worth<span>(42)</span></a></li>
-                  <li><a href= "job-listing.html">Charlotte<span>(71)</span></a></li>
-                  <li><a href= "job-listing.html">North Carolina<span>(19)</span></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6">
-            <div class="explore-job">
-              <div class="explore-job-header">
-                <h5 class="title">TOP Companies</h5>
-                <i data-feather="briefcase"></i>
-              </div>
-              <div class="key-info">
-                <ul>
-                  <li><a href= "job-listing.html">Digoin<span>(233)</span></a></li>
-                  <li><a href= "job-listing.html">Orion Ltd.<span>(46)</span></a></li>
-                  <li><a href= "job-listing.html">RealHouse<span>(156)</span></a></li>
-                  <li><a href= "job-listing.html">BioPro Phrma<span>(98)</span></a></li>
-                  <li><a href= "job-listing.html">Homeland<span>(584)</span></a></li>
-                  <li><a href= "job-listing.html">Realouse<span>(188)</span></a></li>
-                  <li><a href= "job-listing.html">Healthyete<span>(124)</span></a></li>
-                  <li><a href= "job-listing.html">Theoreo<span>(15)</span></a></li>
-                  <li><a href= "job-listing.html">Homeland<span>(584)</span></a></li>
-                  <li><a href= "job-listing.html">Realouse<span>(188)</span></a></li>
-                  <li><a href= "job-listing.html">Healthyete<span>(124)</span></a></li>
-                  <li><a href= "job-listing.html">Theoreo<span>(15)</span></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Explore Job End -->
-
     <div class="section-padding alice-bg">
       <div class="container">
         <div class="row">
@@ -528,54 +400,11 @@
     </div>
     <!-- Career Advice End -->
 
-    <!-- App Download -->
-    <div class="padding-top-90 padding-bottom-90 app-download-bg">
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <div class="app-download">
-              <h2>Get Oficiona App</h2>
-              <p>Searching for jobs never been that easy. Now you can find job matched your career expectation</p>
-              <div class="app-download-button">
-                <a href= "#" class="apple-app">Apple Store</a>
-                <a href= "#" class="android-app">Google Play</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- App Download End -->
-
     <!-- Footer -->
     <footer class="footer-bg">
       <div class="footer-top border-bottom section-padding-top padding-bottom-40">
         <div class="container">
           <div class="row">
-            <div class="col-md-6">
-              <div class="footer-logo">
-                <a href= "#">
-                  <img src="images/footer-logo.png" class="img-fluid" alt="">
-                </a>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="footer-social">
-                <ul class="social-icons">
-                  <li><a href= "#"><i data-feather="facebook"></i></a></li>
-                  <li><a href= "#"><i data-feather="twitter"></i></a></li>
-                  <li><a href= "#"><i data-feather="linkedin"></i></a></li>
-                  <li><a href= "#"><i data-feather="instagram"></i></a></li>
-                  <li><a href= "#"><i data-feather="youtube"></i></a></li>
-                </ul>
-                <select class="selectpicker select-language" id="select-country">
-                  <option value="United States of America" selected>EN</option>
-                  <option value="United Kingdom">GB</option>
-                  <option value="Spain">ES</option>
-                  <option value="Portugal">PT</option>
-                </select>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -646,7 +475,7 @@
               <div class="footer-bottom border-top">
                 <div class="row">
                   <div class="col-lg-6">
-                    <p class="copyright-text">Copyright <a href= "#">Oficiona</a> 2019, All right reserved</p>
+                    <p class="copyright-text">Copyright <a href= "#">Concordia University</a> 2019, All right reserved</p>
                   </div>
                   <div class="col-lg-6">
                     <div class="back-to-top">

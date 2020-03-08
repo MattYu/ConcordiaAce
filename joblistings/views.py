@@ -52,6 +52,21 @@ def job_search(request, *args, **kwargs):
     return HttpResponseRedirect("/")
 
 
+def list_all_jobs(request, *args, **kwargs):
+    if request.method == 'POST':
+        jobQuery = Job.objects.order_by('-created_at')
+        jobQuery = list(jobQuery)
+
+        context = {
+            'joblist': jobQuery,
+            'job_num': str(len(jobQuery))
+        }
+       
+        return render(request, 'job-listing.html', context)
+
+    return HttpResponseRedirect("/")
+
+
 def job_details(request, pk=None, *args, **kwargs):
     instance = get_object_or_404(Job, pk=pk)
 
