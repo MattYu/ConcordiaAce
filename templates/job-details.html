@@ -50,7 +50,7 @@
           <div class="col">
             <div class="header-top">
               <div class="logo-area">
-                <a href="index.html"><img src={% static "images/concordia-logo.png" %} alt=""></a>
+                <a href="/"><img src={% static "images/concordia-logo.png" %} alt=""></a>
               </div>
               <div class="header-top-toggler">
                 <div class="header-top-toggler-button"></div>
@@ -242,7 +242,7 @@
                   <a class="save" href="#"><i data-feather="heart"></i>Save Job</a>
                   <a class="apply" href="/add-resume/{{pk}}" data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
                   {% if download %}
-                    <a class="apply" href="/jobDescription/{{download}}" data-toggle="modal" data-target="#apply-popup-id">Download PDF Description</a>
+                    <a class="apply" href="/jobDescription/{{download}}" data-toggle="modal" data-target="#apply-popup-id">PDF Description</a>
                   {% endif %}
                 </div>
               </div>
