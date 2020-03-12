@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import re_path
+
 
 from view import home_page
 from joblistings.views import job_details, post_job, download_jobPDF, manage_jobs, job_search
