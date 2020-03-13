@@ -312,7 +312,13 @@
                   </div>
                 </div>
               </div>
-                            <div class="job-filter-wrapper">
+                <div class="job-filter-wrapper">
+                <form method="POST">
+                {% csrf_token %}
+                <center>
+                <button class="btn button primary-bg" class="add-new-field" name="filter" id="filter">Apply Filter</button>
+                </center>
+                </form>
                 <div class="selected-options same-pad">
                   <div class="selection-title">
                     <h4>You Selected</h4>
@@ -357,6 +363,7 @@
                     <li class="part-time"><i data-feather="clock"></i><a href="#" data-attr="Part Time">Part Time</a></li>
                     <li class="freelance"><i data-feather="clock"></i><a href="#" data-attr="Freelance">Freelance</a></li>
                     <li class="temporary"><i data-feather="clock"></i><a href="#" data-attr="Temporary">Temporary</a></li>
+                    <li class="test"><i data-feather="clock"></i><a href="#" data-attr="Test">Test</a></li>
                   </ul>
                 </div>
                 <div data-id="experience" class="job-filter experience same-pad">
@@ -647,5 +654,20 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
     <script src={% static "js/map.js" %}></script>
+
+    <script>
+      $("#filter").click(function() {
+        $.ajax({
+          type: "POST",
+          datatype: "json",
+          url: $(location).attr('href');
+          async: true,
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            test: "tessst",
+          }
+        })
+      })
+    </script>
   </body>
 </html>
