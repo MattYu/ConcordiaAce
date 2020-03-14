@@ -316,7 +316,7 @@
                 <form method="POST">
                 {% csrf_token %}
                 <center>
-                <button class="btn button primary-bg" class="add-new-field" name="filter" id="filter">Apply Filter</button>
+                <input type="submit" class="add-new-field" formnovalidate value="Apply Filter" name="filter" id="filter">
                 </center>
                 </form>
                 <div class="selected-options same-pad">
@@ -657,16 +657,9 @@
 
     <script>
       $("#filter").click(function() {
-        $.ajax({
-          type: "POST",
-          datatype: "json",
-          url: $(location).attr('href');
-          async: true,
-          data: {
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            test: "tessst",
-          }
-        })
+        var cars = ["Saab", "Volvo", "BMW"];
+        $("#filter").val(cars);
+        
       })
     </script>
   </body>

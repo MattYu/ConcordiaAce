@@ -74,7 +74,7 @@ def download_test(request, pk):
     return sendfile(request, download.company.image.path)
 
 @transaction.atomic
-def browse_job_applications(request, jobId= -1):
+def browse_job_applications(request, searchString = "", jobId= -1):
     context = {}
     jobApplications = None
 
@@ -88,7 +88,7 @@ def browse_job_applications(request, jobId= -1):
     if request.user.user_type == USER_TYPE_SUPER:
         kwargs = {}
 
-        if jobId == None:
+        if jobId == None or jobId == -1:
             jobApplications = JobApplication.objects.all()
 
         else:
@@ -128,6 +128,9 @@ def browse_job_applications(request, jobId= -1):
     #if request.POST.get("pdf"):
         if 'filter' in request.POST:
             print(request.POST)
+            print(request.POST.get('filter'))
+            for ob in request.POST.get('filter'):
+                print(ob)
             print("test***")
         else:
             print(request.POST)

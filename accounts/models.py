@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser , BaseUserManager, PermissionsMixin
-from ace.constants import MAX_LENGTH_STANDARDFIELDS, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO
+from ace.constants import MAX_LENGTH_STANDARDFIELDS, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO, CATEGORY_CHOICES
 from companies.models import Company
 from django.contrib.auth.models import UserManager
 
@@ -103,6 +103,7 @@ class Candidate(models.Model):
     creditLeft = models.FloatField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= 0)
     gpa = models.FloatField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= 0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default= "")
+    program = models.CharField(choices=CATEGORY_CHOICES, max_length = 20, default="ANY")
     internationalStudent = models.CharField(choices=YES_NO, max_length = 3, default="No")
     travel = models.CharField(choices=YES_NO, max_length = 3, default="No")
     timeCommitment = models.CharField(choices=YES_NO, max_length = 3, default="No")
