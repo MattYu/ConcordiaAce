@@ -61,7 +61,7 @@
    - pip install psycopg2
 
 7) Migrate static files. Do this every time you make a change to a static file. You might also need to clear your browser cache or use incognito mode to see the effect of your change. 
-   - python manage.py collectstatic --noinput --clear"
+   - "python manage.py collectstatic --noinput --clear"
   
 7) Run server. Go to Ace folder.
   - python manage.py makemigrations
