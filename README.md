@@ -69,6 +69,8 @@
   - python manage.py runserver
 
 8) Push your branch. When ready to merge, make a pull request. Please never merge directly into master. 
+
+9) After modifying a static file in the "static_folder" server, don't forget to run "python manage.py collectstatic --noinput --clear" to push the changes. You might need to clear your browser cache or use a clean incognito mode to see the change take effect.
   
 
 # Commands
