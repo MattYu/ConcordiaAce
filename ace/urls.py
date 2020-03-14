@@ -59,6 +59,8 @@ urlpatterns = [
     #path('concatinateApplications/', concatinate_applicationPDF),
     path('search/', job_search),
     path('jobApplications/<optional_int:jobId>', browse_job_applications),
+    path('jobApplications/<optional_int:jobId>/<slug:searchString>', browse_job_applications),
+    path('jobApplications/<slug:searchString>', browse_job_applications),
     path('jobApplicationDetails/<int:pk>/', view_application_details),
     path('getFile/<str:uid>/<str:candidateId>/<str:filetype>/<str:fileid>/<token>/', get_protected_file),
     path('manageJobs/', manage_jobs),

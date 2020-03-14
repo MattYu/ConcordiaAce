@@ -265,7 +265,7 @@ $(document).ready(function() {
     /*----------------------------------------------
     Job Filter Result View
     -----------------------------------------------*/
-
+ 
     $('.job-view-controller .controller, .candidate-view-controller .controller, .employer-view-controller .controller').on('click', function() {
       $('.job-view-controller .controller, .candidate-view-controller .controller, .employer-view-controller .controller').removeClass('active');
       $(this).addClass('active');
@@ -294,7 +294,6 @@ $(document).ready(function() {
     /*----------------------------------------------
     Category Filter
     -----------------------------------------------*/
-
     $('.job-filter .option-title, .candidate-filter .option-title, .employer-filter .option-title').on('click', function (event) {
       var clickover = $(event.target);
       $(this).each(function() {
@@ -308,7 +307,6 @@ $(document).ready(function() {
       var cls = $(this).parents(".job-filter, .candidate-filter, .employer-filter").data("id");
       var innerContent = '<a href="#">' + $(this).data("attr") + '</a><span class="ti-close"></span>';
       var filteredList = '<li class="' + cls + '">' + innerContent + '</li>';
-
       $('.selected-options .filtered-options li.' + cls).remove();
       $('.selected-options .filtered-options').append(filteredList);
     });

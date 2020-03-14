@@ -1,5 +1,5 @@
 from django import forms
-from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO
+from ace.constants import MAX_LENGTH_STANDARDFIELDS, MAX_LENGTH_LONGSTANDARDFIELDS, USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, LANGUAGE_CHOICES, LANGUAGE_FLUENCY_CHOICES, YES_NO, CATEGORY_CHOICES
 from accounts.models import Candidate, Employer, PreferredName, MyUserManager
 from accounts.models import User, Language
 from companies.models import Company
@@ -85,6 +85,11 @@ class RegistrationForm(forms.Form):
                                         )
                 for i in range(int(self.fields['extra_language_count'].initial)):
                     self.add_language(i)
+
+                self.fields['program'] = forms.ChoiceField(
+                                                                    choices=CATEGORY_CHOICES,
+                                                                    widget=forms.Select(attrs={'class': 'form-control'})
+                                                                )
 
                 self.fields['internationalStudent'] = forms.ChoiceField(
                                                                     choices=YES_NO,
@@ -246,6 +251,7 @@ class RegistrationForm(forms.Form):
             candidate.user =user
             candidate.studentID = cleaned_data.get('studentID')
             candidate.creditCompleted = cleaned_data.get('creditCompleted')
+            candidate.program = cleaned_data.get('program')
             candidate.creditLeft = cleaned_data.get('creditLeft')
             candidate.gpa = cleaned_data.get('gpa')
             candidate.internationalStudent = cleaned_data.get('internationalStudent')
