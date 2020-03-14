@@ -260,3 +260,23 @@ class ApplicationForm(forms.Form):
         lastName
         preferredName
         '''
+
+class FilterApplicationForm(forms.Form):
+    sort_order = forms.CharField(widget=forms.HiddenInput(), required= False,)
+    gpa_min = forms.FloatField(widget=forms.HiddenInput(), required= False,)
+    gpa_max = forms.FloatField(widget=forms.HiddenInput(), required= False,)
+
+    firstName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name (optional)'}),
+                                required= False,
+                                )
+
+    lastName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name (optional)'}),
+                                required= False,
+                                )
+
+    lastName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name (optional)'}),
+                                required= False,
+                                )
