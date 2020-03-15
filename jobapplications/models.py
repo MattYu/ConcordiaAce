@@ -88,3 +88,7 @@ class Ranking(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return self.status + " - Employer: " + str(self.employerRank) + ' - Candidate:' + str(self.candidateRank) + " - " + self.candidate.user.lastName + " " + self.candidate.user.firstName +  " [" + self.candidate.user.email + "] applied to " + self.job.title + "[" + str(self.job.id) + "] at " + self.job.company.name 
