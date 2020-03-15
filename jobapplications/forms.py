@@ -262,7 +262,9 @@ class ApplicationForm(forms.Form):
         '''
 
 class FilterApplicationForm(forms.Form):
-    sort_order = forms.CharField(widget=forms.HiddenInput(), required= False,)
+    selected_filter = forms.CharField(widget=forms.HiddenInput(), required= False,)
+    selected_filter_outerHTML = forms.CharField(widget=forms.HiddenInput(), required= False,)
+    selected_filter_class = forms.CharField(widget=forms.HiddenInput(), required= False,)
     gpa_min = forms.FloatField(widget=forms.HiddenInput(), required= False,)
     gpa_max = forms.FloatField(widget=forms.HiddenInput(), required= False,)
 
@@ -280,3 +282,25 @@ class FilterApplicationForm(forms.Form):
                                 widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name (optional)'}),
                                 required= False,
                                 )
+
+
+    def getSelectedFilterAsSet(self):
+        if self['selected_filter'] != None:
+            return set(str(self['selected_filter'].value()).split(","))
+        return None
+
+    def getSelectedFilterHTMLAsList(self):
+        if self['selected_filter_outerHTML']:
+            return str(self['selected_filter_outerHTML'].value()).split(",")
+        return None
+
+    def getSelectedFilterClassAsList(self):
+        if self['selected_filter_class']:
+            return str(self['selected_filter_class'].value()).split(",")
+        return None
+
+    def getSelectedFilterPair(self):
+        html = self.getSelectedFilterHTMLAsList()
+        classes = self.getSelectedFilterClassAsList()
+
+        return list(zip(classes, html))

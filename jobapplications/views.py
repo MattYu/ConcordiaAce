@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from joblistings.models import Job
 from jobapplications.models import JobApplication, Resume, CoverLetter, Education, Experience, Ranking
-from jobapplications.forms import ApplicationForm, resumeUpload
+from jobapplications.forms import ApplicationForm, resumeUpload, FilterApplicationForm
 from django_sendfile import sendfile
 import uuid
 from django.core.files.storage import FileSystemStorage
@@ -22,6 +22,9 @@ from accounts.models import downloadProtectedFile_token, User, Candidate, Employ
 import uuid
 from django.db import transaction
 from django.db.models import Q
+
+import json as simplejson
+
 
 #u = uuid.uuid4()
 #u.hex
@@ -77,6 +80,11 @@ def download_test(request, pk):
 def browse_job_applications(request, searchString = "", jobId= -1):
     context = {}
     jobApplications = None
+    form = FilterApplicationForm()
+    query = Q()
+
+    filterClasses = []
+    filterHTML = []
 
     if not request.user.is_authenticated:
 
@@ -87,18 +95,10 @@ def browse_job_applications(request, searchString = "", jobId= -1):
 
     if request.user.user_type == USER_TYPE_SUPER:
         kwargs = {}
+        if jobId != None:
+            query = Q(job__pk=jobId)
+            context["job"] = Job.objects.get(pk=jobId)
 
-        if jobId == None or jobId == -1:
-            jobApplications = JobApplication.objects.all()
-
-        else:
-            if jobId != None:
-                query = Q(job__pk=jobId)
-                context["job"] = Job.objects.get(pk=jobId)
-
-            jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
-
-        context["jobApplications"] = jobApplications
 
     if request.user.user_type == USER_TYPE_EMPLOYER:
         query = Q(job__jobAccessPermission=Employer.objects.get(user=request.user))
@@ -110,30 +110,37 @@ def browse_job_applications(request, searchString = "", jobId= -1):
             context["job"] = Job.objects.get(pk=jobId)
 
 
-
-        jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
-
-        for q in jobApplications:
-            print(q.status)
-
-        context["jobApplications"] = jobApplications
-
     if request.user.user_type == USER_TYPE_CANDIDATE:
+        query = Q(candidate= Candidate.objects.get(user=request.user))
 
-        jobApplications = JobApplication.objects.filter(candidate= Candidate.objects.get(user=request.user)).order_by('-created_at')
+    if (request.method == 'POST'):
+        form = FilterApplicationForm(request.POST)
+        print("test")
+        
 
-        context["jobApplications"] = jobApplications
-    
+        if 'filter' in request.POST:
+
+            print(request.POST)
+            print(request.POST.get('selected_filter'))
+            print("TTTTTTTTTTTTTTTTTTTTTTT")
+            context['filterClasses'] = simplejson.dumps(form.getSelectedFilterClassAsList())
+            context['filterHTML'] = simplejson.dumps(form.getSelectedFilterHTMLAsList())
+            #for ob in request.POST.get('selected_filter'):
+            #    print(ob)
+            #print("test***")
+
+    jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
+    context["jobApplications"] = jobApplications
+    context["form"] = form
+
+    print("Value:")
+    print(form['selected_filter'].value())
+    print(form.getSelectedFilterHTMLAsList())
+    print(form.getSelectedFilterAsSet())
+
     if (request.method == 'POST'):
     #if request.POST.get("pdf"):
-        if 'filter' in request.POST:
-            print(request.POST)
-            print(request.POST.get('filter'))
-            for ob in request.POST.get('filter'):
-                print(ob)
-            print("test***")
-        else:
-            print(request.POST)
+        if 'pdf' in request.POST:
             response = HttpResponse()
             response['Content-Disposition'] = 'attachment; filename=downloadApplications.pdf'
             writer = PdfFileWriter()
@@ -194,11 +201,6 @@ def browse_job_applications(request, searchString = "", jobId= -1):
 
             User.objects.filter(id=request.user.id).update(protect_file_temp_download_key="")
             return response
-
-    if request.method == "GET":
-        print(request.GET)
-        print(request)
-
 
     return render(request, "dashboard-manage-applications.html", context)
 

@@ -315,6 +315,9 @@
                 <div class="job-filter-wrapper">
                 <form method="POST">
                 {% csrf_token %}
+                {{form.selected_filter}}
+                {{form.selected_filter_outerHTML}}
+                {{form.selected_filter_class}}
                 <center>
                 <input type="submit" class="add-new-field" formnovalidate value="Apply Filter" name="filter" id="filter">
                 </center>
@@ -324,7 +327,7 @@
                     <h4>You Selected</h4>
                     <a href="#">Clear All</a>
                   </div>
-                  <ul class="filtered-options">
+                  <ul class="filtered-options" id= "currentFilter">
                   </ul>
                 </div>
                 <div class="job-filter-dropdown same-pad category">
@@ -357,13 +360,12 @@
                   </select>
                 </div>
                 <div data-id="job-type" class="job-filter job-type same-pad">
-                  <h4 class="option-title">Job Type</h4>
+                  <h4 class="option-title">Date Posted</h4>
                   <ul>
-                    <li class="full-time"><i data-feather="clock"></i><a href="#" data-attr="Full Time">Full Time</a></li>
-                    <li class="part-time"><i data-feather="clock"></i><a href="#" data-attr="Part Time">Part Time</a></li>
-                    <li class="freelance"><i data-feather="clock"></i><a href="#" data-attr="Freelance">Freelance</a></li>
-                    <li class="temporary"><i data-feather="clock"></i><a href="#" data-attr="Temporary">Temporary</a></li>
-                    <li class="test"><i data-feather="clock"></i><a href="#" data-attr="Test">Test</a></li>
+                    <li class="full-time"><i data-feather="clock"></i><a href="#" data-attr="Last 24 hours">Last 24h</a></li>
+                    <li class="part-time"><i data-feather="clock"></i><a href="#" data-attr="Last 7 days">Last 7 days</a></li>
+                    <li class="freelance"><i data-feather="clock"></i><a href="#" data-attr="Last 14 days">Last 14 days</a></li>
+                    <li class="temporary"><i data-feather="clock"></i><a href="#" data-attr="Last month">Last month</a></li>
                   </ul>
                 </div>
                 <div data-id="experience" class="job-filter experience same-pad">
@@ -381,8 +383,8 @@
                 <div class="job-filter same-pad">
                   <h4 class="option-title">Salary Range</h4>
                   <div class="price-range-slider">
-                    <div class="nstSlider" data-range_min="0" data-range_max="10000" 
-                     data-cur_min="0"    data-cur_max="6130">
+                    <div class="nstSlider" data-range_min="1.7" data-range_max="4.30" 
+                     data-cur_min="0"    data-cur_max="4.3">
                       <div class="bar"></div>
                       <div class="leftGrip"></div>
                       <div class="rightGrip"></div>
@@ -655,12 +657,37 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
     <script src={% static "js/map.js" %}></script>
 
+
     <script>
-      $("#filter").click(function() {
-        var cars = ["Saab", "Volvo", "BMW"];
-        $("#filter").val(cars);
-        
-      })
+        {% if filterClasses %}
+        var oldCls =  unescape({{filterClasses | safe }}).split(',');
+        var oldHTMLs =unescape({{filterHTML| safe }}).split(',');
+
+        if (oldCls.length > 0) {
+          for (var i=0; i < oldCls.length; ++i){
+            $('.selected-options').slideDown();
+            $('.selected-options .filtered-options li.' + oldCls[i]).remove();
+            $('.selected-options .filtered-options').append(oldHTMLs[i]);
+          }
+        }
+
+        {% endif %}
+
+        $("#filter").click(function() {
+          var res = [];
+          var htmls = [];
+          var cls = [];
+          var lis = document.getElementById("currentFilter").getElementsByTagName("li");
+          for (var i = 0; i < lis.length; ++i) {
+            cls[i] = lis[i].className;
+            htmls[i] = lis[i].outerHTML;
+            res[i] = (lis[i].innerText || lis[i].textContent);
+          }
+          $("[name=selected_filter]").val(res);
+          $("[name=selected_filter_outerHTML]").val(htmls);
+          $("[name=selected_filter_class]").val(cls);
+        })
     </script>
+
   </body>
 </html>
