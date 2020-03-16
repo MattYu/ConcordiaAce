@@ -255,7 +255,7 @@
             <div class="dashboard-container">
               <div class="dashboard-content-wrapper">
                 <div class="manage-candidate-container">
-                    <button class="button" class="add-new-field" name="pdf" id="pdf">Download Select List as PDF</button>
+                    <button class="button" class="add-new-field" name="pdf" id="pdf">Download Selection as one PDF</button>
                   <br>
                   {% if job %}
                       <h6>Applications for {{job.title}} [{{job.id}}] at {{job.company.name}}</h6>
@@ -331,7 +331,7 @@
                 </div>
                 <div class="job-filter same-pad">
                 <h4 class="option-title">Optional Keywords</h4>
-                <ul>
+                <ul id="formInput">
                     {{form.firstName}}
                     {{form.lastName}}
                     {{form.email}}
@@ -378,8 +378,8 @@
                 <div data-id="post" class="job-filter post same-pad">
                   <h4 class="option-title">Order By</h4>
                   <ul>
-                    <li><a href="#" data-attr="Last hour">Latest First</a></li>
-                    <li><a href="#" data-attr="Last 24 hour">Oldest First</a></li>
+                    <li><a href="#" data-attr="Latest First">Latest First</a></li>
+                    <li><a href="#" data-attr="Oldest First">Oldest First</a></li>
                   </ul>
                 </div>
               </div>
@@ -651,7 +651,15 @@
           $("[name=selected_filter_class]").val(cls);
           $("[name=gpa_min]").val(document.getElementById('minSlider').textContent);
           $("[name=gpa_max]").val(document.getElementById('maxSlider').textContent);
-        })
+        });
+
+        $('html').bind('keypress', function(e)
+        {
+          if(e.keyCode == 13)
+          {
+              return false;
+          }
+        });
     </script>
 
   </body>

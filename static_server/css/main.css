@@ -4935,7 +4935,7 @@ form {
 }
 
 .section-header h2 {
-  font-family: #headerFont;
+  font-family: headerFont;
   font-weight: 600;
   font-size: 2.8rem;
 }

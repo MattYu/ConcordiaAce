@@ -85,6 +85,7 @@ def browse_job_applications(request, searchString = "", jobId= -1):
 
     filterClasses = []
     filterHTML = []
+    sortOrder = '-created_at'
 
     if not request.user.is_authenticated:
 
@@ -117,6 +118,7 @@ def browse_job_applications(request, searchString = "", jobId= -1):
         form = FilterApplicationForm(request.POST)        
 
         if 'filter' in request.POST:
+            print(request.POST)
             context['filterClasses'] = simplejson.dumps(form.getSelectedFilterClassAsList())
             context['filterHTML'] = simplejson.dumps(form.getSelectedFilterHTMLAsList())
             #for ob in request.POST.get('selected_filter'):
@@ -126,21 +128,54 @@ def browse_job_applications(request, searchString = "", jobId= -1):
     # Applying filter value here
     filterSet = form.getSelectedFilterAsSet()
 
-    if "Last 24 hours" in filterSet:
-        query &= Q(created_at__gte=datetime.now()-timedelta(days=1))
-    if "Last 7 days" in filterSet:
-        query &= Q(created_at__gte=datetime.now()-timedelta(days=7))
-    if "Last 14 days" in filterSet:
-        query &= Q(created_at__gte=datetime.now()-timedelta(days=14))
-    if "Last month" in filterSet:
-        query &= Q(created_at__gte=datetime.now()-timedelta(days=30))
-    if "Last 3 months" in filterSet:
-        query &= Q(created_at__gte=datetime.now()-timedelta(days=90))
+    try:
+        if "Last 24 hours" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=1))
+        if "Last 7 days" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=7))
+        if "Last 14 days" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=14))
+        if "Last month" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=30))
+        if "Last 3 months" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=90))
+        if form["firstName"].value() != None and form["firstName"].value() != "":
+            query &= (Q(firstName__contains= form["firstName"].value()) | Q(preferredName__contains=form["firstName"].value()))
+        if form["lastName"].value() != None and form["lastName"].value() != "":
+            query &= Q(lastName__contains= form["lastName"].value())
+        if form["email"].value() != None and form["email"].value() != "":
+            query &= Q(candidate__user__email__contains=form["email"].value())
+        if form["studentId"].value() != None and form["studentId"].value() != "":
+            query &= Q(candidate__studentID__contains=form["studentId"].value())
+        if form["studentId"].value() != None and form["program"].value() != "ANY":
+            query &= Q(candidate__program= form["program"].value())
+        if form["gpa_min"].value() != None and form["gpa_min"].value() != "1.7" :
+            query &= Q(candidate__gpa__gte = float(form["gpa_min"].value()))
+        if form["gpa_max"].value() != None and form["gpa_max"].value() != "4.3" :
+            query &= Q(candidate__gpa__lte = float(form["gpa_max"].value()))
+        if 'Oldest First' in filterSet:
+            sortOrder = 'created_at'
+        if "Pending Review" in filterSet:
+            query &= Q(status="Pending Review")
+        if "Approved" in filterSet:
+            query &= (Q(status= "Submitted") | Q(status="Not Selected"))
+        if "Not Approved" in filterSet:
+            query &= Q(status="Not Approved")
+        if "Interviewing" in filterSet:
+            query &= (Q(status= "Interviewing") | Q(status="Ranked") | Q(status= "1st"))
+        if "Matched" in filterSet:
+            query &= Q(status="Matched")
+        if "Not Matched/Closed" in filterSet:
+            query &= (Q(status= "Not Matched") | Q(status="Closed"))
+    except:
+        pass
+    
 
-    jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
+    jobApplications = JobApplication.objects.filter(query).order_by(sortOrder)
     context["jobApplications"] = jobApplications
     context["form"] = form
     print("Value:")
+    print(form["program"].value())
     print(form['selected_filter'].value())
     print(form.getSelectedFilterHTMLAsList())
     print(form.getSelectedFilterAsSet())
