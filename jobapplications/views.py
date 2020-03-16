@@ -24,7 +24,7 @@ from django.db import transaction
 from django.db.models import Q
 
 import json as simplejson
-
+from datetime import datetime, timedelta
 
 #u = uuid.uuid4()
 #u.hex
@@ -114,33 +114,41 @@ def browse_job_applications(request, searchString = "", jobId= -1):
         query = Q(candidate= Candidate.objects.get(user=request.user))
 
     if (request.method == 'POST'):
-        form = FilterApplicationForm(request.POST)
-        print("test")
-        
+        form = FilterApplicationForm(request.POST)        
 
         if 'filter' in request.POST:
-
-            print(request.POST)
-            print(request.POST.get('selected_filter'))
-            print("TTTTTTTTTTTTTTTTTTTTTTT")
             context['filterClasses'] = simplejson.dumps(form.getSelectedFilterClassAsList())
             context['filterHTML'] = simplejson.dumps(form.getSelectedFilterHTMLAsList())
             #for ob in request.POST.get('selected_filter'):
             #    print(ob)
             #print("test***")
 
+    # Applying filter value here
+    filterSet = form.getSelectedFilterAsSet()
+
+    if "Last 24 hours" in filterSet:
+        query &= Q(created_at__gte=datetime.now()-timedelta(days=1))
+    if "Last 7 days" in filterSet:
+        query &= Q(created_at__gte=datetime.now()-timedelta(days=7))
+    if "Last 14 days" in filterSet:
+        query &= Q(created_at__gte=datetime.now()-timedelta(days=14))
+    if "Last month" in filterSet:
+        query &= Q(created_at__gte=datetime.now()-timedelta(days=30))
+    if "Last 3 months" in filterSet:
+        query &= Q(created_at__gte=datetime.now()-timedelta(days=90))
+
     jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
     context["jobApplications"] = jobApplications
     context["form"] = form
-
     print("Value:")
     print(form['selected_filter'].value())
     print(form.getSelectedFilterHTMLAsList())
     print(form.getSelectedFilterAsSet())
 
     if (request.method == 'POST'):
-    #if request.POST.get("pdf"):
         if 'pdf' in request.POST:
+            print(form.getSelectedFilterAsSet())
+            # PDF download request
             response = HttpResponse()
             response['Content-Disposition'] = 'attachment; filename=downloadApplications.pdf'
             writer = PdfFileWriter()

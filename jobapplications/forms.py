@@ -100,7 +100,6 @@ class ApplicationForm(forms.Form):
     def add_education(self, i:int = None):
         if i == None:
             i = len(self.educationFields)
-        print(i)
         field_name = '_educations_%s' % (i,)
         educationDict = {}
         eduNameDict = {}
@@ -269,20 +268,31 @@ class FilterApplicationForm(forms.Form):
     gpa_max = forms.FloatField(widget=forms.HiddenInput(), required= False,)
 
     firstName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
-                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name (optional)'}),
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}),
                                 required= False,
                                 )
 
     lastName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
-                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name (optional)'}),
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
                                 required= False,
                                 )
 
-    lastName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
-                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name (optional)'}),
+
+    email = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
                                 required= False,
                                 )
 
+    studentId = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Student ID'}),
+                                required= False,
+                                )
+
+    program = forms.ChoiceField(
+                                choices=CATEGORY_CHOICES,
+                                widget=forms.Select(attrs={'class': 'form-control'}),
+                                required= False,
+                                )
 
     def getSelectedFilterAsSet(self):
         if self['selected_filter'] != None:

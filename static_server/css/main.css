@@ -1298,7 +1298,7 @@ a:focus {
 .job-filter-wrapper .employer-filter .nstSlider .grip-label .rightLabel:before,
 .candidate-filter-wrapper .employer-filter .nstSlider .grip-label .rightLabel:before,
 .employer-filter-wrapper .employer-filter .nstSlider .grip-label .rightLabel:before {
-  content: "$";
+  content: "";
 }
 
 .job-filter-wrapper .job-filter .nstSlider .grip-label .leftLabel:after, .candidate-filter-wrapper .job-filter .nstSlider .grip-label .leftLabel:after, .employer-filter-wrapper .job-filter .nstSlider .grip-label .leftLabel:after, .job-filter-wrapper .candidate-filter .nstSlider .grip-label .leftLabel:after, .candidate-filter-wrapper .candidate-filter .nstSlider .grip-label .leftLabel:after, .employer-filter-wrapper .candidate-filter .nstSlider .grip-label .leftLabel:after, .job-filter-wrapper .employer-filter .nstSlider .grip-label .leftLabel:after, .candidate-filter-wrapper .employer-filter .nstSlider .grip-label .leftLabel:after, .employer-filter-wrapper .employer-filter .nstSlider .grip-label .leftLabel:after {
