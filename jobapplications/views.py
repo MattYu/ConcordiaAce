@@ -174,15 +174,9 @@ def browse_job_applications(request, searchString = "", jobId= -1):
     jobApplications = JobApplication.objects.filter(query).order_by(sortOrder)
     context["jobApplications"] = jobApplications
     context["form"] = form
-    print("Value:")
-    print(form["program"].value())
-    print(form['selected_filter'].value())
-    print(form.getSelectedFilterHTMLAsList())
-    print(form.getSelectedFilterAsSet())
 
     if (request.method == 'POST'):
         if 'pdf' in request.POST:
-            print(form.getSelectedFilterAsSet())
             # PDF download request
             response = HttpResponse()
             response['Content-Disposition'] = 'attachment; filename=downloadApplications.pdf'
