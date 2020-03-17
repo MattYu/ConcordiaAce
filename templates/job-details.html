@@ -234,13 +234,28 @@
                     <div class="info">
                       <span class="company"><a href="#"><i data-feather="briefcase"></i>{{object.company.name}}</a></span>
                       <span class="office-location"><a href="#"><i data-feather="map-pin"></i>{{object.location}}</a></span>
-                      <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>{{object.jobtype}}</a></span>
+                      <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>Status: {{object.status}}</a></span>
                     </div>
                   </div>
+                  {% if user.is_authenticated and user.user_type == 4 %}
+                  <form method="POST" class="candidate-details">
+                  {% csrf_token %}
+                    <div>
+                      <input type="submit" class="add-new-field" formnovalidate value="Approved" name="Approved" id="Approved">
+                      <input type="submit" class="add-new-field" formnovalidate value="Not Approved" name="Not Approved" id="Reject">
+                      {{form.addEmployer}}
+                      {{form.removeEmployer}}
+                      <input type="submit" class="add-new-field" formnovalidate value="Add" name="Add" id="Add">
+                      <input type="submit" class="add-new-field" formnovalidate value="Remove" name="Remove" id="Remove">
+                    </div>
+                  </form>
+                  {% endif %}
                 </div>
                 <div class="buttons">
                   <a class="save" href="#"><i data-feather="heart"></i>Save Job</a>
+                  {% if user.user_type == 1 %}
                   <a class="apply" href="/add-resume/{{pk}}" data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
+                  {% endif %}
                   {% if download %}
                     <a class="apply" href="/jobDescription/{{download}}" data-toggle="modal" data-target="#apply-popup-id">PDF Description</a>
                   {% endif %}

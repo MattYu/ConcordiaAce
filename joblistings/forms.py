@@ -1,5 +1,6 @@
 from django import forms
 from joblistings.models import Job
+from accounts.models import Employer
 from ace.constants import CATEGORY_CHOICES, MAX_LENGTH_TITLE, MAX_LENGTH_DESCRIPTION, MAX_LENGTH_RESPONSABILITIES, MAX_LENGTH_REQUIREMENTS, MAX_LENGTH_STANDARDFIELDS, LOCATION_CHOICES
 from tinymce.widgets import TinyMCE
 from companies.models import Company
@@ -153,3 +154,43 @@ class JobForm(forms.Form):
 
         return job
     
+class AdminAddRemoveJobPermission(forms.Form):
+    addEmployer = forms.ChoiceField(
+        required = False,
+        widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select Category'})
+    )
+
+    removeEmployer = forms.ChoiceField(
+        required = False,
+        widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select Category'})
+    )
+
+
+    def __init__(self, *args, **kwargs):
+        jobId = kwargs.pop('jobId', None)
+        super().__init__(*args, **kwargs)
+
+        if jobId:
+
+            currentPermission = []
+
+            job = Job.objects.filter(pk= jobId).all()[0]
+            employerSet = set()
+            for employer in job.jobAccessPermission.all():
+                currentPermission.append((employer.pk, employer.user.email))
+                employerSet.add(employer)
+
+            employerOfSameCompanyWithoutPermission = Employer.objects.filter(company = job.company).all()
+
+            sameCompany = []
+
+            for employer in employerOfSameCompanyWithoutPermission.all():
+                if employer not in employerSet:
+                    sameCompany.append((employer.pk, employer.user.email))
+
+            sorted(currentPermission, key=lambda x: x[1])
+            sorted(sameCompany, key=lambda x: x[1])
+            currentPermission.insert(0, ("Remove Permission", "Remove Permission"))
+            sameCompany.insert(0, ("Add Permission", "Add Permission from " + job.company.name))
+            self.fields['addEmployer'].choices = sameCompany
+            self.fields['removeEmployer'].choices = currentPermission

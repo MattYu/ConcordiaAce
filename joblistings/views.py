@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from ace.constants import USER_TYPE_CANDIDATE, USER_TYPE_EMPLOYER, USER_TYPE_SUPER
 from joblistings.models import Job, JobPDFDescription
-from joblistings.forms import JobForm
+from joblistings.forms import JobForm, AdminAddRemoveJobPermission
 from companies.models import Company
 from accounts.models import Employer, Candidate
 from django_sendfile import sendfile
@@ -64,6 +64,27 @@ def job_details(request, pk=None, *args, **kwargs):
 
     if (jobPDF):
         context["download"] = pk
+
+    if request.user.is_authenticated and request.user.user_type == USER_TYPE_SUPER:
+        if request.method == 'POST':
+            if request.POST.get('Not Approved'):
+                instance.status = "Not Approved"
+                instance.save()
+            if request.POST.get('Approved'):
+                instance.status = "Approved"
+                instance.save()
+            if request.POST.get('Add'):
+                if request.POST.get("addEmployer") != "Add Permission":
+                    instance.jobAccessPermission.add(int(request.POST.get("addEmployer")))
+            if request.POST.get('Remove'):
+                if request.POST.get("removeEmployer") != "Remove Permission":
+                    instance.jobAccessPermission.remove(int(request.POST.get("removeEmployer")))
+
+
+            print(request.POST)
+
+        form = AdminAddRemoveJobPermission(jobId=pk)
+        context["form"] = form
 
     return render(request, "job-details.html", context)
 
