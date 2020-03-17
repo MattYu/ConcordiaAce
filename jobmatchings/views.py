@@ -11,6 +11,8 @@ from jobmatchings.forms import EmployerRankingForm, CandidateRankingForm
 from jobmatchings.models import MatchingHistory, Match
 from matching import games as ranking
 from django.db import transaction
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 # Create your views here.
 @transaction.atomic
@@ -230,7 +232,7 @@ def admin_matchmaking(request):
                 matchResult = match.solve(optimal="hospital")
 
                 for jobApplication in matchResult:
-                    jobSet = {}
+                    jobSet = set()
                     for candidate in matchResult[jobApplication]:
                         match = Match()
                         # Before creating a match, perform a safety check to see if candidate already have been matched by the same employer for the same job before
@@ -241,7 +243,6 @@ def admin_matchmaking(request):
                             match.jobApplication = jobApp
                             match.save()
 
-
                             matchingHistory.matches.add(match)
                             matchingHistory.save()
 
@@ -251,7 +252,7 @@ def admin_matchmaking(request):
                             jobSet.add(match.job)
 
                         jobApp = JobApplication.objects.get(id=int(jobApplication.name))
-                        jobApp.status = "Matched"
+                        #jobApp.status = "Matched"
                         jobApp.save()
 
                     for job in jobSet:
@@ -265,14 +266,54 @@ def admin_matchmaking(request):
                 for rank in Ranking.objects.filter(is_closed=False):
                     if Match.objects.filter(jobApplication=rank.jobApplication).count() == 0:
                         rank.status = "Not Matched"
-                        rank.jobApplication.status = "Not Matched"
-                        rank.is_closed = True
                         rank.save()
                     else:
                         rank.status = "Matched"
+                        rank.save()
+
+            if request.POST.get("open"):
+                for rank in Ranking.objects.filter(is_closed=False):
+                    if Match.objects.filter(jobApplication=rank.jobApplication).count() == 0:
+                        print(rank.jobApplication.status)
+                        rank.jobApplication.status = "Not Matched"
+                        print(rank.jobApplication)
+                        rank.is_closed = True
+                        rank.save()
+                        rank.jobApplication.save()
+                    else:
+                        print(rank.jobApplication.status)
                         rank.jobApplication.status = "Matched"
                         rank.is_closed = True
                         rank.save()
+                        rank.jobApplication.save()
+                for match in Match.objects.filter(isOpenToPublic=False):
+                        match.isOpenToPublic = True
+                        match.save()
+
+            if request.POST.get("Undo last 7 days"):
+                print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT1111111111111111111111")
+                for rank in Ranking.objects.filter():
+                    print(rank.updated_at)
+                for rank in Ranking.objects.filter(updated_at__gte=timezone.now()-timedelta(days=7)).all():
+                    print("isThisWorking")
+                    rank.is_ranking_open_for_employer = True
+                    rank.is_ranking_open_for_candidate = False
+                    rank.is_closed = False
+                    matchCount = Match.objects.filter(jobApplication=rank.jobApplication).count()
+                    print(matchCount)
+                    print(rank.jobApplication.job.vacancy)
+                    print(rank.jobApplication.job.filled)
+                    rank.jobApplication.job.vacancy += matchCount
+                    rank.jobApplication.job.filled -= matchCount
+                    rank.jobApplication.status = "Interviewing"
+                    rank.jobApplication.save()
+                    rank.jobApplication.job.save()
+                    print("test")
+                    print(rank.jobApplication.job.vacancy)
+                    print(rank.jobApplication.job.filled)
+                    rank.save()
+                    for match in Match.objects.filter(jobApplication=rank.jobApplication):
+                        match.delete()
 
         context = {
             "user": request.user
@@ -333,7 +374,7 @@ def view_matching(request, jobId= None):
             for job in jobQuery:
                 obj = {}
                 obj['job'] = job
-                obj['count'] = Match.objects.filter(job=job).count()
+                obj['count'] = Match.objects.filter(job=job, isOpenToPublic=True).count()
                 jobs.append(obj)
 
             context = {
@@ -348,14 +389,14 @@ def view_matching(request, jobId= None):
                         "job" : jobQuery,
                         }
 
-            matches = Match.objects.filter(job__id=jobId)
+            matches = Match.objects.filter(job__id=jobId, isOpenToPublic=True)
 
             context["matches"] = matches
 
 
     if request.user.user_type == USER_TYPE_CANDIDATE:
 
-        matches = Match.objects.filter(candidate=Candidate.objects.get(user=request.user))
+        matches = Match.objects.filter(candidate=Candidate.objects.get(user=request.user), isOpenToPublic=True)
 
         context = {
                     "job": True,

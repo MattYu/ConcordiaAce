@@ -10,6 +10,7 @@ class Match(models.Model):
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, default= "")
     job = models.ForeignKey(Job, on_delete=models.CASCADE, default= "")
     jobApplication =  models.ForeignKey(JobApplication, on_delete=models.CASCADE, default= "")
+    isOpenToPublic = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

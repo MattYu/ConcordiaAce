@@ -190,7 +190,7 @@ class AdminAddRemoveJobPermission(forms.Form):
 
             sorted(currentPermission, key=lambda x: x[1])
             sorted(sameCompany, key=lambda x: x[1])
-            currentPermission.insert(0, ("Remove Permission", "Remove Permission"))
+            currentPermission.insert(0, ("Remove Permission", "Revoke Permission"))
             sameCompany.insert(0, ("Add Permission", "Add Permission from " + job.company.name))
             self.fields['addEmployer'].choices = sameCompany
             self.fields['removeEmployer'].choices = currentPermission
