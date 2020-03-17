@@ -130,10 +130,10 @@ COMPANY_STATUS = (
 JOB_STATUS = (
     ("Pending Review", "Pending Coop Review"),
     ("Not Approved", "Not Approved"),
-    ("Waiting", "Collecting applications"),
-    ("Review", "Open for Review"),
-    ("Interviewing", "Intervierwing"),
-    ("Not Approved", "Not Approved"),
+    ("Approved", "Approved"),
+    ("Interviewing", "Interviewing"),
+    ("Filled", "Filled"),
+    ("Partially Filled", "Partially Filled"),
     ("Closed", "Closed")
 )
 

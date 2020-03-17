@@ -286,6 +286,7 @@ def view_application_details(request, pk):
                 ranking.candidate = jobApplication.candidate
                 ranking.save()
                 jobApplication.status= "Interviewing"
+                jobApplication.job.status= "Interviewing"
                 jobApplication.save()
 
             if request.POST.get('Reject'):
