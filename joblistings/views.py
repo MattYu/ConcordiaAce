@@ -64,6 +64,7 @@ def job_details(request, pk=None, *args, **kwargs):
 
     if (jobPDF):
         context["download"] = pk
+        context["downloadPk"] = jobPDF[0].pk
 
     if request.user.is_authenticated and request.user.user_type == USER_TYPE_SUPER:
         if request.method == 'POST':
@@ -79,9 +80,6 @@ def job_details(request, pk=None, *args, **kwargs):
             if request.POST.get('Remove'):
                 if request.POST.get("removeEmployer") != "Remove Permission":
                     instance.jobAccessPermission.remove(int(request.POST.get("removeEmployer")))
-
-
-            print(request.POST)
 
         form = AdminAddRemoveJobPermission(jobId=pk)
         context["form"] = form
