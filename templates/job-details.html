@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Oficiona</title>
+    <title>ACE Concordia</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href={% static "assets/css/bootstrap.min.css" %}>
@@ -236,28 +236,41 @@
                       <span class="office-location"><a href="#"><i data-feather="map-pin"></i>{{object.location}}</a></span>
                       <span class="job-type full-time"><a href="#"><i data-feather="clock"></i>Status: {{object.status}}</a></span>
                     </div>
+                    {% if user.is_authenticated and user.user_type == 4 %}
+                    <div class="buttons">
+                    <a class="save" href="/admin/joblistings/job/{{pk}}/change/"><i data-feather="heart"></i>Edit</a>
+                    </div>
+                    {% endif %}
+                    {% if user.is_authenticated and user.user_type == 2 %}
+                    <div class="buttons">
+                    <a class="save" href="#"><i data-feather="heart"></i>Edit (Admin Only)</a>
+                    </div>
+                    {% endif %}
                   </div>
+                </div>
+                <div class="buttons">
+                  
+                  {% if user.user_type == 1 %}
+                  <a class="apply" href="/add-resume/{{pk}}" data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
+                  {% endif %}
+                  {% if download %}
+                  {% if user.is_authenticated and user.user_type == 4 %}
+                    <a class="save" href="/admin/joblistings/jobpdfdescription/{{downloadPk}}/change/"><i data-feather="heart"></i>Edit PDF</a>
+                  {% endif %}
+                    <a class="apply" href="/jobDescription/{{download}}" data-toggle="modal" data-target="#apply-popup-id">PDF Description</a>
+                  {% endif %}
                   {% if user.is_authenticated and user.user_type == 4 %}
                   <form method="POST" class="candidate-details">
                   {% csrf_token %}
                     <div>
                       <input type="submit" class="add-new-field" formnovalidate value="Approved" name="Approved" id="Approved">
-                      <input type="submit" class="add-new-field" formnovalidate value="Not Approved" name="Not Approved" id="Reject">
+                      <input type="submit" class="add-new-field" formnovalidate value="Not Approved" name="Reject" id="Reject">
                       {{form.addEmployer}}
                       {{form.removeEmployer}}
                       <input type="submit" class="add-new-field" formnovalidate value="Add" name="Add" id="Add">
                       <input type="submit" class="add-new-field" formnovalidate value="Remove" name="Remove" id="Remove">
                     </div>
                   </form>
-                  {% endif %}
-                </div>
-                <div class="buttons">
-                  <a class="save" href="#"><i data-feather="heart"></i>Save Job</a>
-                  {% if user.user_type == 1 %}
-                  <a class="apply" href="/add-resume/{{pk}}" data-toggle="modal" data-target="#apply-popup-id">Apply Online</a>
-                  {% endif %}
-                  {% if download %}
-                    <a class="apply" href="/jobDescription/{{download}}" data-toggle="modal" data-target="#apply-popup-id">PDF Description</a>
                   {% endif %}
                 </div>
               </div>
