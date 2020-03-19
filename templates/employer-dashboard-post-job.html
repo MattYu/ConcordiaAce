@@ -127,16 +127,19 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
-                  <li class="menu-item active"><a title="Home" href="home-1.html">Home</a></li>
+                  <li class="menu-item active"><a title="Home" href="\">Home</a></li>
                   <li class="menu-item dropdown">
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Jobs</a>
                     <ul  class="dropdown-menu">
                       <li class="menu-item"><a  href="job-listing.html">Job Listing</a></li>
                       <li class="menu-item"><a  href="job-listing-with-map.html">Job Listing With Map</a></li>
-                      <li class="menu-item"><a  href="job-details.html">Job Details</a></li>
+                      <!--<li class="menu-item"><a  href="job-details.html">Job Details</a></li>-->
+                      <li class="menu-item"><a  href="job-details/<int:pk>">Job Details</a></li>
                       <!-- <li class="menu-item"><a  href="post-job.html">Post Job</a></li> -->
                     </ul>
                   </li>
+
+                  <!--
                   <li class="menu-item dropdown">
                     <a title="" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Candidates</a>
                     <ul  class="dropdown-menu">
@@ -145,24 +148,23 @@
                       <li class="menu-item"><a  href="add-resume.html">Add Resume</a></li>
                     </ul>
                   </li>
+                  -->
+
                   <li class="menu-item dropdown">
                     <a title="" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Employers</a>
                     <ul  class="dropdown-menu">
                       <li class="menu-item"><a  href="employer-listing.html">Employer Listing</a></li>
                       <li class="menu-item"><a  href="employer-details.html">Employer Details</a></li>
-                      <li class="menu-item"><a  href="employer-dashboard-post-job.html">Post a Job</a></li>
                     </ul>
                   </li>
-                  <li class="menu-item dropdown">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Dashboard</a>
-                    <ul  class="dropdown-menu">
+
+                  <!--Candidate Dashboard -->
+                      {%if user.user_type == 1%}
                       <li class="menu-item dropdown">
-                        <a href="#" data-toggle="dropdown"  class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Candidate Dashboard</a>
+                        <a href="#" data-toggle="dropdown"  class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Dashboard</a>
                         <ul class="dropdown-menu">
-                          <li class="menu-item"><a  href="dashboard.html">Dashboard</a></li>
                           <li class="menu-item"><a  href="dashboard-edit-profile.html">Edit Profile</a></li>
                           <li class="menu-item"><a  href="add-resume.html">Add Resume</a></li>
-                          <li class="menu-item"><a  href="resume.html">Resume</a></li>
                           <li class="menu-item"><a  href="edit-resume.html">Edit Resume</a></li>
                           <li class="menu-item"><a  href="dashboard-bookmark.html">Bookmarked</a></li>
                           <li class="menu-item"><a  href="dashboard-applied.html">Applied</a></li>
@@ -171,20 +173,22 @@
                           <li class="menu-item"><a  href="dashboard-alert.html">Alert</a></li>
                         </ul>
                       </li>
+                      {% endif %}
+
+                      <!--Employee Dashboard-->
+                      {% if user.user_type == 2 %}
                       <li class="menu-item dropdown">
-                        <a href="#" data-toggle="dropdown"  class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Employer Dashboard</a>
+                        <a href="#" data-toggle="dropdown"  class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Dashboard</a>
                         <ul class="dropdown-menu">
-                          <li class="menu-item"><a href="employer-dashboard.html">Employer Dashboard</a></li>
                           <li class="menu-item"><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
                           <li class="menu-item"><a href="employer-dashboard-manage-candidate.html">Manage Candidate</a></li>
                           <li class="menu-item"><a href="employer-dashboard-manage-job.html">Manage Job</a></li>
                           <li class="menu-item"><a href="employer-dashboard-message.html">Dashboard Message</a></li>
                           <li class="menu-item"><a href="employer-dashboard-pricing.html">Dashboard Pricing</a></li>
-                          <li class="menu-item"><a href="employer-dashboard-post-job.html">Post Job</a></li>
                         </ul>
                       </li>
-                    </ul>
-                  </li>
+                      {% endif %}
+
                   <li class="menu-item dropdown">
                     <a title="" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Pages</a>
                     <ul  class="dropdown-menu">
@@ -204,9 +208,6 @@
                       <li class="menu-item"><a href="payment-complete.html">Payment Complete</a></li>
                       <li class="menu-item"><a href="invoice.html">Invoice</a></li>
                       <li class="menu-item"><a href="terms-and-condition.html">Terms And Condition</a></li>
-                      <li class="menu-item"><a href="404.html">404 Page</a></li>
-                      <li class="menu-item"><a href="login.html">Login</a></li>
-                      <li class="menu-item"><a href="register.html">Register</a></li>
                     </ul>
                   </li>
                   <li class="menu-item"><a href="contact.html">Contact Us</a></li>
