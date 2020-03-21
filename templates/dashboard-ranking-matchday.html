@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Oficiona</title>
+    <title>ACE Concordia</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href={% static "assets/css/bootstrap.min.css" %}>
@@ -279,12 +279,24 @@
 
                         <tr>
                         <div>
-                        <input type="submit" class="add-new-field" formnovalidate value="3- Generate Matching" name="MATCH" id="MATCH">
+                        <div class ="button_3">
+                        <input type="submit" class="button_3" formnovalidate value="3- Generate Matching" name="MATCH" id="MATCH">
+                        </div>
                         </div>
                         </tr>
                         <tr>
                         <div>
-                         View match history
+                        <input type="submit" class="add-new-field" formnovalidate value="4 - Open Match Viewing to candidates and Employee" name="open" id="open">
+                        </div>
+                        </tr>
+                        <tr>
+                        <div>
+                        <input type="submit" class="add-new-field" formnovalidate value="Emergency: Undo " name="Undo last 7 days" id="Undo last 7 days">
+                        </div>
+                        </tr>
+                        <tr>
+                        <div>
+                         Only affect changes within the last 7 days: Will delete all matches from past 7 days, reopen ranking to employer (back to step 1), but preserve existing candidate and employer ranking choices
                         </div>
                         </tr>
                 </form>

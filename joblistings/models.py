@@ -13,7 +13,8 @@ class Job(models.Model):
 
     category = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "Any", choices= CATEGORY_CHOICES)
     salaryRange = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "N/A")
-    vacancy = models.IntegerField(null= True, blank= True)
+    vacancy = models.IntegerField(null= True, default= 0)
+    filled = models.IntegerField(null= True, default= 0)
     startDate = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
     expirationDate = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
     duration = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")

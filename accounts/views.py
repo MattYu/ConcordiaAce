@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from accounts.models import account_activation_token, User
 from django.core.mail import EmailMessage
 from django.db import transaction 
-
+from django.http import HttpResponse
 
 from .decorators import check_recaptcha
 

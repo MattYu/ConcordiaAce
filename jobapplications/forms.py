@@ -100,7 +100,6 @@ class ApplicationForm(forms.Form):
     def add_education(self, i:int = None):
         if i == None:
             i = len(self.educationFields)
-        print(i)
         field_name = '_educations_%s' % (i,)
         educationDict = {}
         eduNameDict = {}
@@ -260,3 +259,58 @@ class ApplicationForm(forms.Form):
         lastName
         preferredName
         '''
+
+class FilterApplicationForm(forms.Form):
+    selected_filter = forms.CharField(widget=forms.HiddenInput(), required= False,)
+    selected_filter_outerHTML = forms.CharField(widget=forms.HiddenInput(), required= False,)
+    selected_filter_class = forms.CharField(widget=forms.HiddenInput(), required= False,)
+    gpa_min = forms.FloatField(widget=forms.HiddenInput(), required= False,)
+    gpa_max = forms.FloatField(widget=forms.HiddenInput(), required= False,)
+
+    firstName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}),
+                                required= False,
+                                )
+
+    lastName = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
+                                required= False,
+                                )
+
+
+    email = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+                                required= False,
+                                )
+
+    studentId = forms.CharField(max_length=MAX_LENGTH_STANDARDFIELDS,
+                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Student ID'}),
+                                required= False,
+                                )
+
+    program = forms.ChoiceField(
+                                choices=CATEGORY_CHOICES,
+                                widget=forms.Select(attrs={'class': 'form-control'}),
+                                required= False,
+                                )
+
+    def getSelectedFilterAsSet(self):
+        if self['selected_filter'] != None:
+            return set(str(self['selected_filter'].value()).split(","))
+        return None
+
+    def getSelectedFilterHTMLAsList(self):
+        if self['selected_filter_outerHTML']:
+            return str(self['selected_filter_outerHTML'].value()).split(",")
+        return None
+
+    def getSelectedFilterClassAsList(self):
+        if self['selected_filter_class']:
+            return str(self['selected_filter_class'].value()).split(",")
+        return None
+
+    def getSelectedFilterPair(self):
+        html = self.getSelectedFilterHTMLAsList()
+        classes = self.getSelectedFilterClassAsList()
+
+        return list(zip(classes, html))

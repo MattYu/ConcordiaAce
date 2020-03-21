@@ -58,6 +58,62 @@ body {
   position: relative;
 }
 
+#container_2 {
+  width: 100%;
+  margin: 0 auto;
+  padding: 50px 0 150px 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.button_2 {
+  display: inline-flex;
+  height: 40px;
+  width: 150px;
+  border: 2px solid #BFC0C0;
+  margin: 20px 20px 20px 20px;
+  color: #BFC0C0;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: .8em;
+  letter-spacing: 1.5px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#button-5 {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#button-5 a {
+  position: relative;
+  transition: all .45s ease-Out;
+}
+
+#translate {
+  transform: rotate(50deg);
+  width: 150%;
+  height: 450%;
+  left: -200px;
+  top: -30px;
+  background: #BFC0C0;
+  position: absolute;
+  transition: all .3s ease-Out;
+}
+
+#button-5:hover #translate {
+  left: 0;
+}
+
+#button-5:hover a {
+  color: #2D3142;
+}
+
 h1,
 h2,
 h3,
@@ -1298,7 +1354,7 @@ a:focus {
 .job-filter-wrapper .employer-filter .nstSlider .grip-label .rightLabel:before,
 .candidate-filter-wrapper .employer-filter .nstSlider .grip-label .rightLabel:before,
 .employer-filter-wrapper .employer-filter .nstSlider .grip-label .rightLabel:before {
-  content: "$";
+  content: "";
 }
 
 .job-filter-wrapper .job-filter .nstSlider .grip-label .leftLabel:after, .candidate-filter-wrapper .job-filter .nstSlider .grip-label .leftLabel:after, .employer-filter-wrapper .job-filter .nstSlider .grip-label .leftLabel:after, .job-filter-wrapper .candidate-filter .nstSlider .grip-label .leftLabel:after, .candidate-filter-wrapper .candidate-filter .nstSlider .grip-label .leftLabel:after, .employer-filter-wrapper .candidate-filter .nstSlider .grip-label .leftLabel:after, .job-filter-wrapper .employer-filter .nstSlider .grip-label .leftLabel:after, .candidate-filter-wrapper .employer-filter .nstSlider .grip-label .leftLabel:after, .employer-filter-wrapper .employer-filter .nstSlider .grip-label .leftLabel:after {
@@ -4935,7 +4991,7 @@ form {
 }
 
 .section-header h2 {
-  font-family: #headerFont;
+  font-family: headerFont;
   font-weight: 600;
   font-size: 2.8rem;
 }
@@ -10146,4 +10202,76 @@ header .absolute-nav {
     width: 180px;
     margin: 0 auto;
   }
+}
+
+
+
+.button_3 input[name=submit] {
+  background-color: transparent;
+  flex-basis: 100px;
+  line-height: 70px;
+  font-size: 25px;
+  color: white;
+  border: 2px solid;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.button_3 input[name=submit]::before {
+  content: "Initiate";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #448aff;
+  width: 100px;
+  line-height: 35px;
+  z-index: 2;
+  transition: 1s;
+}
+.button_3 input[name=submit]::after {
+  content: "Match";
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: #448aff;
+  width: 100px;
+  line-height: 35px;
+  z-index: 1;
+  transition: 1s;
+}
+.button_3 input[name=submit]:hover::before {
+  left: 0;
+  top: -70px;
+}
+.button_3 input[name=submit]:hover::after {
+  left: 0;
+  bottom: -70px;
+}
+
+input[type=submit] {
+	padding:10px 25px;
+	width:auto;
+	background:#1abc9c;
+	border:none;
+	color:white;
+	cursor:pointer;
+	display:inline-block;
+	float:center;
+	clear:center;
+	-webkit-transition:0.2s ease all;
+	   -moz-transition:0.2s ease all;
+	    -ms-transition:0.2s ease all;
+	     -o-transition:0.2s ease all;
+	        transition:0.2s ease all;
+}
+
+input[type=submit]:hover {
+	opacity:0.8;
+}
+
+input[type="submit"]:active {
+	opacity:0.4;
 }

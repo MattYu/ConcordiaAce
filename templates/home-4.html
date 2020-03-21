@@ -59,7 +59,12 @@
             <div class="banner-content">
               <h1>Find your Next ACE Internship</h1>
               <p> Concordia Institute for Co-operative Education</p>
-
+                  <div id="container">
+                    <div class="button_2" id="button-5">
+                      <div id="translate"></div>
+                      <a href="#">Browse Jobs</a>
+                    </div>
+                  </div>
               <div class="banner-search">
                 <form action="/search/" class="search-form" method="POST">
                   {% csrf_token %}
@@ -685,5 +690,6 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC87gjXWLqrHuLKR0CTV5jNLdP4pEHMhmg"></script>
     <script src={% static "js/map.js" %}></script>
+
   </body>
 </html>

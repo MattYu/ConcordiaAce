@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from joblistings.models import Job
 from jobapplications.models import JobApplication, Resume, CoverLetter, Education, Experience, Ranking
-from jobapplications.forms import ApplicationForm, resumeUpload
+from jobapplications.forms import ApplicationForm, resumeUpload, FilterApplicationForm
 from django_sendfile import sendfile
 import uuid
 from django.core.files.storage import FileSystemStorage
@@ -23,6 +23,9 @@ import uuid
 from django.db import transaction
 from django.db.models import Q
 
+import json as simplejson
+from datetime import datetime, timedelta
+
 #u = uuid.uuid4()
 #u.hex
 
@@ -35,8 +38,8 @@ def add_resume(request, pk= None, *args, **kwargs):
         request.session['warning'] = "Warning: Please login before applying to a job"
         return HttpResponseRedirect('/login')
     else:
-        if request.user.user_type == USER_TYPE_EMPLOYER:
-            request.session['info'] = "You are logged in as an employer. Only candidates can access this page"
+        if request.user.user_type != USER_TYPE_CANDIDATE:
+            request.session['info'] = "Only candidates can access this page"
             return  HttpResponseRedirect('/')
 
         jobApplication = JobApplication.objects.filter(job__pk=pk, candidate=Candidate.objects.get(user=request.user)).count()
@@ -74,9 +77,15 @@ def download_test(request, pk):
     return sendfile(request, download.company.image.path)
 
 @transaction.atomic
-def browse_job_applications(request, jobId= -1):
+def browse_job_applications(request, searchString = "", jobId= -1):
     context = {}
     jobApplications = None
+    form = FilterApplicationForm()
+    query = Q()
+
+    filterClasses = []
+    filterHTML = []
+    sortOrder = '-created_at'
 
     if not request.user.is_authenticated:
 
@@ -87,18 +96,10 @@ def browse_job_applications(request, jobId= -1):
 
     if request.user.user_type == USER_TYPE_SUPER:
         kwargs = {}
+        if jobId != None:
+            query = Q(job__pk=jobId)
+            context["job"] = Job.objects.get(pk=jobId)
 
-        if jobId == None:
-            jobApplications = JobApplication.objects.all()
-
-        else:
-            if jobId != None:
-                query = Q(job__pk=jobId)
-                context["job"] = Job.objects.get(pk=jobId)
-
-            jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
-
-        context["jobApplications"] = jobApplications
 
     if request.user.user_type == USER_TYPE_EMPLOYER:
         query = Q(job__jobAccessPermission=Employer.objects.get(user=request.user))
@@ -110,82 +111,133 @@ def browse_job_applications(request, jobId= -1):
             context["job"] = Job.objects.get(pk=jobId)
 
 
-
-        jobApplications = JobApplication.objects.filter(query).order_by('-created_at')
-
-        for q in jobApplications:
-            print(q.status)
-
-        context["jobApplications"] = jobApplications
-
     if request.user.user_type == USER_TYPE_CANDIDATE:
+        query = Q(candidate= Candidate.objects.get(user=request.user))
 
-        jobApplications = JobApplication.objects.filter(candidate= Candidate.objects.get(user=request.user)).order_by('-created_at')
-
-        context["jobApplications"] = jobApplications
-    
     if (request.method == 'POST'):
-    #if request.POST.get("pdf"):
-        response = HttpResponse()
-        response['Content-Disposition'] = 'attachment; filename=downloadApplications.pdf'
-        writer = PdfFileWriter()
-        # Change to https in prod (although django should automatically force https if settings.py is configured corretly in prod)
-        base_url = "http://" + str(get_current_site(request).domain)  + "/getFile"
+        form = FilterApplicationForm(request.POST)        
+
+        if 'filter' in request.POST:
+            print(request.POST)
+            context['filterClasses'] = simplejson.dumps(form.getSelectedFilterClassAsList())
+            context['filterHTML'] = simplejson.dumps(form.getSelectedFilterHTMLAsList())
+            #for ob in request.POST.get('selected_filter'):
+            #    print(ob)
+            #print("test***")
+
+    # Applying filter value here
+    filterSet = form.getSelectedFilterAsSet()
+
+    try:
+        if "Last 24 hours" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=1))
+        if "Last 7 days" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=7))
+        if "Last 14 days" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=14))
+        if "Last month" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=30))
+        if "Last 3 months" in filterSet:
+            query &= Q(created_at__gte=datetime.now()-timedelta(days=90))
+        if form["firstName"].value() != None and form["firstName"].value() != "":
+            query &= (Q(firstName__contains= form["firstName"].value()) | Q(preferredName__contains=form["firstName"].value()))
+        if form["lastName"].value() != None and form["lastName"].value() != "":
+            query &= Q(lastName__contains= form["lastName"].value())
+        if form["email"].value() != None and form["email"].value() != "":
+            query &= Q(candidate__user__email__contains=form["email"].value())
+        if form["studentId"].value() != None and form["studentId"].value() != "":
+            query &= Q(candidate__studentID__contains=form["studentId"].value())
+        if form["studentId"].value() != None and form["program"].value() != "ANY":
+            query &= Q(candidate__program= form["program"].value())
+        if form["gpa_min"].value() != None and form["gpa_min"].value() != "1.7" :
+            query &= Q(candidate__gpa__gte = float(form["gpa_min"].value()))
+        if form["gpa_max"].value() != None and form["gpa_max"].value() != "4.3" :
+            query &= Q(candidate__gpa__lte = float(form["gpa_max"].value()))
+        if 'Oldest First' in filterSet:
+            sortOrder = 'created_at'
+        if "Pending Review" in filterSet:
+            query &= Q(status="Pending Review")
+        if "Approved" in filterSet:
+            query &= (Q(status= "Submitted") | Q(status="Not Selected"))
+        if "Not Approved" in filterSet:
+            query &= Q(status="Not Approved")
+        if "Interviewing" in filterSet:
+            query &= (Q(status= "Interviewing") | Q(status="Ranked") | Q(status= "1st"))
+        if "Matched" in filterSet:
+            query &= Q(status="Matched")
+        if "Not Matched/Closed" in filterSet:
+            query &= (Q(status= "Not Matched") | Q(status="Closed"))
+    except:
+        pass
     
-        User.objects.filter(id=request.user.id).update(protect_file_temp_download_key=str(uuid.uuid4().hex))
-        token = downloadProtectedFile_token.make_token(request.user)
 
-        for application in jobApplications:
-            uid = urlsafe_base64_encode(force_bytes(request.user.pk))
-            candidateId = urlsafe_base64_encode(force_bytes(application.candidate.pk))
+    jobApplications = JobApplication.objects.filter(query).order_by(sortOrder)
+    context["jobApplications"] = jobApplications
+    context["form"] = form
+
+    if (request.method == 'POST'):
+        if 'pdf' in request.POST:
+            # PDF download request
+            response = HttpResponse()
+            response['Content-Disposition'] = 'attachment; filename=downloadApplications.pdf'
+            writer = PdfFileWriter()
+            # Change to https in prod (although django should automatically force https if settings.py is configured corretly in prod)
+            base_url = "http://" + str(get_current_site(request).domain)  + "/getFile"
+        
+            User.objects.filter(id=request.user.id).update(protect_file_temp_download_key=str(uuid.uuid4().hex))
+            token = downloadProtectedFile_token.make_token(request.user)
+
+            for application in jobApplications:
+                uid = urlsafe_base64_encode(force_bytes(request.user.pk))
+                candidateId = urlsafe_base64_encode(force_bytes(application.candidate.pk))
 
 
-            fileId = Resume.objects.get(JobApplication=application).id
-            fileId = urlsafe_base64_encode(force_bytes(fileId))
-            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_RESUME))
+                fileId = Resume.objects.get(JobApplication=application).id
+                fileId = urlsafe_base64_encode(force_bytes(fileId))
+                fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_RESUME))
 
-            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
-            getFile = requests.get(url).content
-            memoryFile = BytesIO(getFile)
-            pdfFile = PdfFileReader(memoryFile)
-  
-            for pageNum in range(pdfFile.getNumPages()):
-                currentPage = pdfFile.getPage(pageNum)
-                #currentPage.mergePage(watermark.getPage(0))
-                writer.addPage(currentPage)
+                url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+                getFile = requests.get(url).content
+                memoryFile = BytesIO(getFile)
+                pdfFile = PdfFileReader(memoryFile)
+    
+                for pageNum in range(pdfFile.getNumPages()):
+                    currentPage = pdfFile.getPage(pageNum)
+                    #currentPage.mergePage(watermark.getPage(0))
+                    writer.addPage(currentPage)
 
-            fileId = CoverLetter.objects.get(JobApplication=application).id
-            fileId = urlsafe_base64_encode(force_bytes(fileId))
-            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_COVER_LETTER))
+                fileId = CoverLetter.objects.get(JobApplication=application).id
+                fileId = urlsafe_base64_encode(force_bytes(fileId))
+                fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_COVER_LETTER))
 
-            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
-            getFile = requests.get(url).content
-            memoryFile = BytesIO(getFile)
-            pdfFile = PdfFileReader(memoryFile)
+                url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+                getFile = requests.get(url).content
+                memoryFile = BytesIO(getFile)
+                pdfFile = PdfFileReader(memoryFile)
 
-            for pageNum in range(pdfFile.getNumPages()):
-                currentPage = pdfFile.getPage(pageNum)
-                #currentPage.mergePage(watermark.getPage(0))
-                writer.addPage(currentPage)
+                for pageNum in range(pdfFile.getNumPages()):
+                    currentPage = pdfFile.getPage(pageNum)
+                    #currentPage.mergePage(watermark.getPage(0))
+                    writer.addPage(currentPage)
 
-            fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_TRANSCRIPT))
-            url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
+                fileType =  urlsafe_base64_encode(force_bytes(FILE_TYPE_TRANSCRIPT))
+                url = base_url + "/" + str(uid) + "/" + str(candidateId) + "/"+ str(fileType) + "/" + str(fileId) + "/" + str(token) + "/"
 
-            getFile = requests.get(url).content
-            memoryFile = BytesIO(getFile)
-            pdfFile = PdfFileReader(memoryFile)
+                getFile = requests.get(url).content
+                memoryFile = BytesIO(getFile)
+                pdfFile = PdfFileReader(memoryFile)
 
-            for pageNum in range(pdfFile.getNumPages()):
-                currentPage = pdfFile.getPage(pageNum)
-                #currentPage.mergePage(watermark.getPage(0))
-                writer.addPage(currentPage)
+                for pageNum in range(pdfFile.getNumPages()):
+                    currentPage = pdfFile.getPage(pageNum)
+                    #currentPage.mergePage(watermark.getPage(0))
+                    writer.addPage(currentPage)
 
-        outputStream = BytesIO()
-        writer.write(outputStream)
-        response.write(outputStream.getvalue())
+            outputStream = BytesIO()
+            writer.write(outputStream)
+            response.write(outputStream.getvalue())
 
-        User.objects.filter(id=request.user.id).update(protect_file_temp_download_key="")
-        return response
+            User.objects.filter(id=request.user.id).update(protect_file_temp_download_key="")
+            return response
 
     return render(request, "dashboard-manage-applications.html", context)
 
@@ -234,6 +286,7 @@ def view_application_details(request, pk):
                 ranking.candidate = jobApplication.candidate
                 ranking.save()
                 jobApplication.status= "Interviewing"
+                jobApplication.job.status= "Interviewing"
                 jobApplication.save()
 
             if request.POST.get('Reject'):
@@ -256,8 +309,10 @@ def view_application_details(request, pk):
     preferredName = PreferredName.objects.get(user=jobApplication.candidate.user)
 
     context['educations'] = educations
-    context['experiences'] = experience
-    context['preferredName'] = preferredName.preferredName
+    context['experience'] = experience
+    if preferredName:
+        context['preferredName'] = preferredName.preferredName
+
     context['user'] = request.user
 
     if 'warning' in request.session:
