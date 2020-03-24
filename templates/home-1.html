@@ -85,15 +85,14 @@
               </ul>
             </li>
           </ul>
-
           <ul class="navbar-nav ml-auto main-nav">
-            <li class="menu-item active"><a title="Home" href="home-1.html">Home</a></li>
+            <li class="menu-item active"><a title="Home" href="/">Home</a></li>
             <li class="menu-item dropdown">
               <a title="" href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Jobs</a>
               <ul  class="dropdown-menu">
                 <li class="menu-item"><a href="job-listing.html">Job Listing</a></li>
                 <li class="menu-item"><a href="job-listing-with-map.html">Job Listing With Map</a></li>
-                <li class="menu-item"><a href="job-details.html">Job Details</a></li>
+                <li class="menu-item"><a href="/job-details/<int:pk>">Job Details</a></li>
                 <li class="menu-item"><a href="post-job.html">Post Job</a></li>
               </ul>
             </li>
@@ -105,7 +104,7 @@
                 <li class="menu-item"><a href="employer-dashboard.html">Dashboard</a></li>
                 <li class="menu-item"><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
                 <li class="menu-item"><a href="employer-dashboard-manage-candidate.html">Manage Candidate</a></li>
-                <li class="menu-item"><a href="employer-dashboard-manage-job.html">Manage Job</a></li>
+                <li class="menu-item"><a href="/manageJobs">Manage Job</a></li>
                 <li class="menu-item"><a href="employer-dashboard-message.html">Message</a></li>
                 <li class="menu-item"><a href="employer-dashboard-pricing.html">Pricing</a></li>
                 <li class="menu-item"><a href="employer-dashboard-post-job.html">Post Job</a></li>
@@ -118,7 +117,7 @@
                 <li class="menu-item"><a href="candidate-details.html">Candidate Details</a></li>
                 <li class="menu-item"><a href="dashboard.html">Dashboard</a></li>
                 <li class="menu-item"><a href="dashboard-edit-profile.html">Edit Profile</a></li>
-                <li class="menu-item"><a href="add-resume.html">Add Resume</a></li>
+                <li class="menu-item"><a href="/add-resume/{{job.id}}">Add Resume</a></li>
                 <li class="menu-item"><a href="resume.html">Resume</a></li>
                 <li class="menu-item"><a href="edit-resume.html">Edit Resume</a></li>
                 <li class="menu-item"><a href="dashboard-bookmark.html">Bookmarked</a></li>
@@ -144,11 +143,11 @@
                 <li class="menu-item"><a href="invoice.html">Invoice</a></li>
                 <li class="menu-item"><a href="terms-and-condition.html">Terms And Condition</a></li>
                 <li class="menu-item"><a href="404.html">404 Page</a></li>
-                <li class="menu-item"><a href="login.html">Login</a></li>
-                <li class="menu-item"><a href="register.html">Register</a></li>
+                <li class="menu-item"><a href="/login">Login</a></li>
+                <li class="menu-item"><a href="/register">Register</a></li>
               </ul>
             </li>
-            <li class="menu-item post-job"><a title="Title" href="post-job.html"><i class="fas fa-plus"></i>Post a Job</a></li>
+            <li class="menu-item post-job"><a title="Title" href="/employer-dashboard-post-job"><i class="fas fa-plus"></i>Post a Job</a></li>
           </ul>
           <ul class="navbar-nav ml-auto account-nav">
             <li class="dropdown menu-item header-top-notification">
@@ -231,7 +230,7 @@
                     <a href="#" class="facebook"><i class="fab fa-facebook-f"></i>Facebook</a>
                     <a href="#" class="google"><i class="fab fa-google"></i>Google</a>
                   </div>
-                  <p>Don't have an account? <a href="#">Register</a></p>
+                  <p>Don't have an account? <a href="/register">Register</a></p>
                 </div>
               </div>
             </div>
@@ -283,7 +282,7 @@
                     <a href="#" class="facebook"><i class="fab fa-facebook-f"></i>Facebook</a>
                     <a href="#" class="google"><i class="fab fa-google"></i>Google</a>
                   </div>
-                  <p>Already have an account? <a href="#">Login</a></p>
+                  <p>Already have an account? <a href="/login">Login</a></p>
                 </div>
               </div>
             </div>
@@ -1148,7 +1147,7 @@
               </div>
               <span>Are You</span>
               <h3>Candidate?</h3>
-              <a href="#" data-toggle="modal" data-target="#exampleModalLong2">Register Now <i class="fas fa-arrow-right"></i></a>
+              <a href="/register" data-toggle="modal" data-target="#exampleModalLong2">Register Now <i class="fas fa-arrow-right"></i></a>
             </div>
           </div>
           <div class="col-lg-6">
@@ -1158,7 +1157,7 @@
               </div>
               <span>Are You</span>
               <h3>Employer?</h3>
-              <a href="#" data-toggle="modal" data-target="#exampleModalLong3">Register Now <i class="fas fa-arrow-right"></i></a>
+              <a href="/register" data-toggle="modal" data-target="#exampleModalLong3">Register Now <i class="fas fa-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -1208,7 +1207,7 @@
                   <a href="#" class="facebook"><i class="fab fa-facebook-f"></i>Facebook</a>
                   <a href="#" class="google"><i class="fab fa-google"></i>Google</a>
                 </div>
-                <p>Already have an account? <a href="#">Login</a></p>
+                <p>Already have an account? <a href="/login">Login</a></p>
               </div>
             </div>
           </div>
@@ -1378,7 +1377,7 @@
                 <h4>Job Seekers</h4>
                 <div class="widget-inner">
                   <ul>
-                    <li><a href="#">Create Account</a></li>
+                    <li><a href="/register">Create Account</a></li>
                     <li><a href="#">Career Counseling</a></li>
                     <li><a href="#">My Oficiona</a></li>
                     <li><a href="#">FAQ</a></li>
@@ -1392,9 +1391,9 @@
                 <h4>Employers</h4>
                 <div class="widget-inner">
                   <ul>
-                    <li><a href="#">Create Account</a></li>
+                    <li><a href="/register">Create Account</a></li>
                     <li><a href="#">Products/Service</a></li>
-                    <li><a href="#">Post a Job</a></li>
+                    <li><a href="/employer-dashboard-post-job">Post a Job</a></li>
                     <li><a href="#">FAQ</a></li>
                   </ul>
                 </div>
