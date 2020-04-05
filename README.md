@@ -1,4 +1,4 @@
-# ConcordiaAce
+# ConcordiaAce Dev Code
 
 # Licensing
 - All python/django code are created by us and available under MIT licence
@@ -72,7 +72,17 @@
 
 9) Push your branch. When ready to merge, make a pull request. Please never merge directly into master. 
 
-  
+# Deploying to production
+Useful resources
+- https://docs.djangoproject.com/en/3.0/howto/deployment/
+- https://www.youtube.com/watch?v=Sa_kQheCnds
+
+Needs to:
+- Set up protected file directory, see x-sendfile documentation https://github.com/johnsensible/django-sendfile. Note: media should be serviced by Apache or NGINX. 
+- Remove test SQLite db; use postgreSQL instead. 
+- Set up prod email notification in settings.py.
+- Set up prod encryption keys.
+- Set up https and certification.
 
 # Commands
 
