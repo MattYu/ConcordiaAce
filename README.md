@@ -59,23 +59,24 @@
    - pip install weasyprint
    - pip install requests
    - pip install psycopg2
+   - pip install gunicorn
 
 7) Migrate static files. Do this every time you make a change to a static file. You might also need to clear your browser cache or use incognito mode to see the effect of your change. 
    - "python manage.py collectstatic --noinput --clear"
   
 8) Run server in debug mode Go to Ace folder.
-  - python manage.py makemigrations
-  - python manage.py migrate
-  - python manage.py createsuperuser
-      - User type = 4
-  - python manage.py runserver
+     - python manage.py makemigrations
+     - python manage.py migrate
+     - python manage.py createsuperuser
+         - User type = 4
+     - python manage.py runserver
   
  9) Docker - Testing production code with wsgi
-  - install docker and create an account
-  - run "docker build -t ace -f Dockerfile ." to compose up
-  - Use "docker run -it -p 80:8000 ace" instead of python manage.py runserver
+     - install docker and create an account
+     - run "docker build -t ace -f Dockerfile ." to compose up
+     - Use "docker run -it -p 80:8000 ace" instead of python manage.py runserver
 
-9) Push your branch. When ready to merge, make a pull request. Please never merge directly into master. 
+10) Push your branch. When ready to merge, make a pull request. Please never merge directly into master. 
 
 # Deploying to production
 Useful resources
