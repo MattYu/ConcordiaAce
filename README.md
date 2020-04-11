@@ -6,6 +6,8 @@
 
 # Dependencies
 
+See requirements.txt for full list
+
 - Python 3.7
 - Django 3.0
 - django-file-resubmit==0.5.2
@@ -20,7 +22,6 @@
 - weasyprint
 - requests
 - psycopg2
-
 - pypdf2
 
 
@@ -71,14 +72,21 @@
          - User type = 4
      - python manage.py runserver
   
- 9) Docker - Testing production code with wsgi
-     - install docker and create an account
-     - run "docker build -t ace -f Dockerfile ." to compose up
-     - Use "docker run -it -p 80:8000 ace" instead of python manage.py runserver
 
 10) Push your branch. When ready to merge, make a pull request. Please never merge directly into master. 
 
 # Deploying to production
+
+To run on a docker environment
+
+- Navigate to prod code
+- Set up prod encryption keys in env [not included]
+- execute 'docker-compose build'
+- 'docker-compose up'
+- 'docker-compose -f docker-compose.yml run --rm web python manage.py collectstatic'
+- The code is now running on a docker prod environment on localhost
+- Export this to a a cloud provider (I use vs code extension to auto migrate to Azure)
+
 Useful resources
 - https://docs.djangoproject.com/en/3.0/howto/deployment/
 - https://www.youtube.com/watch?v=Sa_kQheCnds
