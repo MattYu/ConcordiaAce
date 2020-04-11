@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+  web:
+    restart: always
+    build: ./web
+    expose:
+      - "8000"
+    volumes:
+      - ./web:/web
+      - static_files:/static_files
+    env_file: .env
+    environment:
+      DEBUG: 'true'
+    command: bash -c "python manage.py makemigrations && python manage.py migrate --run-syncdb && /usr/local/bin/gunicorn ace.wsgi:application -w 2 -b :8000 &&  python manage.py collectstatic --noinput --clear"
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes:
+      - static_files:/static_files
+    links:
+      - web:web
+
+volumes:
+  static_files:
