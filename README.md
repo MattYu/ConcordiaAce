@@ -1,5 +1,12 @@
 # ConcordiaAce Dev Code
 
+# Test docker container website link:
+
+http://138.197.159.20/
+
+- Note, not https secure: do not enter real personal info or password
+- Serviced by nginx, up to 4 processors.  
+
 # Licensing
 - All python/django code are created by us and available under MIT licence
 - html template license was purchased for single app use for Concordia ACE website on http://preview.themeforest.net/item/oficiona-job-board-html-template/full_screen_preview/23042674 License must be re-purchased for other project. Permission to reuse template not under MIT license. 
