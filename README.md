@@ -92,7 +92,7 @@ To run on a docker environment
 - 'docker-compose up'
 - 'docker-compose -f docker-compose.yml run --rm web python manage.py collectstatic'
 - The code is now running on a docker prod environment on localhost
-- Export this to a a cloud provider (I use vs code extension to auto migrate to Azure)
+- Export this to a a cloud provider (I use vs code extension to auto migrate to Azure), and add the server's ip to the allow host list in ace/settings.py. 
 
 Useful resources
 - https://docs.djangoproject.com/en/3.0/howto/deployment/
