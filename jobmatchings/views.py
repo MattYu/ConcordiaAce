@@ -184,33 +184,6 @@ def admin_matchmaking(request):
                         rank.jobApplication.save()
                         rank.save()
 
-                    if rank.candidateRank == 1 and rank.employerRank == 1 and rank.jobApplication.job.vacancy !=0:
-                        # Before creating a match, perform a safety check to see if candidate already have been matched by the same employer for the same job before
-                        if Match.objects.filter(candidate=rank.candidate, job=rank.jobApplication.job).count() == 0:
-                            print("First match***")
-                            print("Candidate")
-                            print(rank.candidate.id)
-                            print("job")
-                            print(rank.jobApplication.job.id)
-                            match = Match()
-                            match.candidate = rank.candidate
-                            match.job = rank.jobApplication.job
-                            match.jobApplication = rank.jobApplication
-                            match.jobApplication.save()
-                            match.save()
-
-                            matchingHistory.matches.add(match)
-                            matchingHistory.save()
-
-                            rank.jobApplication.job.vacancy -= 1
-                            rank.jobApplication.job.filled += 1
-                            rank.jobApplication.job.save()
-
-
-                            rank.status = "Matched"
-                            rank.jobApplication.status = "Matched"
-                            rank.save()
-
 
                 employer_prefs = {}
                 capacities = {}
