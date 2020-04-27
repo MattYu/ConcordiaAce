@@ -1,0 +1,25 @@
+version: '3.5'
+volumes:
+  media:
+  static:
+services:
+  python:
+    build: .
+    command: bash -c "python src/app/manage.py makemigrations && python /usr/src/app/manage.py migrate && gunicorn /src/ace.wsgi -b 0.0.0.0:8000"
+    volumes:
+      - ./app:/app
+      - static:/usr/src/app/static
+      - media:/usr/src/app/media
+    expose:
+      - "8000"
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - static:/www/static
+      - media:/www/media
+    depends_on:
+      - python
