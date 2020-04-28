@@ -356,26 +356,26 @@
                   <ul>
                     <li><i class="fas fa-home"></i><a href="employer-dashboard.html">Dashboard</a></li>
                     <li><i class="fas fa-user"></i><a href="employer-dashboard-edit-profile.html">Edit Profile</a></li>
-                    <li class="active"><i class="fas fa-briefcase"></i><a href="/manageJobs/">Manage Jobs</a></li>
-                    <li><i class="fas fa-users"></i><a href="/jobApplications/">Manage Applications</a></li>
-                    {% if user.user_type == 1 %}
-                    <li><i class="fas fa-heart"></i><a href="/candidateRanking">Interview Ranking</a></li>
-                    {% else %}
-                    <li><i class="fas fa-heart"></i><a href="/employerRanking">Interview Ranking</a></li>
+                    {% if user.user_type == 4 %}
+                    <li><i class="fas fa-users"></i><a href="/manageEmployers/">Manage Employer</a></li>
+                    <li><i class="fas fa-briefcase"></i><a href="/manageCompanies/">Manage Company</a></li>
                     {% endif %}
+                    {% if user.user_type != 1 %}
+                    <li class="active"><i class="fas fa-briefcase"></i><a href="/manageJobs/">Manage Jobs</a></li>
+                    {% endif %}
+                    <li><i class="fas fa-users"></i><a href="/jobApplications/">Manage Applications</a></li>
+                    <li><i class="fas fa-heart"></i><a href="/employerRanking">Interview Ranking</a></li>
                     {% if user.user_type == 4 %}
                     <li><i class="fas fa-plus-square"></i><a href="/matchDay">Admin Matchday</a></li>
                     {% endif %}
                     <li><i class="fas fa-plus-square"></i><a href="/viewMatch">View Match</a></li>
-                    {% if user.user_type == 2 or user.user_type == 4 %}
                     <li><i class="fas fa-plus-square"></i><a href="/employer-dashboard-post-job">Post New Job</a></li>
-                    {% endif %}
-                    <li><i class="fas fa-comment"></i><a href="employer-dashboard-message.html">Message</a></li>
-                    <li><i class="fas fa-calculator"></i><a href="employer-dashboard-pricing.html">Pricing Plans</a></li>
                   </ul>
                   <ul class="delete">
+                    {% if user.user_type == 4 %}
+                    <li><i class="fas fa-power-off"></i><a href="/">Add New Admin</a></li>
+                    {% endif %}
                     <li><i class="fas fa-power-off"></i><a href="/logout">Logout</a></li>
-                    <li><i class="fas fa-trash-alt"></i><a href="#" data-toggle="modal" data-target="#modal-delete">Delete Profile</a></li>
                   </ul>
                   <!-- Modal -->
                   <div class="modal fade modal-delete" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">

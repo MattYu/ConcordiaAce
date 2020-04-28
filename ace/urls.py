@@ -18,12 +18,13 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import re_path
-
+from django.contrib.auth import views
 
 from view import home_page
 from joblistings.views import job_details, post_job, download_jobPDF, manage_jobs, job_search
 from jobapplications.views import add_resume, download_test, browse_job_applications, get_protected_file, get_protected_file_withAuth, view_application_details
-from accounts.views import register_user, logout_user, login_user, activate
+from companies.views import view_company_details, manage_companies
+from accounts.views import register_user, logout_user, login_user, activate, manage_employers
 from django.urls import include
 from django.urls import register_converter
 
@@ -55,8 +56,8 @@ urlpatterns = [
     path('register/<optional_int:employer>', register_user),
     path('logout/', logout_user),
     path('login/', login_user),
+    path('accounts/login/', login_user),
     path('activate/<uidb64>/<token>', activate, name="activate"),
-    #path('concatinateApplications/', concatinate_applicationPDF),
     path('search/', job_search),
     path('jobApplications/<optional_int:jobId>', browse_job_applications),
     path('jobApplications/<optional_int:jobId>/<slug:searchString>', browse_job_applications),
@@ -64,13 +65,22 @@ urlpatterns = [
     path('jobApplicationDetails/<int:pk>/', view_application_details),
     path('getFile/<str:uid>/<str:candidateId>/<str:filetype>/<str:fileid>/<token>/', get_protected_file),
     path('manageJobs/', manage_jobs),
+    path('manageCompanies/', manage_companies),
+    path('manageEmployers/', manage_employers),
     path('employerRanking/<optional_int:jobId>', employer_view_rankings),
     path('candidateRanking/', candidate_view_rankings),
     path('matchDay/', admin_matchmaking),
     path('viewMatch/<optional_int:jobId>', view_matching),
     path('getFileWithAuth/<int:fileType>/<int:applicationId>/', get_protected_file_withAuth),
-
+    path('password_reset/', views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('company-details/<int:pk>/', view_company_details),
 ]
+
+urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -223,10 +223,8 @@ class RegistrationForm(forms.Form):
         user.save()
         
         if cleaned_data.get('preferredName') != '' and cleaned_data.get('preferredName') !=None:
-            preferredName = PreferredName()
-            preferredName.user = user
-            preferredName.preferredName = cleaned_data.get('preferredName')
-            preferredName.save()
+            user.preferredName = cleaned_data.get('preferredName')
+            user.save()
 
         if self.is_employer_selected():
             employer = Employer()

@@ -10,7 +10,7 @@ class JobApplication(models.Model):
 
     firstName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
     lastName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
-    preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
+    #preferredName = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
     #studentID = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS,  default= "")
     #category = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "Any", choices= CATEGORY_CHOICES)
     #location = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")
@@ -24,7 +24,7 @@ class JobApplication(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.job.title + ' - ' + self.candidate.user.email
+        return self.job.title + "[" + job.pk + "]" + ' - ' + self.job.company.name + " : " + self.candidate.user.email
 
 class Education(models.Model):
     institute = models.CharField(max_length = MAX_LENGTH_STANDARDFIELDS, default= "")

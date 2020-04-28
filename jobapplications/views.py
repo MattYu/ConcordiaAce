@@ -140,7 +140,7 @@ def browse_job_applications(request, searchString = "", jobId= -1):
         if "Last 3 months" in filterSet:
             query &= Q(created_at__gte=datetime.now()-timedelta(days=90))
         if form["firstName"].value() != None and form["firstName"].value() != "":
-            query &= (Q(firstName__contains= form["firstName"].value()) | Q(preferredName__contains=form["firstName"].value()))
+            query &= (Q(firstName__contains= form["firstName"].value()) | Q(candidate__user_preferredName_contains=form["firstName"].value()))
         if form["lastName"].value() != None and form["lastName"].value() != "":
             query &= Q(lastName__contains= form["lastName"].value())
         if form["email"].value() != None and form["email"].value() != "":
@@ -317,13 +317,14 @@ def view_application_details(request, pk):
     educations = Education.objects.filter(JobApplication=jobApplication)
 
     experience = Experience.objects.filter(JobApplication=jobApplication)
-
-    preferredName = PreferredName.objects.get(user=jobApplication.candidate.user)
+    preferredName = None
+    if request.user.preferredName != "":
+        preferredName = request.user.preferredName
 
     context['educations'] = educations
     context['experience'] = experience
     if preferredName:
-        context['preferredName'] = preferredName.preferredName
+        context['preferredName'] = preferredName
 
     context['user'] = request.user
 
